@@ -26,6 +26,7 @@
   :dependencies
   '[
     [org.clojure/clojure "1.8.0"]
+    [org.clojure/tools.namespace "0.2.11" :scope "test"]
     ; [org.clojure/tools.logging "0.3.1"]
     [com.taoensso/timbre "4.3.1"]   ; https://github.com/ptaoussanis/timbre
     ; [org.clojure/core.cache "0.6.4"]
@@ -58,16 +59,21 @@
 ;  :target-path "tmp/target"
 )
 
-; (task-options!
+
+;   [adzerk/boot-test "1.1.0" :scope "test"]])
+
+
+(task-options!
 ;   pom {:project 'my-project
 ;        :version "0.1.0"}
 ;   jar {:manifest {"Foo" "bar"}}
-; )
 
-  ; repl {:eval (println "Howdy!")
-  ;       :init-ns 'user
-  ;       :skip-init true})
-  ;
+
+  repl {:eval (println "Howdy!")
+        :init-ns 'user
+        :skip-init true}
+)
+
 
 (deftask make-build-edn []
   (with-pre-wrap fs
@@ -94,6 +100,11 @@
     (jar :main 'web.main :file "main.jar")
     (target :dir #{"tmp/target"})
   ))
+
+
+;; (require '[clojure.tools.namespace.repl :as repl])
+;; (apply repl/set-refresh-dirs (get-env :resource-paths))
+;; (repl/refresh)
 
 ; (require '[demo.boot-build :refer :all])
 
