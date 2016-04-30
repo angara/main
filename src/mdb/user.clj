@@ -20,16 +20,9 @@
   (apply str (format "%x" (now-ms)) "." (map hexbyte (urand-bytes 8))))
 ;
 
-; (defn sess-load [sid]
-;   (when sid
-;     (try
-;       (mc/find-one-as-map (dbc) sess-coll {:_id sid})
-;       (catch Exception e (warn "sess-load:" e)))))
-; ;
 
 (def sess-cache
   (atom (cache/ttl-cache-factory {} :ttl 10000)))
-
 
 (defn sess-load-mdb [sid]
   (try
@@ -54,14 +47,14 @@
   (swap! sess-cache #(cache/evict % sid))
   (try
     (= 1 (.getN (mc/update-by-id (dbc) sess-coll sid {:$set data})))
-    (catch Exception e (warn "db/sess-update:" e))))
+    (catch Exception e (warn "sess-update:" e))))
 ;
 
 (defn sess-new [data]
   (let [data (assoc data :_id (new-sid))]
     (try
       (mc/insert-and-return (dbc) sess-coll data)
-      (catch Exception e (warn "db/sess-create:" e)))))
+      (catch Exception e (warn "sess-new:" e)))))
 ;
 
 ;;; user
@@ -70,14 +63,14 @@
   (when uid
     (try
       (mc/find-map-by-id (dbc) user-coll uid flds)
-      (catch Exception e (warn "db/user-by-id:" e)))))
+      (catch Exception e (warn "user-by-id:" e)))))
 ;
 
 (defn users-by-ids [uids flds]
   (when-let [uv (not-empty (vec uids))]
     (try
       (mc/find-maps (dbc) user-coll {:_id {:$in uv}} flds)
-      (catch Exception e (warn "db/users-by-ids:" e)))))
+      (catch Exception e (warn "users-by-ids:" e)))))
 ;
 
 (defn user-by-auth [auth flds]

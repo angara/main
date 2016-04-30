@@ -15,6 +15,8 @@
     [ring.middleware.absolute-redirects :refer [wrap-absolute-redirects]]
     [ring.middleware.x-headers :refer
         [wrap-xss-protection wrap-content-type-options wrap-frame-options]]))
+
+    ;; NOTE: ring-cors
 ;
 
 (defn wrap-csrf

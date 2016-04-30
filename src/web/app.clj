@@ -10,7 +10,7 @@
     [org.httpkit.server :refer [run-server]]
 
     [ring.util.response :refer [redirect]]
-    [compojure.core :refer [defroutes context GET POST]]
+    [compojure.core :refer [GET POST ANY context routes]]
     [compojure.route :as route]
 
     [monger.collection :as mc]
@@ -21,7 +21,9 @@
     [mlib.time :refer [now-ms]]
     [mlib.web.sess :refer [wrap-sess sid-resp]]
     [mlib.web.middleware :refer [middleware]]
-    [mlib.web.server :as server]))
+
+    [mdb.user :refer [user-by-id sess-new]]
+    [front.core :refer [main-page]]))
 
     ; [usr.db.user :refer [sess-load sess-update sess-new user-by-id]]
     ;
@@ -46,30 +48,86 @@
       (redirect (str "/user/login?next=" (:uri req))))))
 ;
 
-(defn logout [req]
-  ;; logout user
-  (sess-update (-> req :sess :sid)
-    {:uid nil :auth nil :login nil :logout (-> req :user :_id)})
-  (json-resp {:ok 1 :redir "/"}))
+; (defn logout [req]
+;   ;; logout user
+;   (sess-update (-> req :sess :sid)
+;     {:uid nil :auth nil :login nil :logout (-> req :user :_id)})
+;   (json-resp {:ok 1 :redir "/"}))
+; ;
+;
+; (defroutes me-routes
+;   (GET "/" [] views/home)
+;   (POST "/logout" [] logout))
+; ;
 ;
 
-(defroutes me-routes
-  (GET "/" [] views/home)
-  (POST "/logout" [] logout))
+
+(defn rc-text [msg]
+  {:status 200 :headers {"Content-type" "text/plain"} :body msg})
+
+
+(defn sysctl [req]
+  ;; NOTE: sensitive system control
+  (let [psw (-> conf :sysctl :psw)
+        params (:params req)]
+    (prn params)
+    (if (and psw (= psw (:psw params)))
+      (condp = (:action params)
+        "login"
+          (let [uid (:uid params)]
+            (if-let [u (user-by-id uid FLDS_REQ_USER)]
+              (let [sid (:_id (sess-new {:uid (:_id u) :login (:login u)}))]
+                (sid-resp (rc-text (str u)) sid))
+              (rc-text "!uid")))
+        "exit"
+          (do
+            (mount/stop)
+            ;; sleep 10
+            ;; System.exit(1)
+            (rc-text "system exit"))
+        (rc-text "?action"))
+      ;; else
+      (rc-text "nil"))))
 ;
 
 
-(defroutes routes
-  (GET  "/" [] views/main-page)
-  (GET  "/usr/" [] views/main-page)       ;; !!!
+(defn make-routes [rconf]
 
-  (GET  "/me" [] (redirect "/me/"))
-  (context "/me" [] (wrap-user-required me-routes))
-  (GET  "/bb" [] (redirect "/bb/"))
-  (context "/bb" [] bb-handler/routes)
+  (let [libs (:libs rconf)]
+    (routes
+      (GET  "/" [] main-page)
 
-  (GET  "/pb" [] (redirect "/pb/"))
-  (context "/pb" [] pb-h/routes)
+      ;; NOTE: developer mode!
+      (route/files (:path libs) {:root (:root libs)})
+
+      (ANY "/_sysctl/:action" [] sysctl)
+
+      ;; NOTE: developer backdoor
+      ; (GET "/usr/_login_sess/:uid" [uid :as req]
+      ;     (if (= "dev" (:env conf))
+      ;         (if-let [u (sess-user-by-id uid)]
+      ;             { :status 200
+      ;               :headers {"Content-type" "text/plain"}
+      ;               :sess {:_id (new-sid) :uid (:_id u) :login (:login u)}
+      ;               :body (str (:_id u))}
+      ;             ;;
+      ;             { :status 200
+      ;               :headers {"Content-type" "text/plain"} :body "nil"})))
+
+      (ANY "/*" [] not-found))))
+;
+
+  ; /txt/
+
+  ; (GET  "/usr/" [] views/main-page)       ;; !!!
+  ;
+  ; (GET  "/me" [] (redirect "/me/"))
+  ; (context "/me" [] (wrap-user-required me-routes))
+  ; (GET  "/bb" [] (redirect "/bb/"))
+  ; (context "/bb" [] bb-handler/routes)
+  ;
+  ; (GET  "/pb" [] (redirect "/pb/"))
+  ; (context "/pb" [] pb-h/routes)
 
   ; (context "/beta" [] beta/routes)
 
@@ -83,22 +141,9 @@
   ; (GET  "/story/:id/edit" [id :as req] (user-req sv/story-edit req id))
   ; (POST "/story/:id/edit" [id :as req] (user-req sv/story-update req id))
 
-  (route/files "/usr/inc" {:root "inc"})
+;  (route/files "/usr/inc" {:root "inc"})
   ; (route/resources "/")
 
-  ;; NOTE: developer backdoor
-  ; (GET "/usr/_login_sess/:uid" [uid :as req]
-  ;     (if (= "dev" (:env conf))
-  ;         (if-let [u (sess-user-by-id uid)]
-  ;             { :status 200
-  ;               :headers {"Content-type" "text/plain"}
-  ;               :sess {:_id (new-sid) :uid (:_id u) :login (:login u)}
-  ;               :body (str (:_id u))}
-  ;             ;;
-  ;             { :status 200
-  ;               :headers {"Content-type" "text/plain"} :body "nil"})))
-  ;;
-  (GET "/*" [] not-found))
 ;
 
 (defn wrap-user [handler]
@@ -148,12 +193,13 @@
 (defstate webapp
   :start
     (do
-      (bb-categ/init)
-      (bb-model/init)
-      (bb-tags/init)
+      ; (bb-categ/init)
+      ; (bb-model/init)
+      ; (bb-tags/init)
       ;; pics/init
       (start
-        (-> routes
+        (->
+          (make-routes (:routes conf))
           (wrap-developer)
           (wrap-user)
           ;; TODO: fix

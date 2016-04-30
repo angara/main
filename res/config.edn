@@ -1,0 +1,18 @@
+
+
+{
+
+
+
+  :http {
+    :ip "127.0.0.1"
+    :port 8001
+  }
+  :routes {
+    :libs {:path "/libs/" :root "./libs"}
+  }
+
+  :sysctl {:psw "1"}
+}
+
+;;.

@@ -123,6 +123,10 @@
 ;
 
 
+(defn render [content]
+  (html5 (html content)))
+
+
 (defn layout
   [req {:keys [page-title page-nav] :as params} & content]
   (let [user (:user req)]

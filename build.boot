@@ -29,7 +29,7 @@
     [org.clojure/tools.namespace "0.2.11" :scope "test"]
     ; [org.clojure/tools.logging "0.3.1"]
     [com.taoensso/timbre "4.3.1"]   ; https://github.com/ptaoussanis/timbre
-    ; [org.clojure/core.cache "0.6.4"]
+    [org.clojure/core.cache "0.6.4"]
     ; [ch.qos.logback/logback-classic "1.1.6"]
 
     [clj-time "0.11.0"]
@@ -68,12 +68,18 @@
 ;        :version "0.1.0"}
 ;   jar {:manifest {"Foo" "bar"}}
 
+  aot {}
 
-  repl {:eval (println "Howdy!")
-        :init-ns 'user
-        :skip-init true}
+  repl {; :init-ns 'web
+        ; :skip-init true
+       }
 )
 
+
+(deftask dev []
+
+  )
+;
 
 (deftask make-build-edn []
   (with-pre-wrap fs
@@ -199,5 +205,58 @@
 ;         :version "1.0.0")
 ;    (uber)
 ;    (jar :main 'animals.uberjar)))
+
+
+; (pod/with-pod @pod
+;         (require '[boot.pod :as pod])
+;         (require '[boot.util :as util])
+;         (require '[boot.repl :as repl])
+;         (require '[clojure.tools.namespace.repl :as tnsr])
+;
+;         (util/info "Launching %s...\n" ~pod-env)
+;         (util/info "Launching backend nRepl...\n")
+;
+;
+;         (apply tnsr/set-refresh-dirs (-> pod/env :directories))
+;
+;         (repl/launch-nrepl {:init-ns '~init-ns
+;                             :port ~port
+;                             :server true
+;                             :middleware (:middleware pod/env)})
+;
+;         (require 'dev)
+;         (require 'reloaded.repl)
+;         (reloaded.repl/go))
+
+
+; (deftask dev
+;          "Start the dev env..."
+;          [s speak bool "Notify when build is done"
+;           p port PORT int "Port for web server"]
+;          (merge-env! :resource-paths #{"env/dev/js"})
+;          (comp
+;            (watch)
+;            (reload :on-jsload 'torcaui.core/reinstall-om!)
+;            (cljs-repl)
+;            (cljs :ids #{"main" "devcards"})
+;            (serve :port port :dir "target" :not-found 'reps.server/not-found-handler  :reload true)
+;            (target)
+;            (if speak (boot.task.built-in/speak) identity)))
+;
+; (deftask package
+;          "Build the package"
+;          []
+;          (merge-env! :resource-paths #{"env/prod/js"})
+;          (comp
+;            (cljs :compiler-options {
+;                                     :devcards false
+;                                     :optimizations :advanced
+;                                     :externs ["externs/jquery-1.9.js"]})
+;
+;            (target)))
+
+
+;; https://github.com/pandeiro/boot-http
+
 
 ;;.
