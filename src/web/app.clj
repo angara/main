@@ -22,12 +22,13 @@
     [mlib.web.sess :refer [wrap-sess sid-resp]]
     [mlib.web.middleware :refer [middleware]]
 
-    [mdb.user :refer [user-by-id sess-new]]
+    [mdb.user :refer [user-by-id sess-new sess-load]]
+    [html.frame :refer [not-found]]
     [front.core :refer [main-page]]))
 
     ; [usr.db.user :refer [sess-load sess-update sess-new user-by-id]]
     ;
-    ; [usr.html.frame :refer [no-access not-found]]
+
     ; [usr.bb.handler :as bb-handler]
     ; [usr.pb.handler :as pb-h]
     ; [usr.bb.categ :as bb-categ]
@@ -66,53 +67,43 @@
   {:status 200 :headers {"Content-type" "text/plain"} :body msg})
 
 
-(defn sysctl [req]
-  ;; NOTE: sensitive system control
-  (let [psw (-> conf :sysctl :psw)
-        params (:params req)]
-    (prn params)
-    (if (and psw (= psw (:psw params)))
-      (condp = (:action params)
-        "login"
-          (let [uid (:uid params)]
-            (if-let [u (user-by-id uid FLDS_REQ_USER)]
-              (let [sid (:_id (sess-new {:uid (:_id u) :login (:login u)}))]
-                (sid-resp (rc-text (str u)) sid))
-              (rc-text "!uid")))
-        "exit"
-          (do
-            (mount/stop)
-            ;; sleep 10
-            ;; System.exit(1)
-            (rc-text "system exit"))
-        (rc-text "?action"))
-      ;; else
-      (rc-text "nil"))))
+(defn sysctl [params psw]
+  (if (and psw (= (:psw params) psw))
+    (condp = (:action params)
+      "login"
+        (let [uid (:uid params)]
+          (if-let [u (user-by-id uid FLDS_REQ_USER)]
+            (let [sid (:_id (sess-new {:uid (:_id u) :login (:login u)}))]
+              (sid-resp (rc-text (str u)) sid))
+            (rc-text "!uid")))
+      ;;
+      "exit"
+        (do
+          (mount/stop)
+          (send-off (agent)
+            #((Thread/sleep 2000)(System/exit 0)))
+          (rc-text "system exit"))
+      ;;
+      (rc-text "?action"))
+    ;; else
+    (rc-text "nil")))
 ;
 
 
-(defn make-routes [rconf]
+(defn make-routes []
 
-  (let [libs (:libs rconf)]
+  (let [libs (-> conf :routes :libs)
+        sysc (:sysctl conf)]
     (routes
       (GET  "/" [] main-page)
 
       ;; NOTE: developer mode!
       (route/files (:path libs) {:root (:root libs)})
 
-      (ANY "/_sysctl/:action" [] sysctl)
-
-      ;; NOTE: developer backdoor
-      ; (GET "/usr/_login_sess/:uid" [uid :as req]
-      ;     (if (= "dev" (:env conf))
-      ;         (if-let [u (sess-user-by-id uid)]
-      ;             { :status 200
-      ;               :headers {"Content-type" "text/plain"}
-      ;               :sess {:_id (new-sid) :uid (:_id u) :login (:login u)}
-      ;               :body (str (:_id u))}
-      ;             ;;
-      ;             { :status 200
-      ;               :headers {"Content-type" "text/plain"} :body "nil"})))
+      (ANY
+        (str (:prefix sysc) ":action")
+        {params :params}
+        (sysctl params (:psw sysc)))
 
       (ANY "/*" [] not-found))))
 ;
@@ -199,8 +190,7 @@
       ;; pics/init
       (start
         (->
-          (make-routes (:routes conf))
-          (wrap-developer)
+          (make-routes)
           (wrap-user)
           ;; TODO: fix
           ;; (wrap-csrf {:skip-uris #{"/usr/login"}})

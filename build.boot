@@ -4,16 +4,13 @@
 
 ;; https://github.com/boot-clj/boot/wiki/Boot-Environment
 
-;; boot-reload
-
-
 ; BOOT_EMIT_TARGET=no  ~/.boot/boot.properties
 
 ; https://github.com/boot-clj/boot/wiki/Tasks
 ; https://github.com/boot-clj/boot/wiki/Community-Tasks
 
 
-(def VER {:name "angara.net/main" :version "0.0.1"})
+(def VER {:name "angara.net/main" :version "0.1.0"})
 
 ; (set-env! :source-paths #{"foo" "bar"})
 ; (set-env! :source-paths #(conj % "baz"))
@@ -75,61 +72,56 @@
        }
 )
 
+(require
+  '[clojure.tools.namespace.repl :as repl]
+  '[clj-time.core :as tc]
+  '[boot.git :refer [last-commit]]
+  '[mount.core :as mount]
+  '[mlib.core :refer [edn-read]]
+  '[mlib.conf :refer [run-conf]]
+  '[web.app :as app]
+)
+
+
+(defn increment-build []
+  (let [bf "res/build.edn"
+        num (:num (edn-read bf))
+        out (merge VER {
+                :timestamp (str (tc/now))
+                :commit (last-commit)
+                :num (inc num)
+              })
+        ]
+    (spit bf (.toString out))
+  ))
+
+(defn start []
+  (reset! run-conf (edn-read "var/dev.edn"))
+  (mount/start))
+;
+
+(defn go []
+  (mount/stop)
+  (apply repl/set-refresh-dirs (get-env :resource-paths))
+  (repl/refresh :after 'boot.user/start))
+;
 
 (deftask dev []
 
   )
 ;
 
-(deftask make-build-edn []
-  (with-pre-wrap fs
-    (let [t (tmp-dir!)]
-      (spit (clojure.java.io/file t "build.edn") VER)
-      (prn "build.edn:" VER)
-      (-> fs (add-resource t) commit!))))
-;
 
-; (deftask dist []
-;   (comp
-;     (pom :project 'my-project :version "1.2.3")
-;     (make-build-edn)
-;     (uber)
-; ;    (aot :namespace '#{my-project.core})
-;     (jar :main 'my-project.core)))
-
-
-(deftask bld []
+(deftask dist []
+  (increment-build)
   (comp
-;    (aot :all true)
-    (make-build-edn)
+    ;(pom :project 'my-project :version "1.2.3")
+    (aot)
     (uber)
     (jar :main 'web.main :file "main.jar")
     (target :dir #{"tmp/target"})
   ))
 
-
-;; (require '[clojure.tools.namespace.repl :as repl])
-;; (apply repl/set-refresh-dirs (get-env :resource-paths))
-;; (repl/refresh)
-
-; (require '[demo.boot-build :refer :all])
-
-; (deftask build
-;   "Build my project."
-;   []
-;   (comp (pom) (jar) (install)))
-
-(deftask null-task
-  "Does nothing."
-  []
-  (fn [next-task]
-    (fn [fileset]
-      (next-task fileset))))
-
-; (deftask null-task
-;   "Does nothing."
-;   []
-;   clojure.core/identity)
 
 ; (deftask run []
 ;   (with-pre-wrap fileset
@@ -257,6 +249,5 @@
 
 
 ;; https://github.com/pandeiro/boot-http
-
 
 ;;.

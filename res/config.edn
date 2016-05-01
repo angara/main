@@ -1,18 +1,55 @@
-
+;;
+;;  angara-main: base config
+;;
 
 {
 
+  :tz "Asia/Irkutsk"
 
+
+  :mdb {
+    :uri "mongodb://set.correct.host.name:27017/angara"
+
+    ; :host "localhost"
+    ; :port 27017
+    ; :db "angara"
+    ; ;; user "user"
+    ; ;; pass "pass"
+    ; :opts {
+    ;   :connections-per-host 20
+    ;   :threads-allowed-to-block-for-connection-multiplier 11
+    ; }
+  }
 
   :http {
     :ip "127.0.0.1"
     :port 8001
+    :thread 10
+    ;; :max-body 20000000  ;; 20M
   }
+
   :routes {
     :libs {:path "/libs/" :root "./libs"}
   }
 
-  :sysctl {:psw "1"}
+
+  :psql {
+    :jdbc "jdbc:postgresql://mdb:5432/angara"
+    :user "angara"
+    :password ""
+  }
+
+  :yandex-metrika     "12139321"
+  :mailru-top         "474619"
+
+  :slowreq {
+    :ms 1000
+  }
+
+  :sysctl {
+    :prefix "/_sysctl/"
+    :psw "1"
+  }
 }
 
 ;;.

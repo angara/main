@@ -1,9 +1,9 @@
 #!/bin/bash
 
 
-# /etc/init/ws-usr.conf:
+# /etc/init/ws-main.conf:
 
-# description   "angara-usr service"
+# description   "angara-main service"
 
 # start on runlevel [2]
 # stop on runlevel [!2]
@@ -13,10 +13,10 @@
 
 # script
 #   sleep 1
-#   cd /www/usr
+#   cd /www/main
 #   exec /bin/su anga -c "./run.sh"
 # end script
 
-exec java -jar angara-usr.jar var/prod.edn >> /var/log/angara/usr-out.log 2>&1
+exec java -jar main.jar var/prod.edn >> /var/log/angara/main-out.log 2>&1
 
 #.
