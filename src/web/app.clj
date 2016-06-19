@@ -7,7 +7,7 @@
     [taoensso.timbre :refer [info warn error]]
     [mount.core :refer [defstate] :as mount]
 
-    [org.httpkit.server :refer [run-server]]
+    ; [org.httpkit.server :refer [run-server]]
 
     [ring.util.response :refer [redirect]]
     [compojure.core :refer [GET POST ANY context routes]]
@@ -80,8 +80,8 @@
       "exit"
         (do
           (mount/stop)
-          (send-off (agent)
-            #((Thread/sleep 2000)(System/exit 0)))
+          ; (send-off (agent)
+          ;   #((Thread/sleep 2000)(System/exit 0)))
           (rc-text "system exit"))
       ;;
       (rc-text "?action"))
@@ -168,38 +168,14 @@
         resp))))
 ;
 
-(declare webapp)
-
-(defn start [handler]
-  (let [hc (:http conf)]
-    (info "build -" (:build conf))
-    (info "start server -" hc)
-    (run-server handler hc)))
-;
-
-(defn stop []
-  (webapp :timeout 200))
-;
-
-(defstate webapp
-  :start
-    (do
-      ; (bb-categ/init)
-      ; (bb-model/init)
-      ; (bb-tags/init)
-      ;; pics/init
-      (start
-        (->
-          (make-routes)
-          (wrap-user)
-          ;; TODO: fix
-          ;; (wrap-csrf {:skip-uris #{"/usr/login"}})
-          (wrap-sess sess-load)
-          middleware
-          (wrap-slowreq (:slowreq conf)))))
-      ;
-  :stop
-    (stop))
-;
+(defn app-handler []
+  (->
+    (make-routes)
+    (wrap-user)
+    ;; TODO: fix
+    ;; (wrap-csrf {:skip-uris #{"/usr/login"}})
+    (wrap-sess sess-load)
+    middleware
+    (wrap-slowreq (:slowreq conf))))
 
 ;;.

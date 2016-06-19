@@ -1,61 +1,63 @@
 ;;
-;;  Angara.Net main
+;;  SushiStudio bot
 ;;
 
-;; https://github.com/boot-clj/boot/wiki/Boot-Environment
+; BOOT_EMIT_TARGET=no  ~/.boot/boot.properties
 
 ; https://github.com/boot-clj/boot/wiki/Tasks
 ; https://github.com/boot-clj/boot/wiki/Community-Tasks
+; https://github.com/boot-clj/boot/wiki/Boot-Environment
 
+;; ssh -fNT -R 8102:localhost:8102 www@telebot
 
-(def VER {:name "angara.net/main" :version "0.2.0"})
+(def VER
+  {:name "sushibot" :version "0.5.0"})
 
 (set-env!
   :resource-paths #{"res"}
   :source-paths #{"src"}
   :asset-paths #{"res"}
 
-  ;; boot -d boot-deps ancient
+  ;; boot -d boot-deps=0.1.6 ancient
   :dependencies
   '[
     [org.clojure/clojure "1.8.0"]
     [org.clojure/tools.namespace "0.2.11" :scope "test"]
     ; [org.clojure/tools.logging "0.3.1"]
-    [com.taoensso/timbre "4.4.0"]   ; https://github.com/ptaoussanis/timbre
-    [org.clojure/core.cache "0.6.5"]
+    [com.taoensso/timbre "4.3.1"]   ; https://github.com/ptaoussanis/timbre
+    ; [org.clojure/core.cache "0.6.4"]
+    ; [ch.qos.logback/logback-classic "1.1.6"]
 
-    [clj-time "0.12.0"]
+    [clj-time "0.11.0"]
     [clj-http "3.1.0"]
 
     ; [javax.servlet/servlet-api "2.5"]
     ; [http-kit "2.1.19"]
-    [ring/ring-core "1.5.0"]
+    [ring/ring-core "1.4.0"]
     [ring/ring-json "0.4.0"]
     [ring/ring-headers "0.2.0"]
-    [ring/ring-jetty-adapter "1.5.0"]
+    [ring/ring-jetty-adapter "1.4.0"]
 
     [cheshire "5.6.1"]
-    [compojure "1.5.1"]
+    [compojure "1.5.0"]
     [hiccup "1.0.5"]
-    [mount "0.1.10"]
+    [mount "0.1.10"]])
 
-    [com.novemberain/monger "3.0.2"]
-    [org.clojure/java.jdbc "0.6.1"]
-    [org.postgresql/postgresql "9.4.1208"]
-    [com.mchange/c3p0 "0.9.5.2"]
-    [honeysql "0.7.0"]  ; https://github.com/jkk/honeysql
+    ; [com.novemberain/monger "3.0.2"]
+    ; [org.clojure/java.jdbc "0.5.8"]
+    ; [org.postgresql/postgresql "9.4.1208"]
+    ; [com.mchange/c3p0 "0.9.5.2"]
+    ; [honeysql "0.6.3"]  ; https://github.com/jkk/honeysql
 
     ;; [com.draines/postal "1.11.3"]
     ;; [enlive "1.1.5"]     ;; https://github.com/cgrand/enlive
-  ])
-;
+
 
 ;   [adzerk/boot-test "1.1.0" :scope "test"]])
 
 (task-options!
-  aot {}
-  repl {} ; :init-ns 'web ; :skip-init true
-)
+  aot {:all true})
+;;;
 
 (require
   '[clojure.tools.namespace.repl :as repl]
@@ -63,12 +65,13 @@
   '[clj-time.core :as tc]
   '[boot.git :refer [last-commit]]
   '[mount.core :as mount]
-  '[web.app :as app]
-)
+  '[sushibot.srv])
+;
+
 
 (defn start []
-  (mount/start-with-args
-    (-> "var/dev.edn" slurp edn/read-string)))
+  (let [rc (edn/read-string (slurp "var/dev.edn"))]
+    (mount/start-with-args rc)))
 ;
 
 (defn go []
@@ -77,54 +80,24 @@
   (repl/refresh :after 'boot.user/start))
 ;
 
+
 (defn increment-build []
   (let [bf "res/build.edn"
-        num (:num (edn/read-string bf))
-        out (merge VER {
-                :timestamp (str (tc/now))
-                :commit (last-commit)
-                :num (inc num)
-              })
-        ]
-    (spit bf (.toString out)) ))
+        num (:num (edn/read-string (slurp bf)))
+        bld { :timestamp (str (tc/now))
+              :commit (last-commit)
+              :num (inc num)}  ]
+    (spit bf (.toString (merge VER bld)))))
 ;
 
-(deftask dist []
+(deftask build []
   (increment-build)
   (comp
     (aot)
     (uber)
-    (jar :main 'web.main :file "main.jar")
-    (target :dir #{"tmp/target"}) ))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-; (deftask run []
-;   (with-pre-wrap fileset
-;     (my.namespace/-main)
-;     fileset))
-
-;; uberjar:
+    (jar :main 'sushibot.main :file "sushibot.jar")
+    (target :dir #{"tmp/target"})))
 ;
-; (set-env!
-;  :resource-paths #{"src"}
-;  :dependencies '[[org.clojure/clojure "1.6.0"     :scope "provided"]])
-;
-; (deftask build
-;   "Builds an uberjar of this project that can be run with java -jar"
-;   []
-;   (comp
-;    (aot :namespace '#{my-namespace})
-;    (pom :project 'myproject
-;         :version "1.0.0")
-;    (uber)
-;    (jar :main 'my_namespace)))
-;
-; (defn -main [& args]
-;   (require 'my-namespace)
-;   (apply (resolve 'my-namespace/-main) args))
 
 
 ;; https://github.com/danielsz/boot-shell

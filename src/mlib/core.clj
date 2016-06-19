@@ -1,5 +1,5 @@
 ;;
-;;  mlib: 0.4.0
+;;  mlib: 0.6.0
 ;;
 
 (ns mlib.core
@@ -25,6 +25,16 @@
   ( [s default]
     (try
       (if (string? s) (Integer/parseInt s) (int s))
+      (catch Exception ignore default))))
+;
+
+(defn ^Integer to-long
+  "returns nil or default on failure"
+  ( [s]
+    (to-long s nil))
+  ( [s default]
+    (try
+      (if (string? s) (Long/parseLong s) (long s))
       (catch Exception ignore default))))
 ;
 
@@ -111,6 +121,12 @@
     {\& "&amp;" \< "&lt;" \> "&gt;" \" "&quot;" \' "&apos;"}))
 ;
 
+
+(defn parse-json [s]
+  (try
+    (json/parse-string (str s) true)
+    (catch Exception e)))
+;
 
 ;;;;;;  hashes  ;;;;;;
 

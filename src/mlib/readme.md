@@ -1,5 +1,5 @@
 
-# mlib-clj: 0.5.0
+# mlib-clj: 0.6.0
 
 
 project.clj:
