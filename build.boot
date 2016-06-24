@@ -20,7 +20,6 @@
   '[
     [org.clojure/clojure "1.8.0"]
     [org.clojure/tools.namespace "0.2.11" :scope "test"]
-    ; [org.clojure/tools.logging "0.3.1"]
     [com.taoensso/timbre "4.4.0"]   ; https://github.com/ptaoussanis/timbre
     [org.clojure/core.cache "0.6.5"]
 
@@ -34,9 +33,10 @@
     [ring/ring-headers "0.2.0"]
     [ring/ring-jetty-adapter "1.5.0"]
 
-    [cheshire "5.6.1"]
+    [cheshire "5.6.2"]
     [compojure "1.5.1"]
-    [hiccup "1.0.5"]
+    ;; [hiccup "1.0.5"]
+    [rum "0.9.1"]
     [mount "0.1.10"]
 
     [com.novemberain/monger "3.0.2"]
@@ -49,8 +49,6 @@
     ;; [enlive "1.1.5"]     ;; https://github.com/cgrand/enlive
   ])
 ;
-
-;   [adzerk/boot-test "1.1.0" :scope "test"]])
 
 (task-options!
   aot {}

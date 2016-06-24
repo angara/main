@@ -1,6 +1,7 @@
 
 (ns html.frame
   (:require
+    [rum..server-render :refer [render-static-markup]]
     [hiccup.core :refer [html]]
     [hiccup.page :refer [html5]]
     [mlib.conf :refer [conf]]
@@ -124,14 +125,15 @@
 
 
 (defn render [content]
-  (html5 (html content)))
+  (str "<!DOCTYPE html>\n"
+    (render-static-markup content)))
 
 
 (defn layout
   [req {:keys [page-title page-nav] :as params} & content]
   (let [user (:user req)]
-    (html5
-      (html
+    (render
+      [:html
         (head req params)
         "\n"
         [:body
@@ -157,7 +159,7 @@
                   " | "
                   [:a {:href "/forum/"} "Форум"]]]]
             ;
-            (footer req)]]))))
+            (footer req)]]])))
     ; /html5
 ;
 
