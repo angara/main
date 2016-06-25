@@ -21,18 +21,14 @@
     ; }
   }
 
+  ;; https://github.com/ring-clojure/ring/blob/master/ring-jetty-adapter/src/ring/adapter/jetty.clj
   :http {
-    :ip "127.0.0.1"
-    :port 8001
-    :thread 10
-    ;; :max-body 20000000  ;; 20M
+    :host  "127.0.0.1"
+    :port  8001
+    :join? false
   }
 
-  :routes {
-    :libs {:path "/libs/" :root "./libs"}
-  }
-
-
+  ;; http://www.mchange.com/projects/c3p0/
   :psql {
     :jdbc "jdbc:postgresql://mdb:5432/angara"
     :user "angara"
