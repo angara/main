@@ -72,8 +72,8 @@
 
 ;;;;;; edn ;;;;;;
 
-(defn edn-read [file]
-  (edn/read-string (slurp file)))
+(defn edn-slurp [file]
+  (-> file slurp edn/read-string))
 ;
 
 (defn edn-resource [res]

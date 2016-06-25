@@ -7,6 +7,11 @@
     [mlib.web.snippets :as snip]))
 ;
 
+;; rum.server-render
+(defn inner-html [s]
+  [:span {:dangerouslySetInnerHTML {:__html s}}])
+;
+
 (defn inc-pfx [s]
   (if (= (first s) \/) (str s) (str (:inc-pfx conf) s)))
 

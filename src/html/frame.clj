@@ -1,13 +1,13 @@
 
 (ns html.frame
   (:require
-    [rum..server-render :refer [render-static-markup]]
-    [hiccup.core :refer [html]]
-    [hiccup.page :refer [html5]]
+    [rum.server-render :refer [render-static-markup]]
+    ; [hiccup.core :refer [html]]
+    ; [hiccup.page :refer [html5]]
     [mlib.conf :refer [conf]]
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [yandex-metrika mailru-top]]
-    [html.util :refer [inc-pfx inc-js inc-css glyphicon json-resp]]))
+    [html.util :refer [inc-pfx inc-js inc-css glyphicon json-resp inner-html]]))
 ;
 
 (defn login-url
@@ -108,31 +108,38 @@
              [:a {:href "http://angara.net/about/"} "О сайте"]
              [:br]
              [:a {:href "http://top.mail.ru/visits?id=474619" :target "_blank"}
-                 "Статистика"]]
+                "Статистика"]]
           ;
           [:div.col-sm-4.text-center]
           ;
           [:div.col-sm-4.text-right
             [:div.copy
               [:a.copy-tm {:href "http://angara.net/"} "Angara.Net"]
-              " &copy; 2002-2016"]]
+              "\u2122 \u00A9 2002-2016"]]
           ;
           [:div.clearfix]]]]
+
     ;; counters
-    (yandex-metrika (:yandex-metrika conf))
-    (mailru-top (:mailru-top conf))])
+    (inner-html (yandex-metrika (:yandex-metrika conf)))
+    (inner-html (mailru-top (:mailru-top conf)))])
 ;
 
 
-(defn render [content]
+(defn html5 [content]
   (str "<!DOCTYPE html>\n"
     (render-static-markup content)))
+
+
+(defn html-resp [s]
+  {:status 200
+   :headers {"Content-Type" "text/html;charset=utf-8"}
+   :body s})
 
 
 (defn layout
   [req {:keys [page-title page-nav] :as params} & content]
   (let [user (:user req)]
-    (render
+    (html5
       [:html
         (head req params)
         "\n"
@@ -140,27 +147,27 @@
           [:div.page
             (when-let [uid (:uid user)]
               [:srcipt "window.uid='" uid "';"])
+
+            (top-bar req user)]
             ;
-            (top-bar req user)
+            ; [:div.content
+            ;   [:div.container
+            ;     page-nav
+            ;     (when page-title
+            ;       [:h1.page-title page-title])
+            ;     content
+            ;     [:div.clearfix]
+            ;     [:div.b-botnav
+            ;       [:a {:href "http://angara.net/"} "Главная"]
+            ;       " | "
+            ;       [:a {:href "/bb/"} "Объявления"]
+            ;       " | "
+            ;       [:a {:href "/meteo/"} "Погода"]
+            ;       " | "
+            ;       [:a {:href "/forum/"} "Форум"]]]]
             ;
-            [:div.content
-              [:div.container
-                page-nav
-                (when page-title
-                  [:h1.page-title page-title])
-                content
-                [:div.clearfix]
-                [:div.b-botnav
-                  [:a {:href "http://angara.net/"} "Главная"]
-                  " | "
-                  [:a {:href "/bb/"} "Объявления"]
-                  " | "
-                  [:a {:href "/meteo/"} "Погода"]
-                  " | "
-                  [:a {:href "/forum/"} "Форум"]]]]
-            ;
-            (footer req)]]])))
-    ; /html5
+          (footer req)]])))
+      ; /html
 ;
 
 
@@ -195,6 +202,5 @@
         [:div.jumbotron.error
           [:h1 msg]])})
 ;
-
 
 ;;.

@@ -1,11 +1,13 @@
 (ns front.core
   (:require
     [taoensso.timbre :refer [warn]]
-    [mlib.conf :refer [conf]]))
+    [mlib.conf :refer [conf]]
+    [html.frame :refer [layout]]))
 ;
 
 (defn main-page [req]
-  "Angara.Net main page")
+  (layout req {}
+    "Angara.Net main page"))
 
 
 ;;.

@@ -26,8 +26,6 @@
     [clj-time "0.12.0"]
     [clj-http "3.1.0"]
 
-    ; [javax.servlet/servlet-api "2.5"]
-    ; [http-kit "2.1.19"]
     [ring/ring-core "1.5.0"]
     [ring/ring-json "0.4.0"]
     [ring/ring-headers "0.2.0"]
@@ -45,23 +43,30 @@
     [com.mchange/c3p0 "0.9.5.2"]
     [honeysql "0.7.0"]  ; https://github.com/jkk/honeysql
 
+    [org.martinklepsch/boot-garden "1.3.0-0" :scope "test"]
     ;; [com.draines/postal "1.11.3"]
     ;; [enlive "1.1.5"]     ;; https://github.com/cgrand/enlive
   ])
 ;
-
-(task-options!
-  aot {}
-  repl {} ; :init-ns 'web ; :skip-init true
-)
 
 (require
   '[clojure.tools.namespace.repl :as repl]
   '[clojure.edn :as edn]
   '[clj-time.core :as tc]
   '[boot.git :refer [last-commit]]
+  '[org.martinklepsch.boot-garden :refer [garden]]
   '[mount.core :as mount]
-  '[web.app :as app]
+  '[web.app]
+)
+
+(task-options!
+  aot {}
+  repl {} ; :init-ns 'web ; :skip-init true
+  garden {
+    :styles-var 'styles/main
+    :output-to  "public/css/main.css"
+    :pretty-print false
+  }
 )
 
 (defn start []
@@ -87,10 +92,32 @@
     (spit bf (.toString out)) ))
 ;
 
-(deftask dist []
-  (increment-build)
+(deftask css-dev []
+  (set-env!
+    :source-paths #{"css"}
+    :resource-paths #{}
+    :asset-paths #{})
+  (comp
+    (watch)
+    (garden :pretty-print true)
+    (target :dir #{"res"}) ))
+;
+
+(deftask css-prod []
+  (set-env!
+    :source-paths #{"css"}
+    :resource-paths #{}
+    :asset-paths #{})
+  (comp
+    (garden :pretty-print false)
+    (target :dir #{"res"}) ))
+;
+
+(deftask build []
+  ; (increment-build)
   (comp
     (aot)
+    ; (css-prod)
     (uber)
     (jar :main 'web.main :file "main.jar")
     (target :dir #{"tmp/target"}) ))

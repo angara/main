@@ -5,10 +5,10 @@
 (ns web.main
   (:gen-class)
   (:require
-    [taoensso.timbre :refer [error]]
+    [clojure.edn :as edn]
+    [taoensso.timbre :refer [info error]]
     [mount.core :refer [defstate start-with-args]]
     [mlib.conf :refer [conf]]
-    [mlib.core :refer [edn-read]]
     [web.app]))
 ;
 
@@ -22,7 +22,7 @@
 ;
 
 (defn -main [& args]
-  (if-let [rc (edn-read (first args))]
+  (if-let [rc (-> args first slurp edn/read-string)]
     (start-with-args rc)
     (error "config profile must be in parameters!")))
 ;

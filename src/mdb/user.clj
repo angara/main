@@ -14,6 +14,8 @@
 (def user-coll     "user")
 
 
+(def FLDS_REQ_USER [:_id :login :name :family :upic :admin])
+
 ;;; sess
 
 (defn new-sid []

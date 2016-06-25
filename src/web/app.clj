@@ -5,7 +5,7 @@
 (ns web.app
   (:require
     [taoensso.timbre :refer [info warn error]]
-    [mount.core :refer [defstate] :as mount]
+    ; [mount.core :refer [defstate] :as mount]
 
     ; [org.httpkit.server :refer [run-server]]
 
@@ -22,12 +22,10 @@
     [mlib.web.sess :refer [wrap-sess sid-resp]]
     [mlib.web.middleware :refer [middleware]]
 
-    [mdb.user :refer [user-by-id sess-new sess-load]]
+    [mdb.user :refer [user-by-id sess-load FLDS_REQ_USER]]
     [html.frame :refer [not-found]]
-    [front.core :refer [main-page]]))
-
-    ; [usr.db.user :refer [sess-load sess-update sess-new user-by-id]]
-    ;
+    [front.core :refer [main-page]]
+    [web.sysctl :as sysctl]))
 
     ; [usr.bb.handler :as bb-handler]
     ; [usr.pb.handler :as pb-h]
@@ -39,7 +37,7 @@
 ;
 
 
-(def FLDS_REQ_USER [:_id :login :name :family :upic :admin])
+
 ;
 
 (defn wrap-user-required [handler]
@@ -56,56 +54,17 @@
 ;   (json-resp {:ok 1 :redir "/"}))
 ; ;
 ;
-; (defroutes me-routes
-;   (GET "/" [] views/home)
-;   (POST "/logout" [] logout))
-; ;
-;
-
-
-(defn rc-text [msg]
-  {:status 200 :headers {"Content-type" "text/plain"} :body msg})
-
-
-(defn sysctl [params psw]
-  (if (and psw (= (:psw params) psw))
-    (condp = (:action params)
-      "login"
-        (let [uid (:uid params)]
-          (if-let [u (user-by-id uid FLDS_REQ_USER)]
-            (let [sid (:_id (sess-new {:uid (:_id u) :login (:login u)}))]
-              (sid-resp (rc-text (str u)) sid))
-            (rc-text "!uid")))
-      ;;
-      "exit"
-        (do
-          (mount/stop)
-          ; (send-off (agent)
-          ;   #((Thread/sleep 2000)(System/exit 0)))
-          (rc-text "system exit"))
-      ;;
-      (rc-text "?action"))
-    ;; else
-    (rc-text "nil")))
-;
 
 
 (defn make-routes []
+  (routes
+    (GET  "/" _  main-page)
 
-  (let [libs (-> conf :routes :libs)
-        sysc (:sysctl conf)]
-    (routes
-      (GET  "/" [] main-page)
+    ;; NOTE: developer mode!
+    ;; (route/files (:path libs) {:root (:root libs)})
 
-      ;; NOTE: developer mode!
-      (route/files (:path libs) {:root (:root libs)})
-
-      (ANY
-        (str (:prefix sysc) ":action")
-        {params :params}
-        (sysctl params (:psw sysc)))
-
-      (ANY "/*" [] not-found))))
+    (context (-> conf :sysctl :prefix) _ sysctl/routes)
+    (ANY "/*" _  not-found)))
 ;
 
   ; /txt/
@@ -142,18 +101,6 @@
     (let [uid (-> req :sess :uid str)
           user (user-by-id uid FLDS_REQ_USER)]
       (handler (assoc req :user user)))))
-;
-
-(defn wrap-developer [handler]
-  (if (not= "dev" (:env conf))
-    handler
-    (fn [req]
-      (if (= (:uri req) "/usr/_login")  ;; NOTE: backdoor
-        (let [user (user-by-id (-> req :params :uid) FLDS_REQ_USER)
-              sess (sess-new {:uid (:_id user) :login (:login user)})]
-          (sid-resp (text-resp user) (:_id sess)))
-        ;; else process chained handler
-        (handler req)))))
 ;
 
 

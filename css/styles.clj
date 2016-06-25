@@ -1,5 +1,5 @@
 
-(ns usr.styles
+(ns styles
   (:require
     [garden.def :refer [defstyles]]
     [garden.units :refer [px]]))
