@@ -148,24 +148,24 @@
             (when-let [uid (:uid user)]
               [:srcipt "window.uid='" uid "';"])
 
-            (top-bar req user)]
-            ;
-            ; [:div.content
-            ;   [:div.container
-            ;     page-nav
-            ;     (when page-title
-            ;       [:h1.page-title page-title])
-            ;     content
-            ;     [:div.clearfix]
-            ;     [:div.b-botnav
-            ;       [:a {:href "http://angara.net/"} "Главная"]
-            ;       " | "
-            ;       [:a {:href "/bb/"} "Объявления"]
-            ;       " | "
-            ;       [:a {:href "/meteo/"} "Погода"]
-            ;       " | "
-            ;       [:a {:href "/forum/"} "Форум"]]]]
-            ;
+            (top-bar req user)
+
+            [:div.content
+              [:div.container
+                page-nav
+                (when page-title
+                  [:h1.page-title page-title])
+                content
+                [:div.clearfix]
+                [:div.b-botnav
+                  [:a {:href "http://angara.net/"} "Главная"]
+                  " | "
+                  [:a {:href "/bb/"} "Объявления"]
+                  " | "
+                  [:a {:href "/meteo/"} "Погода"]
+                  " | "
+                  [:a {:href "/forum/"} "Форум"]]]]]
+
           (footer req)]])))
       ; /html
 ;
@@ -190,7 +190,8 @@
         [:div.jumbotron
           [:h2 "Страница по этому адресу отсутствует."]
           [:br]
-          [:p "Попробуйте воспользоваться <a href='/search'>поиском</a>."]])})
+          [:p "Попробуйте воспользоваться "
+            [:a {:href "/search"} "поиском"] "."]])})
 ;
 
 

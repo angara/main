@@ -9,7 +9,7 @@
     [taoensso.timbre :refer [info error]]
     [mount.core :refer [defstate start-with-args]]
     [mlib.conf :refer [conf]]
-    [web.app]))
+    [web.srv]))
 ;
 
 (defstate main

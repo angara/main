@@ -8,7 +8,7 @@
 ; https://github.com/boot-clj/boot/wiki/Community-Tasks
 
 
-(def VER {:name "angara.net/main" :version "0.2.0"})
+(def VER {:name "angara.net/main" :version "0.3.0"})
 
 (set-env!
   :resource-paths #{"res"}
@@ -35,6 +35,7 @@
     [compojure "1.5.1"]
     ;; [hiccup "1.0.5"]
     [rum "0.9.1"]
+    [garden "1.3.2"]
     [mount "0.1.10"]
 
     [com.novemberain/monger "3.0.2"]
@@ -43,35 +44,29 @@
     [com.mchange/c3p0 "0.9.5.2"]
     [honeysql "0.7.0"]  ; https://github.com/jkk/honeysql
 
-    ;; [garden "1.3.2" :scope "test"]
-    [org.martinklepsch/boot-garden "1.3.0-0" :scope "test"]
-    ; [org.martinklepsch/boot-garden "1.3.0-0" :scope "test"]
+    [org.martinklepsch/boot-garden "1.3.0-0" :scope "test"]])
     ;; [com.draines/postal "1.11.3"]
     ;; [enlive "1.1.5"]     ;; https://github.com/cgrand/enlive
-  ])
+
 ;
 
 (require
-  '[clojure.tools.namespace.repl :as repl]
+  '[clojure.tools.namespace.repl :refer [refresh set-refresh-dirs]]
   '[clojure.edn :as edn]
   '[clj-time.core :as tc]
-  '[boot.core :as bc]
   '[boot.git :refer [last-commit]]
   '[org.martinklepsch.boot-garden :refer [garden]]
-  ;'[garden.core]
   '[mount.core]
-  '[web.app])
-
+  '[web.srv])
+;
 
 (task-options!
-  aot {}
-  repl {} ; :init-ns 'web ; :skip-init true
-  garden {}
-    :styles-var 'css.styles/main
-    :output-to  "public/css/main.css"
-    :pretty-print false)
-
-
+  aot {:all true}
+  garden {
+          :styles-var 'css.styles/main
+          :output-to  "public/css/main.css"
+          :pretty-print false})
+;
 
 (defn start []
   (mount.core/start-with-args
@@ -80,28 +75,29 @@
 
 (defn go []
   (mount.core/stop)
-  (apply repl/set-refresh-dirs (get-env :source-paths))
-  (repl/refresh :after 'boot.user/start))
+  (apply set-refresh-dirs (get-env :source-paths))
+  (refresh :after 'boot.user/start))
 ;
 
 (defn increment-build []
   (let [bf "res/build.edn"
         num (-> bf slurp edn/read-string :num)
-        out (merge VER {}
-                :timestamp (str (tc/now))
+        out (merge VER
+              { :timestamp (str (tc/now))
                 :commit (last-commit)
-                :num (inc num))]
+                :num (inc num)})]
     (spit bf (.toString out))))
 ;
-
 
 (deftask css-dev []
   (comp
     (watch)
-    (garden
-      :pretty-print false
-      :output-to "main.css")
-    (target :dir #{"res/public/css"})))
+    (garden :pretty-print true)
+    (target :dir #{"tmp/res/"})))
+;
+
+(deftask dev []
+  (repl))
 ;
 
 (deftask build []
@@ -112,7 +108,7 @@
     (uber)
     (jar :main 'web.main :file "main.jar")
     (target :dir #{"tmp/target"})))
-
+;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

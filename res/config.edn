@@ -6,6 +6,7 @@
 
   :tz "Asia/Irkutsk"
 
+  :dev true
 
   :mdb {
     :uri "mongodb://set.correct.host.name:27017/angara"
@@ -43,7 +44,7 @@
   }
 
   :sysctl {
-    :prefix "/_sysctl/"
+    :prefix "/_sysctl"
     :psw "1"
   }
 }

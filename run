@@ -17,6 +17,11 @@
 #   exec /bin/su anga -c "./run.sh"
 # end script
 
-exec java -jar main.jar var/prod.edn >> /var/log/angara/main-out.log 2>&1
+exec java -jar main.jar var/prod.edn >> /var/log/angara/main-out.log 2>&1 &
+PID=$!
+echo $PID > var/_pid
+wait $PID
+
+# kill $(cat var/_pid)
 
 #.

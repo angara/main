@@ -64,6 +64,11 @@
     ;; (route/files (:path libs) {:root (:root libs)})
 
     (context (-> conf :sysctl :prefix) _ sysctl/routes)
+
+    (if (:dev conf)
+      (route/files "/" {:root "tmp/res/public"})
+      (route/resources "/" {:root "public"}))
+      
     (ANY "/*" _  not-found)))
 ;
 
