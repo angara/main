@@ -7,7 +7,7 @@
     [mlib.conf :refer [conf]]
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [yandex-metrika mailru-top]]
-    [html.util :refer [inc-pfx inc-js inc-css glyphicon json-resp inner-html]]))
+    [html.util :refer [inc-css glyphicon json-resp inner-html]]))
 ;
 
 (defn login-url
@@ -19,7 +19,7 @@
   [req {:keys [title page-title js css og-title og-image og-url og-descr]}]
   (let [wt (or title page-title)
         og-tit (or og-title wt "Angara.Net")
-        og-img (str "http://angara.net" (or og-image (inc-pfx "img/angara-og.png")))
+        og-img (str "http://angara.net" (or og-image "/inc/img/angara-og.png"))
         og-url (or og-url
                 (make-url "http" "angara.net" (:uri req) (:query-string req)))]
     [:head
@@ -27,7 +27,7 @@
       [:meta {:charset "utf-8"}]
       [:meta {:name "viewport" :content "width=device-width,initial-scale=1"}]
       [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge"}]
-      [:link {:rel "shortcut icon" :href (inc-pfx "img/favicon.ico")}]
+      [:link {:rel "shortcut icon" :href "/inc/img/favicon.ico"}]
       [:meta {:property "og:site_name" :content "Angara.Net"}]
       [:meta {:property "og:type"   :content "article"}]
       [:meta {:property "og:locale" :content "ru_RU"}]
@@ -35,18 +35,22 @@
       [:meta {:property "og:title"  :content og-tit}]
       [:meta {:property "og:url"    :content og-url}]
       (when og-descr [:meta {:property "og:description" :content og-descr}])
+
       ; css
       [:link {:rel "stylesheet" :type "text/css"
-              :href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"}]
+              :href "//cdn.angara.net/libs/bootstrap/3.3.6/css/bootstrap.min.css"}]
       [:link {:rel "stylesheet" :type "text/css"
-              :href "https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"}]
-      (map inc-css (concat ["main.css"] css))
-      ; js
-      [:script {:type "text/javascript"
-                :src  "https://code.jquery.com/jquery-1.12.1.min.js"}]
-      [:script {:type "text/javascript" :defer 1
-                :src  "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"}]
-      (map inc-js (concat ["mlib.js" "site.js"] js))]))
+              :href "//cdn.angara.net/libs/bootstrap/3.3.6/css/bootstrap-theme.min.css"}]
+      [:link {:rel "stylesheet" :type "text/css"
+              :href "//cdn.angara.net/libs/font-awesome/4.6.3/css/font-awesome.min.css"}]
+      ;
+      [:link {:rel "stylesheet" :type "text/css" :href "/css/main.css"}]
+
+      ;; js
+      [:script {:src "//cdn.angara.net/libs/jquery/3.0.0/jquery.min.js"}]
+      [:script {:src "//cdn.angara.net/libs/bootstrap/3.3.6/js/bootstrap.min.js" :defer 1}]
+      ;
+      [:script {:src "/inc/mlib.js"}]]))
 ;
 
 (defn top-bar [req user]
@@ -55,7 +59,7 @@
       ;
       [:a {:href "//angara.net/"}
         [:img#toplogo.logo
-          {:src (inc-pfx "img/angara_310.png") :alt "Angara.Net"}]]
+          {:src "/inc/img/angara_310.png" :alt "Angara.Net"}]]
 
 ; [:li [:a {:href "/usr/fav/" :title "Избранное"}
 ;     [:span.glyphicon.glyphicon-star] ]]
@@ -114,8 +118,9 @@
           ;
           [:div.col-sm-4.text-right
             [:div.copy
+              "\u00A9 2002-2016 "
               [:a.copy-tm {:href "http://angara.net/"} "Angara.Net"]
-              "\u2122 \u00A9 2002-2016"]]
+              "\u2122"]]
           ;
           [:div.clearfix]]]]
 
