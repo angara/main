@@ -38,6 +38,7 @@
 
   :yandex-metrika     "12139321"
   :mailru-top         "474619"
+  :analytics          "UA-486770-1"
 
   :slowreq {
     :ms 1000

@@ -6,7 +6,7 @@
     ; [hiccup.page :refer [html5]]
     [mlib.conf :refer [conf]]
     [mlib.http :refer [make-url]]
-    [mlib.web.snippets :refer [yandex-metrika mailru-top]]
+    [mlib.web.snippets :refer [yandex-metrika mailru-top analytics]]
     [html.util :refer [ficon json-resp inner-html]]))
 ;
 
@@ -147,7 +147,8 @@
 
     ;; counters
     (inner-html (yandex-metrika (:yandex-metrika conf)))
-    (inner-html (mailru-top (:mailru-top conf)))])
+    (inner-html (mailru-top (:mailru-top conf)))
+    (inner-html (analytics (:analytics conf)))])
 ;
 
 

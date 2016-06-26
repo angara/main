@@ -53,7 +53,7 @@
 (def margins
   [
     [:.amar {:margin-left 'auto :margin-right 'auto}]
-    
+
     [:.marl-4 {:margin-left "4px"}]
     [:.marl-6 {:margin-left "6px"}]
     [:.marl-8 {:margin-left "8px"}]
@@ -67,11 +67,11 @@
   [
     [:.b-topbar
       (brd1 :bottom hdr-brd)
-      [:.logo {:display "block"}]]
+      [:.logo {:display "block"}]]])
 
-    (at-media {:max-width (px 320)}
-      [:.b-topbar
-        [:.logo {:width p100}]])])
+    ; (at-media {:max-width (px 320)}
+    ;   [:.b-topbar
+    ;     [:.logo {:width p100}]])])
 ;
 
 (def botnav
@@ -97,7 +97,7 @@
   commons
   margins
 
-  [:.page-container { :max-width (px 1200) :margin "0 auto"}]
+  ; [:.page-container { :max-width (px 1200) :margin "0 auto"}]
 
   topbar
   botnav
