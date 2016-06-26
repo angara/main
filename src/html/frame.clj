@@ -77,10 +77,35 @@
 
 (defn top-bar [req user]
   [:header.b-topbar
-    [:.uk-container.uk-clearfix.amar
+    [:.uk-container.amar
       ;
-      [:a {:href "//angara.net/"}
-        [:img.logo  {:src "/incs/img/angara_310.png" :alt "Angara.Net"}]]
+      [:.uk-grid.uk-clearfix
+        [:.uk-width-medium-1-3
+          [:.b-logo
+            [:a {:href "//angara.net/"}
+              [:img.logo  {:src "/incs/img/angara_310.png" :alt "Angara.Net"}]]
+            [:.b-user
+              [:.uk-text-center
+                [:a.signin {:href (login-url (:uri req))}
+                  "Войти..." (ficon "sign-in marl-8")]]]]]
+        [:.uk-width-medium-2-3
+          [:hr]
+          "content 2-31"
+          [:hr]]]
+
+      [:nav.uk-navbar.b-navbar
+        [:ul.uk-navbar-nav
+          [:li [:a.topmenu {:href "#?"} "Главная"]]
+          [:li [:a.topmenu {:href "#?"} "События"]]
+          [:li [:a.topmenu {:href "#?"} "Информация"]]
+          [:li [:a.topmenu {:href "#?"} "Карты"]]
+          [:li [:a.topmenu {:href "#?"} "Снаряжение"]]
+          [:li [:a.topmenu {:href "#?"} "Турсервис"]]
+          [:li [:a.topmenu {:href "#?"} "Погода"]]
+          [:li [:a.topmenu {:href "#?"} "Фото"]]
+          [:li [:a.topmenu {:href "#?"} "Форум"]]]]]])
+          ;; [:li [:a {:href "#"} "Хобби"]]]]]])
+
 
 ; [:li [:a {:href "/usr/fav/" :title "Избранное"}
 ;     [:span.glyphicon.glyphicon-star] ]]
@@ -93,41 +118,24 @@
 ; [:li [:a {:href "/search/" :title "Поиск"}
 ;     [:span.glyphicon.glyphicon-search] ]]
 
-; [:li.dropdown
-;     [:a.dropdown-toggle {
-;             :href "#" :data-toggle "dropdown" :role "button"
-;         }
-;         "Поиск" [:span.caret]
-;     ]
-;     [:ul.dropdown-menu {:role "menu"}
-;         [:li [:a {:href "#"} "По тэгу"]
-;             [:input.form-control]
-;             [:button.btn.btn-primary.btn-sm "По тэгам"]
-;         ]
-;         [:li.divider]
-;         ; [:li.dropdown-header "nav header"]
-;         [:li [:a {:href "#"} "Яндекс"]]
-;         [:li [:a {:href "#"} "Google"]]
-;     ]
-; ]
-      [:div.col-sm-3.pull-right
-        (if user
-          (let [nm (str (:name user) " " (:family user))]
-            [:div.user
-                [:a {:href "/me/" :title (str (:login user) ": " nm)}
-                  [:b (:login user)] [:br] nm]])
-          ;; no logged in
-          [:div.signin
-            [:a.btn.btn-default {:href (login-url (:uri req))}
-              "Войти" (ficon "sign-in marl-8")]])]]
-        ;
-    [:div.clearfix]])
+    ;   [:div.col-sm-3.pull-right
+    ;     (if user
+    ;       (let [nm (str (:name user) " " (:family user))]
+    ;         [:div.user
+    ;             [:a {:href "/me/" :title (str (:login user) ": " nm)}
+    ;               [:b (:login user)] [:br] nm]])
+    ;       ;; no logged in
+    ;       [:div.signin
+    ;         [:a.btn.btn-default {:href (login-url (:uri req))}
+    ;           "Войти" (ficon "sign-in marl-8")]])]]
+    ;     ;
+    ; [:div.clearfix]])
 ;
 
 (defn footer [req]
-  [:footer.b-footer
-    [:div.footer-bg
-      [:.uk-container.amar
+  [:.uk-container.amar
+    [:footer.b-footer
+      [:div.footer-bg
         [:div.uk-grid.uk-clearfix
           [:div.uk-width-1-3.uk-text-left
              [:a {:href "http://angara.net/about/"} "О сайте"]

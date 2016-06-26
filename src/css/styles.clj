@@ -2,7 +2,7 @@
 (ns css.styles
   (:require
     [garden.def :refer [defstyles]]
-    [garden.units :refer [px]]
+    [garden.units :refer [px pt em ex]]
     [garden.stylesheet :refer [at-media]]))
 ;
 
@@ -66,13 +66,30 @@
 (def topbar
   [
     [:.b-topbar
-      (brd1 :bottom hdr-brd)
-      [:.logo {:display "block"}]]])
+      ; (merge
+      ;   (brd1 :bottom hdr-brd)
+        {:margin-bottom (px 12)}
 
-    ; (at-media {:max-width (px 320)}
-    ;   [:.b-topbar
-    ;     [:.logo {:width p100}]])])
-;
+      [:.b-logo {:margin-top (px 4)}]
+      [:.logo {:display "block"}]
+      [:.b-user
+        {:margin-top (px 4)
+          :max-width (px 310)
+          :padding-bottom (px 8)}
+
+        [:.signin
+          {:text-decoration 'none
+            :border-bottom "1px dashed"
+            :font-size (pt 14)}]]
+      [:.b-navbar {:margin-top (px 8)}
+        [:a.topmenu {:font-size (pt 13)}]
+        [:a.topmenu:hover
+          {:background-color "#ACD4F7"
+            :color "#192DD6"
+            :text-shadow 'none}]]]])
+
+
+          ;; {:background-color "#5eadf2"}]]]])
 
 (def botnav
   [:.b-botnav
@@ -88,7 +105,7 @@
         :padding-top (px 1)})
 
     [:.footer-bg
-      { :padding "1.2ex 0 1.4ex 0"
+      { :padding "1.2ex 2.4ex 1.4ex 2.4ex"
         :background-color "#f4f4f4"}]])
 ;
 
