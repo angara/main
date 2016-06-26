@@ -7,7 +7,7 @@
     [mlib.conf :refer [conf]]
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [yandex-metrika mailru-top]]
-    [html.util :refer [inc-css glyphicon json-resp inner-html]]))
+    [html.util :refer [ficon json-resp inner-html]]))
 ;
 
 (defn login-url
@@ -15,51 +15,72 @@
   ([next] (str "/user/login?next=" next)))
 ;
 
-(defn head
-  [req {:keys [title page-title js css og-title og-image og-url og-descr]}]
-  (let [wt (or title page-title)
-        og-tit (or og-title wt "Angara.Net")
-        og-img (str "http://angara.net" (or og-image "/inc/img/angara-og.png"))
-        og-url (or og-url
-                (make-url "http" "angara.net" (:uri req) (:query-string req)))]
+
+(defn og-meta-tags [req title og]
+  (let [title (or (:title og) title "Angara.Net")
+        descr (:descr og)
+        img (str "http://angara.net"
+              (or (:image og) "/incs/img/angara-og.png"))
+        url (or (:url og)
+              (make-url "http" "angara.net" (:uri req) (:query-string req)))]
+    (list
+      [:meta {:property "og:site_name" :content "Angara.Net"}]
+      [:meta {:property "og:type"   :content "article"}]
+      [:meta {:property "og:locale" :content "ru_RU"}]
+      [:meta {:property "og:image"  :content img}]
+      [:meta {:property "og:title"  :content title}]
+      [:meta {:property "og:url"    :content url}]
+      (when descr
+        [:meta {:property "og:description" :content descr}]))))
+;
+
+
+(def cdn-libs
+  (list
+    [:link
+      { :rel "stylesheet" :type "text/css"
+        :href "//cdn.angara.net/libs/uikit/2.26.3/css/uikit.almost-flat.min.css"}]
+
+    ; [:link
+    ;   { :rel "stylesheet" :type "text/css"
+    ;     :href "//cdn.angara.net/libs/bootstrap/3.3.6/css/bootstrap.min.css"}]
+    ; [:link
+    ;   { :rel "stylesheet" :type "text/css"
+    ;     :href "//cdn.angara.net/libs/bootstrap/3.3.6/css/bootstrap-theme.min.css"}]
+    ; [:link
+    ;   { :rel "stylesheet" :type "text/css"
+    ;     :href "//cdn.angara.net/libs/font-awesome/4.6.3/css/font-awesome.min.css"}]
+
+    [:script {:src "//cdn.angara.net/libs/jquery/3.0.0/jquery.min.js"}]
+    [:script {:src "//cdn.angara.net/libs/uikit/2.26.3/js/uikit.min.js"}]))
+
+    ; [:script
+    ;   { :src "//cdn.angara.net/libs/bootstrap/3.3.6/js/bootstrap.min.js"
+    ;     :defer 1}]))
+;
+
+(defn head [req {:keys [title page-title js css og-meta]}]
+  (let [wt (or title page-title)]
     [:head
       [:title "Angara.Net" (and wt (str ": " wt))]
       [:meta {:charset "utf-8"}]
       [:meta {:name "viewport" :content "width=device-width,initial-scale=1"}]
-      [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge"}]
-      [:link {:rel "shortcut icon" :href "/inc/img/favicon.ico"}]
-      [:meta {:property "og:site_name" :content "Angara.Net"}]
-      [:meta {:property "og:type"   :content "article"}]
-      [:meta {:property "og:locale" :content "ru_RU"}]
-      [:meta {:property "og:image"  :content og-img}]
-      [:meta {:property "og:title"  :content og-tit}]
-      [:meta {:property "og:url"    :content og-url}]
-      (when og-descr [:meta {:property "og:description" :content og-descr}])
-
-      ; css
-      [:link {:rel "stylesheet" :type "text/css"
-              :href "//cdn.angara.net/libs/bootstrap/3.3.6/css/bootstrap.min.css"}]
-      [:link {:rel "stylesheet" :type "text/css"
-              :href "//cdn.angara.net/libs/bootstrap/3.3.6/css/bootstrap-theme.min.css"}]
-      [:link {:rel "stylesheet" :type "text/css"
-              :href "//cdn.angara.net/libs/font-awesome/4.6.3/css/font-awesome.min.css"}]
+      [:link {:rel "shortcut icon" :href "/incs/img/favicon.ico"}]
+      ;; [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge"}]
       ;
-      [:link {:rel "stylesheet" :type "text/css" :href "/css/main.css"}]
-
-      ;; js
-      [:script {:src "//cdn.angara.net/libs/jquery/3.0.0/jquery.min.js"}]
-      [:script {:src "//cdn.angara.net/libs/bootstrap/3.3.6/js/bootstrap.min.js" :defer 1}]
+      (og-meta-tags req wt og-meta)
+      cdn-libs
       ;
-      [:script {:src "/inc/mlib.js"}]]))
+      [:link {:rel "stylesheet" :type "text/css" :href "/incs/css/main.css"}]
+      [:script {:src "/incs/js/mlib.js"}]]))
 ;
 
 (defn top-bar [req user]
-  [:div.b-topbar
-    [:div.container
+  [:header.b-topbar
+    [:.uk-container.uk-clearfix.amar
       ;
       [:a {:href "//angara.net/"}
-        [:img#toplogo.logo
-          {:src "/inc/img/angara_310.png" :alt "Angara.Net"}]]
+        [:img.logo  {:src "/incs/img/angara_310.png" :alt "Angara.Net"}]]
 
 ; [:li [:a {:href "/usr/fav/" :title "Избранное"}
 ;     [:span.glyphicon.glyphicon-star] ]]
@@ -98,25 +119,25 @@
           ;; no logged in
           [:div.signin
             [:a.btn.btn-default {:href (login-url (:uri req))}
-              "Войти" (glyphicon "log-in marl-8")]])]]
+              "Войти" (ficon "sign-in marl-8")]])]]
         ;
     [:div.clearfix]])
 ;
 
 (defn footer [req]
-  [:div.b-footer
+  [:footer.b-footer
     [:div.footer-bg
-      [:div.container
-        [:div.row
-          [:div.col-sm-4.text-left
+      [:.uk-container.amar
+        [:div.uk-grid.uk-clearfix
+          [:div.uk-width-1-3.uk-text-left
              [:a {:href "http://angara.net/about/"} "О сайте"]
              [:br]
              [:a {:href "http://top.mail.ru/visits?id=474619" :target "_blank"}
                 "Статистика"]]
           ;
-          [:div.col-sm-4.text-center]
+          [:div.uk-width-1-3.uk-text-center]
           ;
-          [:div.col-sm-4.text-right
+          [:div.uk-width-1-3.uk-text-right.flex-bottom
             [:div.copy
               "\u00A9 2002-2016 "
               [:a.copy-tm {:href "http://angara.net/"} "Angara.Net"]
@@ -156,13 +177,13 @@
             (top-bar req user)
 
             [:div.content
-              [:div.container
+              [:div.uk-container.amar
                 page-nav
                 (when page-title
                   [:h1.page-title page-title])
                 content
-                [:div.clearfix]
-                [:div.b-botnav
+                [:.uk-clearfix]
+                [:.b-botnav
                   [:a {:href "http://angara.net/"} "Главная"]
                   " | "
                   [:a {:href "/bb/"} "Объявления"]

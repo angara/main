@@ -12,14 +12,17 @@
   [:span {:dangerouslySetInnerHTML {:__html s}}])
 ;
 
-(defn inc-pfx [s]
-  (if (= (first s) \/) (str s) (str (:inc-pfx conf) s)))
+; (defn inc-pfx [s]
+;   (if (= (first s) \/) (str s) (str (:inc-pfx conf) s)))
+;
+; (defn inc-js [js]
+;   [:script {:src (inc-pfx js) :type "text/javascript" :defer 1}])
+;
+; (defn inc-css [css]
+;   [:link {:href (inc-pfx css) :rel "stylesheet" :type "text/css"}])
 
-(defn inc-js [js]
-  [:script {:src (inc-pfx js) :type "text/javascript" :defer 1}])
-
-(defn inc-css [css]
-  [:link {:href (inc-pfx css) :rel "stylesheet" :type "text/css"}])
+(defn ficon [s]
+  [:span {:class (str "uk-icon-" (name s))}])
 
 (defn glyphicon [nm]
   [:span {:class (str "glyphicon glyphicon-" nm)}])

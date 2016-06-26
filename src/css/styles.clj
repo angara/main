@@ -2,8 +2,11 @@
 (ns css.styles
   (:require
     [garden.def :refer [defstyles]]
-    [garden.units :refer [px]]))
+    [garden.units :refer [px]]
+    [garden.stylesheet :refer [at-media]]))
 ;
+
+(def p100 "100%")
 
 (def fa "#fafafa")
 (def f8 "#f8f8f8")
@@ -14,11 +17,92 @@
 
 (def gcurr "#6af")
 
+(def hdr-brd "#039be5")
+
 (def abs-pos
   {:position :absolute :top 0 :left 0 :bottom 0 :right 0})
 ;
 
+
+
+(defn brd1 [place color]
+  {(str "border-" (name place)) (str "1px solid " color)})
+;
+
+(def commons
+  [
+    [:body
+      {:font-family
+        "\"Open Sans\",\"Helvetica Neue\",Helvetica,Arial,sans-serif"}]
+    [:a
+      {:text-decoration 'none :color "#18d"}]
+    [:a:visited
+      {:text-decoration 'none :color "#18e"}]
+    [:a:hover
+      {:text-decoration 'underline :color "#09f"}]
+    [:a:active
+      {:text-decoration 'underline :color "#a80"}]
+
+    [:.flex-bottom
+      { :display 'flex
+        :flex-direction 'column
+        :justify-content 'flex-end}]])
+
+;
+
+(def margins
+  [
+    [:.amar {:margin-left 'auto :margin-right 'auto}]
+    
+    [:.marl-4 {:margin-left "4px"}]
+    [:.marl-6 {:margin-left "6px"}]
+    [:.marl-8 {:margin-left "8px"}]
+
+    [:.marr-4 {:margin-right "4px"}]
+    [:.marr-6 {:margin-right "6px"}]
+    [:.marr-8 {:margin-right "8px"}]])
+;
+
+(def topbar
+  [
+    [:.b-topbar
+      (brd1 :bottom hdr-brd)
+      [:.logo {:display "block"}]]
+
+    (at-media {:max-width (px 320)}
+      [:.b-topbar
+        [:.logo {:width p100}]])])
+;
+
+(def botnav
+  [:.b-botnav
+    {:text-align 'center
+     :margin "8px"}])
+;
+
+(def footer
+  [:.b-footer
+    (merge
+      (brd1 :top hdr-brd)
+      { :margin-top (px 8)
+        :padding-top (px 1)})
+
+    [:.footer-bg
+      { :padding "1.2ex 0 1.4ex 0"
+        :background-color "#f4f4f4"}]])
+;
+
+
 (defstyles main
+  commons
+  margins
+
+  [:.page-container { :max-width (px 1200) :margin "0 auto"}]
+
+  topbar
+  botnav
+  footer
+
   [:.header
     {:margin-bottom "8px"
      :padding "4px 12px"

@@ -26,7 +26,7 @@
     "      d.addEventListener('DOMContentLoaded', f, false);"
     "    } else { f(); };"
     "  });"
-    "})(document, window, 'yandex_metrika_callbacks');"
+    "})(document, window, 'yandex_metrika_callbacks');</script>"
     "<noscript><div><img src='//mc.yandex.ru/watch/" id "' alt=''"
     "  style='position:absolute; left:-9999px;' />"
     "</div></noscript>"))

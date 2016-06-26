@@ -64,7 +64,7 @@
   aot {:all true}
   garden {
           :styles-var 'css.styles/main
-          :output-to  "public/css/main.css"
+          :output-to  "public/incs/css/main.css"
           :pretty-print false})
 ;
 
