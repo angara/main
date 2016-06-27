@@ -152,7 +152,7 @@
           [:div.uk-width-1-3.uk-text-right.flex-bot
             [:div.copy
               "\u00A9 2002-2016 "
-              [:a.copy-tm {:href "http://angara.net/"} "Angara.Net"]
+              [:a.brand {:href "http://angara.net/"} "Angara.Net"]
               "\u2122"]]
           ;
           [:div.clearfix]]]]

@@ -63,27 +63,6 @@
   ;
   ; (GET  "/me" [] (redirect "/me/"))
   ; (context "/me" [] (wrap-user-required me-routes))
-  ; (GET  "/bb" [] (redirect "/bb/"))
-  ; (context "/bb" [] bb-handler/routes)
-  ;
-  ; (GET  "/pb" [] (redirect "/pb/"))
-  ; (context "/pb" [] pb-h/routes)
-
-  ; (context "/beta" [] beta/routes)
-
-  ;; /my
-
-  ; (GET  "/loc/:loc" [loc :as req] (sv/loc req loc))
-
-  ; (GET  "/story/:id" [id :as req] (sv/story req id))
-  ; (POST "/story/new" [:as req] (user-req sv/story-new req))
-
-  ; (GET  "/story/:id/edit" [id :as req] (user-req sv/story-edit req id))
-  ; (POST "/story/:id/edit" [id :as req] (user-req sv/story-update req id))
-
-;  (route/files "/usr/inc" {:root "inc"})
-  ; (route/resources "/")
-
 ;
 
 (defn wrap-user [handler]

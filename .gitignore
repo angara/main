@@ -1,0 +1,23 @@
+#
+#	generic .gitignore
+#
+
+# clojure
+/tmp/
+/target/
+/var/
+
+.*
+
+*~
+*.class
+*.ser
+*.bak
+*.old
+*.pyc
+*.pyo
+*.log
+*.tmp
+*.swp
+
+#.

@@ -32,16 +32,9 @@
       (rc-text "!uid"))))
 ;
 
-; (defn exit [{params :params}]
-;   (do
-;     (mount/stop)
-;     (rc-text "system exit")))
-; ;
-
 (defroutes routes
   (ANY "/login" req (check-psw req login))
-;  (ANY "/exit"  req (check-psw req exit))
-  (ANY "/*"     _   (rc-text  "?action")))
+  (ANY "/*"     _   (rc-text  (:build conf))))
 ;
 
 ;;.

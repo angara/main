@@ -8,7 +8,7 @@
 ; https://github.com/boot-clj/boot/wiki/Community-Tasks
 
 
-(def VER {:name "angara.net/main" :version "0.4.0"})
+(def VER {:name "angara.net/main" :version "0.5.0"})
 
 (set-env!
   :resource-paths #{"res"}

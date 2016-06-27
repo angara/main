@@ -152,14 +152,18 @@
 (def footer
   [:.b-footer
     (merge
-      ; (brd1 :top hdr-brd)
       (brd1 :top "#ddd")
       { :margin-top (px 8)
         :padding "1px 0 4px 0"})
 
     [:.footer-bg
       { :padding "1.3ex 2.4ex 1.4ex 2.4ex"
-        :background-color "#f8f8f8"}]])
+        :background-color "#f8f8f8"
+        :border-bottom-left-radius "4px"
+        :border-bottom-right-radius "4px"}
+      [:.copy
+        {:color "#888"}
+        [:.brand {:margin-left "2px" :margin-right "1px"}]]]])
 ;
 
 
