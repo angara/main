@@ -89,7 +89,7 @@
             :font-size "17px"
             :color "#02a"
             :width "100%"
-            :padding "2px 40px 2px 6px"}]
+            :padding "2px 40px 2px 8px"}]
         [:.btn-search
           {:font-size "17px"
            :padding "2px 9px"

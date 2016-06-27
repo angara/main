@@ -87,7 +87,8 @@
       cdn-libs
       ;
       [:link {:rel "stylesheet" :type "text/css" :href "/incs/css/main.css"}]
-      [:script {:src "/incs/js/mlib.js"}]]))
+      [:script {:src "/incs/js/mlib.js"}]
+      [:script {:src "/incs/js/site.js"}]]))
 ;
 
 
@@ -112,8 +113,9 @@
         [:.uk-width-medium-2-3.uk-grid
           [:.uk-width-medium-3-4.flex-mid
             [:.b-search.uk-form.uk-width-1-1
-              [:input.search {:type 'text' :placeholder "Поиск на сайте ..."}]
-              [:a.btn-search {:href "/search"} (ficon "search")]]]
+              [:input.search
+                {:type 'text' :placeholder "Яндекс.Поиск по сайту ..."}]
+              [:a.btn-search {:href "/yasearch"} (ficon "search")]]]
           ;
           [:.uk-width-medium-1-4.flex-mid
             [:.b-user
