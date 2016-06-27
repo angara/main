@@ -32,8 +32,10 @@
 (def commons
   [
     [:body
-      {:font-family
-        "\"Open Sans\",\"Helvetica Neue\",Helvetica,Arial,sans-serif"}]
+      { :font-family
+          "\"Open Sans\",\"Helvetica Neue\",Helvetica,Arial,sans-serif"
+        :font-size (px 15)}]
+
     [:a
       {:text-decoration 'none :color "#18d"}]
     [:a:visited
@@ -43,6 +45,7 @@
     [:a:active
       {:text-decoration 'underline :color "#a80"}]
 
+    [:p.txt {:text-indent (em 2)}]
     [:.flex-bottom
       { :display 'flex
         :flex-direction 'column
@@ -82,10 +85,15 @@
             :border-bottom "1px dashed"
             :font-size (pt 14)}]]
       [:.b-navbar {:margin-top (px 8)}
-        [:a.topmenu {:font-size (pt 13)}]
+        [:.uk-navbar-nav {:padding "0 8px"}]
+        [:a.topmenu
+          { :font-size (pt 13)
+            :padding "0 12px"
+            :color "#006"}]
+            ; :padding-left (px 12)
+            ; :padding-right (px 12)}]
         [:a.topmenu:hover
-          {:background-color "#ACD4F7"
-            :color "#192DD6"
+          { :color "#08f"
             :text-shadow 'none}]]]])
 
 
@@ -100,13 +108,14 @@
 (def footer
   [:.b-footer
     (merge
-      (brd1 :top hdr-brd)
+      ; (brd1 :top hdr-brd)
+      (brd1 :top "#ddd")
       { :margin-top (px 8)
-        :padding-top (px 1)})
+        :padding "1px 0 4px 0"})
 
     [:.footer-bg
-      { :padding "1.2ex 2.4ex 1.4ex 2.4ex"
-        :background-color "#f4f4f4"}]])
+      { :padding "1.3ex 2.4ex 1.4ex 2.4ex"
+        :background-color "#f8f8f8"}]])
 ;
 
 

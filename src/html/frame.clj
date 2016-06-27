@@ -16,6 +16,21 @@
 ;
 
 
+(def topmenu-items
+  [
+    {:id :main    :href "/"         :text "Главная"}      ;; Избранное
+    {:id :events  :href "/events"   :text "События"}
+    {:id :info    :href "/info"     :text "Информация"}   ;; Статьи
+    {:id :maps    :href "/maps"     :text "Карты"}
+    {:id :equip   :href "/equip"    :text "Снаряжение"}   ;; Магазины, Прокат
+    {:id :touserv :href "/tourserv" :text "Турсервис"}
+    {:id :meteo   :href "/meteo"    :text "Погода"}
+    {:id :photo   :href "/photo"    :text "Фото"}
+    {:id :forum   :href "/forum"    :text "Форум"}])
+;
+
+
+
 (defn og-meta-tags [req title og]
   (let [title (or (:title og) title "Angara.Net")
         descr (:descr og)
@@ -39,7 +54,8 @@
   (list
     [:link
       { :rel "stylesheet" :type "text/css"
-        :href "//cdn.angara.net/libs/uikit/2.26.3/css/uikit.almost-flat.min.css"}]
+        :href "//cdn.angara.net/libs/uikit/2.26.3/css/uikit.gradient.min.css"}]
+        ; almost-flat
 
     ; [:link
     ;   { :rel "stylesheet" :type "text/css"
@@ -66,7 +82,6 @@
       [:meta {:charset "utf-8"}]
       [:meta {:name "viewport" :content "width=device-width,initial-scale=1"}]
       [:link {:rel "shortcut icon" :href "/incs/img/favicon.ico"}]
-      ;; [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge"}]
       ;
       (og-meta-tags req wt og-meta)
       cdn-libs
@@ -75,7 +90,17 @@
       [:script {:src "/incs/js/mlib.js"}]]))
 ;
 
-(defn top-bar [req user]
+
+(defn nav-topmenu [curr]
+  [:nav.uk-navbar.b-navbar
+    [:ul.uk-navbar-nav
+      (for [mi topmenu-items]
+        [:li (when (= curr (:id mi) {:class "uk-active"}))
+          [:a.topmenu {:href (:href mi)} (:text mi)]])]])
+;
+
+
+(defn top-bar [req user curr]
   [:header.b-topbar
     [:.uk-container.amar
       ;
@@ -83,40 +108,19 @@
         [:.uk-width-medium-1-3
           [:.b-logo
             [:a {:href "//angara.net/"}
-              [:img.logo  {:src "/incs/img/angara_310.png" :alt "Angara.Net"}]]
+              [:img.logo {:src "/incs/img/angara_310.png" :alt "Angara.Net"}]]
             [:.b-user
               [:.uk-text-center
                 [:a.signin {:href (login-url (:uri req))}
                   "Войти..." (ficon "sign-in marl-8")]]]]]
-        [:.uk-width-medium-2-3
+        [:.uk-width-medium-1-3
           [:hr]
-          "content 2-31"
+          "content 2"
+          [:hr]]
+        [:.uk-width-medium-1-3
+          [:hr]
+          "content 3"
           [:hr]]]
-
-      [:nav.uk-navbar.b-navbar
-        [:ul.uk-navbar-nav
-          [:li [:a.topmenu {:href "#?"} "Главная"]]
-          [:li [:a.topmenu {:href "#?"} "События"]]
-          [:li [:a.topmenu {:href "#?"} "Информация"]]
-          [:li [:a.topmenu {:href "#?"} "Карты"]]
-          [:li [:a.topmenu {:href "#?"} "Снаряжение"]]
-          [:li [:a.topmenu {:href "#?"} "Турсервис"]]
-          [:li [:a.topmenu {:href "#?"} "Погода"]]
-          [:li [:a.topmenu {:href "#?"} "Фото"]]
-          [:li [:a.topmenu {:href "#?"} "Форум"]]]]]])
-          ;; [:li [:a {:href "#"} "Хобби"]]]]]])
-
-
-; [:li [:a {:href "/usr/fav/" :title "Избранное"}
-;     [:span.glyphicon.glyphicon-star] ]]
-; [:li [:a {:href "#" :title "События"}
-;     [:span.glyphicon.glyphicon-calendar] ]]
-; [:li [:a {:href "/meteo/" :title "Погода"}
-;     [:span.glyphicon.glyphicon-cloud] ]]
-; [:li [:a {:href "#" :title "Фото"}
-;     [:span.glyphicon.glyphicon-picture] ]]
-; [:li [:a {:href "/search/" :title "Поиск"}
-;     [:span.glyphicon.glyphicon-search] ]]
 
     ;   [:div.col-sm-3.pull-right
     ;     (if user
@@ -129,7 +133,8 @@
     ;         [:a.btn.btn-default {:href (login-url (:uri req))}
     ;           "Войти" (ficon "sign-in marl-8")]])]]
     ;     ;
-    ; [:div.clearfix]])
+
+      (nav-topmenu curr)]])
 ;
 
 (defn footer [req]
@@ -172,7 +177,7 @@
 
 
 (defn layout
-  [req {:keys [page-title page-nav] :as params} & content]
+  [req {:keys [page-title page-nav topmenu] :as params} & content]
   (let [user (:user req)]
     (html5
       [:html
@@ -183,7 +188,7 @@
             (when-let [uid (:uid user)]
               [:srcipt "window.uid='" uid "';"])
 
-            (top-bar req user)
+            (top-bar req user topmenu)
 
             [:div.content
               [:div.uk-container.amar
