@@ -14,7 +14,7 @@
 # script
 #   sleep 1
 #   cd /www/main
-#   exec /bin/su anga -c "./run.sh"
+#   exec /bin/su anga -c "./run"
 # end script
 
 exec java -jar main.jar var/prod.edn >> /var/log/angara/main-out.log 2>&1 &

@@ -6,7 +6,7 @@
     ; [hiccup.page :refer [html5]]
     [mlib.conf :refer [conf]]
     [mlib.http :refer [make-url]]
-    [mlib.web.snippets :refer [one-pix yandex-metrika mailru-top analytics]]
+    [mlib.web.snippets :refer [one-pix-src yandex-metrika mailru-top analytics]]
     [html.util :refer [ficon json-resp inner-html]]))
 ;
 
@@ -107,7 +107,7 @@
             login (:login user)
             attr {:href "/me/" :title (str login ": " nm)}]
         [:div.user
-          [:a attr [:img.upic {:src (:upic user (one-pix))}]]
+          ;; [:a attr [:img.upic {:src (:upic user one-pix-src)}]]
           [:a.name attr nm]
           [:a.login attr "@" login]])
       ;; not logged-in
@@ -117,21 +117,21 @@
 
 (defn top-bar [req user curr]
   [:header.b-topbar
-    [:.uk-container.amar
-      [:.uk-grid.uk-clearfix
+    [:.uk-container.amar.uk-clearfix
+      [:.uk-grid.uk-grid-small
         [:.uk-width-medium-1-3
           [:.b-logo
             [:a {:href "//angara.net/"}
               [:img.logo {:src "/incs/img/angara_310.png" :alt "Angara.Net"}]]]]
         ;;
-        [:.uk-width-medium-2-3.uk-grid
-          [:.uk-width-medium-3-4.flex-mid
+        [:.uk-width-medium-2-3.uk-grid.uk-grid-small
+          [:.uk-width-medium-2-3.flex-mid
             [:.b-search.uk-form.uk-width-1-1
               [:input.search
                 {:type 'text' :placeholder "Яндекс.Поиск по сайту ..."}]
               [:a.btn-search {:href "/yasearch"} (ficon "search")]]]
           ;;;
-          [:.uk-width-medium-1-4.flex-mid (b-user req user)]]]
+          [:.uk-width-medium-1-3.flex-mid (b-user req user)]]]
       ; top-grid
       (nav-topmenu curr)]])
 ;

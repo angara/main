@@ -5,10 +5,6 @@
 (ns web.app
   (:require
     [taoensso.timbre :refer [info warn error]]
-    ; [mount.core :refer [defstate] :as mount]
-
-    ; [org.httpkit.server :refer [run-server]]
-
     [ring.util.response :refer [redirect]]
     [compojure.core :refer [GET POST ANY context routes]]
     [compojure.route :as route]
@@ -28,18 +24,6 @@
     [html.search :as search]
     [front.core :refer [main-page]]
     [web.sysctl :as sysctl]))
-
-    ; [usr.bb.handler :as bb-handler]
-    ; [usr.pb.handler :as pb-h]
-    ; [usr.bb.categ :as bb-categ]
-    ; [usr.bb.model :as bb-model]
-    ; [usr.bb.tags :as bb-tags]
-    ; [usr.html.views :as views]
-    ; [usr.beta :as beta]))
-;
-
-
-
 ;
 
 (defn wrap-user-required [handler]
@@ -60,9 +44,9 @@
 
 (defn make-routes []
   (routes
-    (GET  "/"       _  main-page)
-    ; (ANY  "/search" _  views/search)
-    (ANY  "/yasearch" _  search/yasearch)
+    (GET  "/"         _  main-page)
+    (GET  "/search"   _  (redirect "/yasearch"))
+    (GET  "/yasearch" _  search/yasearch)
 
     (context (-> conf :sysctl :prefix) _ sysctl/routes)
 

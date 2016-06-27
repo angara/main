@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ssh -fNT -L 5432:localhost:5432 anga
+
+#

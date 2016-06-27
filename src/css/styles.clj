@@ -104,21 +104,25 @@
 
       [:.b-user
         { :text-align 'right
-          :padding "8px 4px 8px 10px"
+          :padding "8px 4px 8px 0"
           :overflow 'hidden
           :white-space 'nowrap}
 
-        [:.upic
-          { :float 'right
-            :width (px 40)
-            :height (px 40)
-            :border-radius "10px"
-            :background "#f4f4f4"}]
+        ; [:.upic
+        ;   { :display 'block
+        ;     :float 'right
+        ;     :width (px 40)
+        ;     :height (px 40)
+        ;     :border-radius "10px"
+        ;     :background "#f4f4f4"}]
         [:.name
-          { :overflow 'hidden
+          { :color "#05a"
+            :display 'block
+            :overflow 'hidden
             :white-space 'nowrap}]
-        [:.login 
-          { :font-weight 'bold
+        [:.login
+          { :display 'block
+            :font-weight 'bold
             :overflow 'hidden
             :white-space 'nowrap}]
 

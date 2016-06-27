@@ -1,11 +1,20 @@
 #!/bin/bash
 
-PROD_HOST="anga@mph"
+# anga@mph
+
+PROD_HOST="anga"
 PROD_PATH="/www/main"
+PROD_VAR="/www/main/var"
 
-scp tmp/target/main.jar ${PROD_HOST}:${PROD_PATH}
-scp var/prod.edn ${PROD_HOST}:${PROD_PATH}/var/
+JAR="tmp/target/main.jar"
 
-ssh $PROD_HOST "kill $(cat var/_pid)"
+ssh $PROD_HOST mkdir -p ${PROD_VAR}
+
+chmod g+r $JAR
+scp $JAR ${PROD_HOST}:${PROD_PATH}
+scp var/prod.edn ${PROD_HOST}:${PROD_VAR}/
+scp run stop ${PROD_HOST}:${PROD_PATH}
+
+ssh $PROD_HOST $PROD_PATH/stop
 
 #.

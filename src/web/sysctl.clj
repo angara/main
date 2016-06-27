@@ -10,8 +10,11 @@
 ;
 
 
+(def ctype-text {"Content-type" "text/plain;charset=utf-8"})
+(def ctype-html {"Content-type" "text/html;charset=utf-8"})
+
 (defn rc-text [msg]
-  {:status 200 :headers {"Content-type" "text/plain"} :body msg})
+  {:status 200 :headers ctype-text :body (str msg)})
 
 
 (defn check-psw [req handler]

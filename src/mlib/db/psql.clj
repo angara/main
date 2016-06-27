@@ -2,9 +2,9 @@
 (ns mlib.db.psql
   (:require
     [taoensso.timbre :refer [info warn]]
-    [clojure.java.jdbc :as jdbc]
-    [mount.core :refer [defstate]]
-    [mlib.conf :refer [conf]])
+    [clojure.java.jdbc :as jdbc])
+    ; [mount.core :refer [defstate]])
+    ; [mlib.conf :refer [conf]])
   (:import
     com.mchange.v2.c3p0.ComboPooledDataSource))
 ;
@@ -33,10 +33,10 @@
       ; minPoolSize)})
 
 
-(defstate ds
-  :start (make-pool (:psql conf))
-  :stop (.close (:datasource ds)))
-
-(defn dbc [] ds)
+; (defstate ds
+;   :start (make-pool (:psql conf))
+;   :stop (.close (:datasource ds)))
+;
+; (defn dbc [] ds)
 
 ;.

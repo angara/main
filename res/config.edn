@@ -31,7 +31,7 @@
 
   ;; http://www.mchange.com/projects/c3p0/
   :psql {
-    :jdbc "jdbc:postgresql://mdb:5432/angara"
+    :jdbc "jdbc:postgresql://localhost:5432/angara"
     :user "angara"
     :password ""
   }
