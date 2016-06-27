@@ -46,7 +46,12 @@
       {:text-decoration 'underline :color "#a80"}]
 
     [:p.txt {:text-indent (em 2)}]
-    [:.flex-bottom
+
+    [:.flex-mid
+      { :display 'flex
+        :flex-direction 'column
+        :justify-content 'center}]
+    [:.flex-bot
       { :display 'flex
         :flex-direction 'column
         :justify-content 'flex-end}]])
@@ -69,35 +74,59 @@
 (def topbar
   [
     [:.b-topbar
-      ; (merge
-      ;   (brd1 :bottom hdr-brd)
         {:margin-bottom (px 12)}
 
-      [:.b-logo {:margin-top (px 4)}]
-      [:.logo {:display "block"}]
+      [:.b-logo {:margin "8px 8px 8px 8px"}
+        [:.logo {:display "block"}]]
+
+      [:.b-search
+        { :padding "4px 10px"
+          :font-size "17px"
+          :position 'relative}
+        [:.search
+          { :border-radius "3px"
+            :border "1px solid #ccc"
+            :font-size "17px"
+            :color "#02a"
+            :width "100%"
+            :padding "2px 40px 2px 6px"}]
+        [:.btn-search
+          {:font-size "17px"
+           :padding "2px 9px"
+           :background-color "#f8f8f8"
+           :border-left "1px solid #ddd"
+           :border-top-right-radius "2px"
+           :border-bottom-right-radius "2px"
+           :float 'right
+           :position 'absolute
+           :top "5px"
+           :right "11px"}]]
+
       [:.b-user
-        {:margin-top (px 4)
-          :max-width (px 310)
-          :padding-bottom (px 8)}
+        { :text-align 'right
+          :padding "8px 4px 8px 10px"
+          :overflow 'hidden
+          :white-space 'nowrap}
+          ;;:margin-top (px 4)
+          ;;:max-width (px 310)
+          ;;:padding-bottom (px 8)}
 
         [:.signin
           {:text-decoration 'none
             :border-bottom "1px dashed"
             :font-size (pt 14)}]]
-      [:.b-navbar {:margin-top (px 8)}
+
+      [:.b-navbar
         [:.uk-navbar-nav {:padding "0 8px"}]
         [:a.topmenu
           { :font-size (pt 13)
             :padding "0 12px"
-            :color "#006"}]
-            ; :padding-left (px 12)
-            ; :padding-right (px 12)}]
+            :color "#778"}]
         [:a.topmenu:hover
           { :color "#08f"
-            :text-shadow 'none}]]]])
-
-
-          ;; {:background-color "#5eadf2"}]]]])
+            :text-shadow 'none}]
+        [:.uk-active [:a {:color "#04b"}]]]]])
+;
 
 (def botnav
   [:.b-botnav
@@ -123,28 +152,21 @@
   commons
   margins
 
-  ; [:.page-container { :max-width (px 1200) :margin "0 auto"}]
-
   topbar
   botnav
-  footer
+  footer)
 
-  [:.header
-    {:margin-bottom "8px"
-     :padding "4px 12px"
-     :border-bottom "1px solid #ddd"
-     :background-color f4}
-    [:.top-nav]])
+  ; [:.header
+  ;   {:margin-bottom "8px"
+  ;    :padding "4px 12px"
+  ;    :border-bottom "1px solid #ddd"
+  ;    :background-color f4}
+  ;   [:.top-nav]])
 ;
 
 ;;.
 
 
-;
-; body
-;     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif
-;
-;
 ; c_a  = #18d
 ; c_av = #18e
 ; c_ah = #09f
@@ -153,22 +175,6 @@
 ; c_em = #E65100
 ;
 ; c_dlg_title = #3949AB
-;
-; a
-;     text-decoration: none
-;     color: c_a
-;
-; a:visited
-;     text-decoration: none
-;     color: c_av
-;
-; a:hover
-;     text-decoration: underline
-;     color: c_ah
-;
-; a:active
-;     text-decoration: underline
-;     color: c_aa
 ;
 ;
 ; // c_dark  = #3a609e
@@ -244,21 +250,8 @@
 ; .err
 ;     color: #a00
 ;
-;
-; .marl-8
-;     margin-left: 8px
-; .marl-4
-;     margin-left: 4px
-;
-; .marr-4
-;     margin-right: 4px
-;
-; .marr-6
-;     margin-right: 6px
-;
-; .marr-8
-;     margin-right: 8px
-;
+
+
 ; .fsize-90
 ;     font-size: 90%
 ;

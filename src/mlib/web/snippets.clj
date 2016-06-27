@@ -5,6 +5,11 @@
 ;     (str "http://www.gravatar.com/avatar/" (digest/md5 (str u)) "?d=identicon&s=" s))
 
 
+(def one-pix
+  [:img
+    {:src "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs="}])
+;
+
 (defn analytics [id]
   (str
     "\n<script>"

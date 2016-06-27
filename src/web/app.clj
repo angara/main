@@ -24,6 +24,8 @@
 
     [mdb.user :refer [user-by-id sess-load FLDS_REQ_USER]]
     [html.frame :refer [not-found]]
+    [html.views :as views]
+    [html.search :as search]
     [front.core :refer [main-page]]
     [web.sysctl :as sysctl]))
 
@@ -58,17 +60,16 @@
 
 (defn make-routes []
   (routes
-    (GET  "/" _  main-page)
-
-    ;; NOTE: developer mode!
-    ;; (route/files (:path libs) {:root (:root libs)})
+    (GET  "/"       _  main-page)
+    (ANY  "/search" _  views/search)
+    (ANY  "/yasearch" _  search/yasearch)
 
     (context (-> conf :sysctl :prefix) _ sysctl/routes)
 
     (if (:dev conf)
       (route/files "/" {:root "tmp/res/public"})
       (route/resources "/" {:root "public"}))
-      
+
     (ANY "/*" _  not-found)))
 ;
 

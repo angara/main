@@ -95,7 +95,7 @@
   [:nav.uk-navbar.b-navbar
     [:ul.uk-navbar-nav
       (for [mi topmenu-items]
-        [:li (when (= curr (:id mi) {:class "uk-active"}))
+        [:li (when (= curr (:id mi)) {:class "uk-active"})
           [:a.topmenu {:href (:href mi)} (:text mi)]])]])
 ;
 
@@ -103,24 +103,22 @@
 (defn top-bar [req user curr]
   [:header.b-topbar
     [:.uk-container.amar
-      ;
       [:.uk-grid.uk-clearfix
         [:.uk-width-medium-1-3
           [:.b-logo
             [:a {:href "//angara.net/"}
-              [:img.logo {:src "/incs/img/angara_310.png" :alt "Angara.Net"}]]
+              [:img.logo {:src "/incs/img/angara_310.png" :alt "Angara.Net"}]]]]
+
+        [:.uk-width-medium-2-3.uk-grid
+          [:.uk-width-medium-3-4.flex-mid
+            [:.b-search.uk-form.uk-width-1-1
+              [:input.search {:type 'text' :placeholder "Поиск на сайте ..."}]
+              [:a.btn-search {:href "/search"} (ficon "search")]]]
+          ;
+          [:.uk-width-medium-1-4.flex-mid
             [:.b-user
-              [:.uk-text-center
-                [:a.signin {:href (login-url (:uri req))}
-                  "Войти..." (ficon "sign-in marl-8")]]]]]
-        [:.uk-width-medium-1-3
-          [:hr]
-          "content 2"
-          [:hr]]
-        [:.uk-width-medium-1-3
-          [:hr]
-          "content 3"
-          [:hr]]]
+              [:a.signin {:href (login-url (:uri req))}
+                "Войти..." (ficon "sign-in marl-8")]]]]]
 
     ;   [:div.col-sm-3.pull-right
     ;     (if user
@@ -150,7 +148,7 @@
           ;
           [:div.uk-width-1-3.uk-text-center]
           ;
-          [:div.uk-width-1-3.uk-text-right.flex-bottom
+          [:div.uk-width-1-3.uk-text-right.flex-bot
             [:div.copy
               "\u00A9 2002-2016 "
               [:a.copy-tm {:href "http://angara.net/"} "Angara.Net"]
@@ -227,8 +225,9 @@
    :headers {"Content-Type" "text/html; charset=utf-8"}
    :body
       (layout req {:title "Страница не найдена"}
-        [:div.jumbotron
-          [:h2 "Страница по этому адресу отсутствует."]
+        [:.uk-panel-box
+            {:style {:margin "20px"}}
+          [:h2.uk-panel-title "Страница по этому адресу отсутствует."]
           [:br]
           [:p "Попробуйте воспользоваться "
             [:a {:href "/search"} "поиском"] "."]])})
@@ -240,7 +239,7 @@
    :headers {"Content-Type" "text/html; charset=utf-8"}
    :body
       (layout req {}
-        [:div.jumbotron.error
+        [:.uk-panel-box
           [:h1 msg]])})
 ;
 
