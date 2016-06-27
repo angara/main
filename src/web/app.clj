@@ -61,7 +61,7 @@
 (defn make-routes []
   (routes
     (GET  "/"       _  main-page)
-    (ANY  "/search" _  views/search)
+    ; (ANY  "/search" _  views/search)
     (ANY  "/yasearch" _  search/yasearch)
 
     (context (-> conf :sysctl :prefix) _ sysctl/routes)

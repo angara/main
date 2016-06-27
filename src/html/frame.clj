@@ -6,7 +6,7 @@
     ; [hiccup.page :refer [html5]]
     [mlib.conf :refer [conf]]
     [mlib.http :refer [make-url]]
-    [mlib.web.snippets :refer [yandex-metrika mailru-top analytics]]
+    [mlib.web.snippets :refer [one-pix yandex-metrika mailru-top analytics]]
     [html.util :refer [ficon json-resp inner-html]]))
 ;
 
@@ -100,6 +100,20 @@
           [:a.topmenu {:href (:href mi)} (:text mi)]])]])
 ;
 
+(defn b-user [req user]
+  [:.b-user
+    (if user
+      (let [nm (str (:name user) " " (:family user))
+            login (:login user)
+            attr {:href "/me/" :title (str login ": " nm)}]
+        [:div.user
+          [:a attr [:img.upic {:src (:upic user (one-pix))}]]
+          [:a.name attr nm]
+          [:a.login attr "@" login]])
+      ;; not logged-in
+      [:a.signin {:href (login-url (:uri req))}
+        "Войти..." (ficon "sign-in marl-8")])])
+;
 
 (defn top-bar [req user curr]
   [:header.b-topbar
@@ -109,31 +123,16 @@
           [:.b-logo
             [:a {:href "//angara.net/"}
               [:img.logo {:src "/incs/img/angara_310.png" :alt "Angara.Net"}]]]]
-
+        ;;
         [:.uk-width-medium-2-3.uk-grid
           [:.uk-width-medium-3-4.flex-mid
             [:.b-search.uk-form.uk-width-1-1
               [:input.search
                 {:type 'text' :placeholder "Яндекс.Поиск по сайту ..."}]
               [:a.btn-search {:href "/yasearch"} (ficon "search")]]]
-          ;
-          [:.uk-width-medium-1-4.flex-mid
-            [:.b-user
-              [:a.signin {:href (login-url (:uri req))}
-                "Войти..." (ficon "sign-in marl-8")]]]]]
-
-    ;   [:div.col-sm-3.pull-right
-    ;     (if user
-    ;       (let [nm (str (:name user) " " (:family user))]
-    ;         [:div.user
-    ;             [:a {:href "/me/" :title (str (:login user) ": " nm)}
-    ;               [:b (:login user)] [:br] nm]])
-    ;       ;; no logged in
-    ;       [:div.signin
-    ;         [:a.btn.btn-default {:href (login-url (:uri req))}
-    ;           "Войти" (ficon "sign-in marl-8")]])]]
-    ;     ;
-
+          ;;;
+          [:.uk-width-medium-1-4.flex-mid (b-user req user)]]]
+      ; top-grid
       (nav-topmenu curr)]])
 ;
 

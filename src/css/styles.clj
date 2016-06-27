@@ -107,9 +107,20 @@
           :padding "8px 4px 8px 10px"
           :overflow 'hidden
           :white-space 'nowrap}
-          ;;:margin-top (px 4)
-          ;;:max-width (px 310)
-          ;;:padding-bottom (px 8)}
+
+        [:.upic
+          { :float 'right
+            :width (px 40)
+            :height (px 40)
+            :border-radius "10px"
+            :background "#f4f4f4"}]
+        [:.name
+          { :overflow 'hidden
+            :white-space 'nowrap}]
+        [:.login 
+          { :font-weight 'bold
+            :overflow 'hidden
+            :white-space 'nowrap}]
 
         [:.signin
           {:text-decoration 'none
