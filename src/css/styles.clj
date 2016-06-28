@@ -163,7 +163,7 @@
         :border-bottom-right-radius "4px"}
       [:.copy
         {:color "#888"}
-        [:.brand {:margin-left "2px" :margin-right "1px"}]]]])
+        [:.brand {:margin-left "2 px" :margin-right "1px"}]]]])
 ;
 
 

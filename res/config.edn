@@ -22,6 +22,12 @@
     ; }
   }
 
+  :db {
+    :meteo {
+      :uri "mongodb://localhost:27017/meteo"
+    }
+  }
+
   ;; https://github.com/ring-clojure/ring/blob/master/ring-jetty-adapter/src/ring/adapter/jetty.clj
   :http {
     :host  "127.0.0.1"
@@ -47,6 +53,19 @@
   :sysctl {
     :prefix "/_sysctl"
     :psw "1"
+  }
+
+  :bots {
+    ;; t2
+    :meteo38bot {
+      :apikey "tlg-api-key"
+      :poll-limit 100
+      :poll-timeout 3     ;; must be less than socket-timeout!
+    }
+    ;; yo
+    :angarabot {
+      :apikey "tlg-api-key"
+    }
   }
 }
 

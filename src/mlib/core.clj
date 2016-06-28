@@ -168,4 +168,12 @@
     (apply merge-with deep-merge* maps)))
 ;
 
+;;;;;; macros ;;;;;;
+
+(defmacro try-warn [label & body]
+  `(try ~@body
+    (catch Exception e#
+      (~'warn ~label (.getMessage e#)))))
+;
+
 ;;.

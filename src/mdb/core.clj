@@ -49,29 +49,32 @@
 ; ;
 
 (defn connect [cnf]
-  (DateTimeZone/setDefault (DateTimeZone/forID (:tz conf "Asia/Irkutsk")))
-  (let [db (mg/connect-via-uri (:uri cnf))]
+  (-> (:tz conf "Asia/Irkutsk") DateTimeZone/forID DateTimeZone/setDefault)
+  (let [mdb (mg/connect-via-uri (:uri cnf))]
     (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
-    db))
+    mdb))
 ;
 
-(defn indexes [db]
+(defn disconnect [mdb]
+  (mg/disconnect (:conn mdb)))
+;
+
+(defn indexes [mdb]
+  (let [db (:db mdb)])
   ; (mc/ensure-index db user-coll {:auth 1})
   ; (mc/ensure-index db story-coll (array-map :locs 1 :ct 1))
   ; (mc/ensure-index db story-coll (array-map :ts 1))
-  db)
+  mdb)
 ;
 
 (defstate mdb
   :start
-    (-> (:mdb conf) connect indexes)
+    (-> conf :mdb connect indexes)
   :stop
-    (mg/disconnect (:conn mdb)))
+    (disconnect mdb))
 ;
 
 (defn dbc []
-  ;; (prn "dbc:" dbc)
-  ;; (clojure.stacktrace/print-stack-trace (Exception. "dbc"))
   (:db mdb))
 
 (defn new_id [] (ObjectId.))
