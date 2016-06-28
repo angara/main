@@ -5,7 +5,8 @@
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
     [mlib.core :refer [to-int]]
-    [mlib.telegram :as tg]))
+    [mlib.telegram :as tg]
+    [bots.meteo.commands :refer [on-message on-callback]]))
 ;
 
 ;; BotFather:
@@ -28,15 +29,16 @@
 
 (defn dispatch-update [upd]
   (try
-
-    (prn "upd:" upd)
-
+    (condp #(%1 %2) upd
+      :message :>> on-message
+      :callback_query :>> on-callback
+      (debug "unexpected:" upd))
     (catch Exception e
       (warn "dispatch:" upd (.getMessage e)))))
 ;
 
 
-(defn updates-loop [cnf]
+(defn update-loop [cnf dispatcher]
   (let [token (:apikey cnf)
         poll-limit (:poll-limit cnf 100)
         poll-timeout (:poll-timeout cnf 1)]
@@ -44,7 +46,7 @@
       (if-let [u (first updates)]
         (let [id (-> u :update_id to-int)]
           (if (< last-id id)
-            (dispatch-update u)
+            (dispatcher u)
             (debug "update-dupe:" id))
           (recur id (next updates)))
         ;
@@ -61,6 +63,9 @@
 
 
 (defn bot-loop []
-  (updates-loop (-> conf :bots :meteo38bot)))
+  (update-loop
+    (-> conf :bots :meteo38bot)
+    dispatch-update))
+;
 
 ;;.
