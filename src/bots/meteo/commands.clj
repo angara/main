@@ -4,6 +4,7 @@
   (:require
     [clojure.string :refer [trim lower-case] :as s]
     [taoensso.timbre :refer [warn]]
+    [clj-time.core :as tc]
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
     [mlib.telegram :as tg]
@@ -25,8 +26,11 @@
         {:text "Меню"}]]})  ;; gear
 ;
 
+(def st-alive-days 30)
+
 (defn q-st-alive []
-  {:pub 1})
+  { :pub 1
+    :ts {:$gte (tc/minus (tc/now) (tc/days st-alive-days))}})
 ;
 
 (defn default-locat []
@@ -53,6 +57,11 @@
   (prn "all:" par))
 ;
 
+
+(defn add-nl [s]
+  (when s (str s "\n")))
+;
+
 (defn cmd-near [msg par]
   (let [locat  (:locat (sess/params (cid msg)) (default-locat))
         sts (st-near (locat-ll locat) (q-st-alive))]
@@ -60,8 +69,9 @@
     (let [tx (for [x sts
                     :let [st (:obj x) dis (:dis x)]]
                 (str "*" (:title st) "*" "\n"
-                      "   Расстояние: " (/ dis 1000) " км\n"))]
-      (prn "tx:" apikey cid)
+                    (add-nl (:descr st))
+                    (add-nl (:addr st))
+                    (format "(%.1f км)" (/ dis 1000)) "\n"))]
       (tg/send-text apikey (cid msg)
         (s/join "\n" tx) true))))
     ;
