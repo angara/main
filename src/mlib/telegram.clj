@@ -10,7 +10,6 @@
 
 (def socket-timeout 5000)
 
-
 (defn api-url [token method]
   (str "https://api.telegram.org/bot" token "/" (name method)))
 ;
@@ -33,7 +32,7 @@
 
 (defn send-text [token chat text & [markdown?]]
   (api token :sendMessage
-    (into {:chat_id chat :text text}
+    (merge {:chat_id chat :text text}
       (when markdown? [:parse_mode "Markdown"]))))
 ;
 

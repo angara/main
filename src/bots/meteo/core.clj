@@ -37,7 +37,7 @@
       :callback_query :>> on-callback
       (debug "unexpected:" upd))
     (catch Exception e
-      (warn "dispatch:" upd (.getMessage e)))))
+      (warn "dispatch:" upd (or (.getMessage e) e)))))
 ;
 
 
@@ -53,15 +53,15 @@
             (debug "update-dupe:" id))
           (recur id (next updates)))
         ;
-        (if-let [upd (tg/api token :getUpdates
-                                  { :offset (inc last-id)
-                                    :limit poll-limit
-                                    :timeout poll-timeout})]
-          (recur last-id upd)
-          (do
+        (let [upd (tg/api token :getUpdates
+                    { :offset (inc last-id)
+                      :limit poll-limit
+                      :timeout poll-timeout})]
+          (when-not upd
             (warn "api-error")
-            (Thread/sleep api-error-sleep)
-            (recur last-id nil)))))))
+            (Thread/sleep api-error-sleep))
+          (recur last-id upd))))))
+        ;
 ;
 
 

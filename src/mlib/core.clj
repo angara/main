@@ -173,7 +173,7 @@
 (defmacro try-warn [label & body]
   `(try ~@body
     (catch Exception e#
-      (~'warn ~label (.getMessage e#)))))
+      (~'warn ~label (or (.getMessage e#) e#)))))
 ;
 
 ;;.

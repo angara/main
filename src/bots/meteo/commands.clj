@@ -2,12 +2,13 @@
 
 (ns bots.meteo.commands
   (:require
-    [clojure.string :refer [trim lower-case]]
+    [clojure.string :refer [trim lower-case] :as s]
     [taoensso.timbre :refer [warn]]
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
-;    [mlib.core :refer [to-int]]
-    [mlib.telegram :as tg]))
+    [mlib.telegram :as tg]
+    [meteo.db :refer [st-near]]
+    [bots.meteo.sess :as sess]))
 ;
 
 (defstate apikey
@@ -24,9 +25,25 @@
         {:text "Меню"}]]})  ;; gear
 ;
 
+(defn q-st-alive []
+  {:pub 1})
+;
+
+(defn default-locat []
+  {:latitude 52.27 :longitude 104.27})
+
+
+(defn cid [msg]
+  (-> msg :chat :id))
+;
+
+(defn locat-ll [locat]
+  [(:longitude locat) (:latitude locat)])
+;
+
 (defn cmd-help [msg par]
   (prn "help:" par)
-  (tg/send-message apikey (-> msg :chat :id)
+  (tg/send-message apikey (cid msg)
     {:text "!!! Хелп текст должен быть здесь!!!"
      :parse_mode "Markdown"
      :reply_markup buttons}))
@@ -37,7 +54,17 @@
 ;
 
 (defn cmd-near [msg par]
-  (prn "near:" par msg))
+  (let [locat  (:locat (sess/params (cid msg)) (default-locat))
+        sts (st-near (locat-ll locat) (q-st-alive))]
+    (prn "sts:" sts)
+    (let [tx (for [x sts
+                    :let [st (:obj x) dis (:dis x)]]
+                (str "*" (:title st) "*" "\n"
+                      "   Расстояние: " (/ dis 1000) " км\n"))]
+      (prn "tx:" apikey cid)
+      (tg/send-text apikey (cid msg)
+        (s/join "\n" tx) true))))
+    ;
 ;
 
 (defn cmd-favs [msg par]
@@ -61,21 +88,32 @@
 
 (defn on-message [msg]
   (prn "msg:" msg)
-  (let [text (-> msg :text str trim)]
-    (if-let [[cmd par] (parse-command text)]
-      (condp = (lower-case cmd)
-        "start" (cmd-help msg par)  ;; NOTE: change text?
-        "help"  (cmd-help msg par)
-        "near"  (cmd-near msg par)
-        "favs"  (cmd-favs msg par)
-        "subs"  (cmd-subs msg par)
-                (cmd-help msg nil))
-      (condp =  (lower-case text)
-        ; "станции"   (cmd-all  msg nil)
-        "рядом"     (cmd-near msg nil)
-        "мои"       (cmd-favs msg nil)
-        "меню"      (cmd-menu msg nil)
-                    (cmd-help msg nil)))))
+  (let [text (-> msg :text str trim not-empty)
+        [cmd par] (when text (parse-command text))
+        locat (:location msg)]
+    (cond
+      cmd
+        (condp = (lower-case cmd)
+          "start" (cmd-help msg par)  ;; NOTE: change text?
+          "help"  (cmd-help msg par)
+          "near"  (cmd-near msg par)
+          "favs"  (cmd-favs msg par)
+          "subs"  (cmd-subs msg par)
+                  (cmd-help msg nil))
+      text
+        (condp =  (lower-case text)
+          ; "станции"   (cmd-all  msg nil)
+          "рядом"     (cmd-near msg nil)
+          "мои"       (cmd-favs msg nil)
+          "меню"      (cmd-menu msg nil)
+                      (cmd-help msg nil))
+      locat
+        (do
+          ;; TODO: save locat history
+          (sess/save (cid msg) {:locat locat})
+          (cmd-near msg nil))
+      :else
+        nil)))
 ;
 
 (defn on-callback [cbq]
