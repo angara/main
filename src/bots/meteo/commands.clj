@@ -22,8 +22,9 @@
 (def buttons
   { :resize_keyboard true
     :keyboard
-      [[{:text "Погода"}; :request_location true}   ;; triangular_flag_on_post
-        {:text "Меню"}]]})  ;; gear
+      [[{:text "Погода"}
+        {:text "Рядом" :request_location true}
+        {:text "Меню"}]]})
 ;
 
 (def st-alive-days 30)
@@ -52,11 +53,13 @@
 (defn cmd-help [msg par]
   (tg/send-message apikey (cid msg)
     {:text "
-По кнопке *Погода* выводятся посдение данные с выбранных метеостанций.
+По кнопке *Погода* выводятся посление данные с выбранных метеостанций.
 
-Для поиска станции по названию отправьте сообщение не менее, чем из трех букв.
+Кнопка *Рядом* использует функцию геолокации для поиска ближайших станций.
 
-В разделе *Меню* есть поиск ближайших станций и управление рассылкой.
+В разделе *Меню* настройки списка избранных станций и управление рассылками.
+
+Для поиска станции по названию или адресу отправьте текстовое сообщение длиной не менее трех букв.
 "
      :parse_mode "Markdown"
      :reply_markup buttons}))
@@ -81,9 +84,8 @@
 (defn cmd-near [msg par]
   (let [locat (:locat (sess/params (cid msg)) (default-locat))
         sts   (st-near (locat-ll locat) (q-st-alive))]
-    (doseq [x sts]
-      (tg/send-text apikey (cid msg) (format-st x) true))))
-    ;
+    (when (seq sts)
+      (next-st (cid msg) sts))))
 ;
 
 (defn cmd-favs [msg par]
@@ -96,11 +98,20 @@
 ;
 
 (defn cmd-subs [msg par]
+  (let [cid (cid msg)])
+
   (prn "subs:" par))
 ;
 
 (defn cmd-menu [msg par]
-  (prn "menu:" par))
+  (tg/send-message apikey (cid msg)
+    { :text "Настройки"
+      :reply_markup
+        {:inline_keyboard
+          [
+           [{:text "Избранные станции" :callback_data "favs"}]
+           [{:text "Список рассылок"   :callback_data "subs"}]
+           [{:text "Добавить рассылку" :callback_data "adds"}]]}}))
 ;
 
 (defn st-search [msg txt]
@@ -155,15 +166,18 @@
 ;
 
 (defn on-callback [cbq]
-  (let [cid (-> cbq :message :chat :id)
+  (let [msg (:message cbq)
+        cid (cid msg)
         [cmd & params] (-> cbq :data str (s/split #"\s+"))]
     (when-not
       (condp = cmd
         "more" (do
                   (tg/api apikey :editMessageReplyMarkup
-                    { :chat_id cid
-                      :message_id (-> cbq :message :message_id)})
+                      {:chat_id cid :message_id (:message_id msg)})
                   (next-st cid nil))
+        "favs" nil
+        "subs" nil
+        "adds" nil
         (warn "cbq-unexpected:" cmd))
       (tg/api apikey :answerCallbackQuery
         {:callback_query_id (:id cbq) :text ""}))))
