@@ -3,6 +3,7 @@
   (:require
     [taoensso.timbre :refer [warn]]
     [monger.core :as mg]
+    [monger.collection :as mc]
     [monger.conversion :refer [from-db-object]]
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
@@ -22,6 +23,11 @@
 
 
 (def ST "st")   ;; stations collection
+
+
+; (defn q-st-fresh []
+;   { :pub 1
+;     :ts {:$gte (tc/minus (tc/now) (tc/minutes 80))}})
 
 ;;
 ;; db.st.ensureIndex({ll:"2dsphere"})
@@ -73,5 +79,11 @@
         (:results res)
         (warn "st-near:" ll res)))))
 ;
+
+(defn st-by-id [id]
+  (try-warn "st-by-id:"
+    (mc/find-map-by-id (db) ST id)))
+;
+
 
 ;;.

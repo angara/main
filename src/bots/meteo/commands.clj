@@ -8,8 +8,9 @@
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
     [mlib.telegram :as tg]
-    [meteo.db :refer [st-near]]
-    [bots.meteo.sess :as sess]))
+    [meteo.db :refer [st-near st-by-id]]
+    [bots.meteo.sess :as sess]
+    [bots.meteo.util :refer [format-st]]))
 ;
 
 (defstate apikey
@@ -21,8 +22,7 @@
 (def buttons
   { :resize_keyboard true
     :keyboard
-      [[{:text "Рядом" :request_location true}   ;; triangular_flag_on_post
-        {:text "Мои"}       ;; :star: :star2:
+      [[{:text "Погода"}; :request_location true}   ;; triangular_flag_on_post
         {:text "Меню"}]]})  ;; gear
 ;
 
@@ -35,7 +35,11 @@
 
 (defn default-locat []
   {:latitude 52.27 :longitude 104.27})
+;
 
+(defn default-favs []
+  ["irgp" "asbtv" "uiii" "lin_list" "npsd" "zbereg" "olha"])
+;
 
 (defn cid [msg]
   (-> msg :chat :id))
@@ -46,39 +50,28 @@
 ;
 
 (defn cmd-help [msg par]
-  (prn "help:" par)
   (tg/send-message apikey (cid msg)
     {:text "!!! Хелп текст должен быть здесь!!!"
      :parse_mode "Markdown"
      :reply_markup buttons}))
 ;
 
-(defn cmd-all [msg par]
-  (prn "all:" par))
-;
-
-
-(defn add-nl [s]
-  (when s (str s "\n")))
-;
 
 (defn cmd-near [msg par]
   (let [locat  (:locat (sess/params (cid msg)) (default-locat))
         sts (st-near (locat-ll locat) (q-st-alive))]
-    (prn "sts:" sts)
-    (let [tx (for [x sts
-                    :let [st (:obj x) dis (:dis x)]]
-                (str "*" (:title st) "*" "\n"
-                    (add-nl (:descr st))
-                    (add-nl (:addr st))
-                    (format "(%.1f км)" (/ dis 1000)) "\n"))]
-      (tg/send-text apikey (cid msg)
-        (s/join "\n" tx) true))))
+    (doseq [x sts]
+      (tg/send-text apikey (cid msg) (format-st (:obj x) (:dis x)) true))))
     ;
 ;
 
 (defn cmd-favs [msg par]
-  (prn "favs:" par))
+  (let [cid (cid msg)
+        favs (:favs (sess/params cid) (default-favs))]
+    (doseq [f favs]
+      (tg/send-text apikey cid
+        (format-st (st-by-id f))
+        true))))
 ;
 
 (defn cmd-subs [msg par]
@@ -89,7 +82,8 @@
   (prn "menu:" par))
 ;
 
-
+(defn st-search [msg txt])
+;
 
 (defn parse-command [text]
   (when-let [match (re-matches #"^/([A-Za-z0-9]+)([ _]+(.+))?$" text)]
@@ -111,12 +105,13 @@
           "subs"  (cmd-subs msg par)
                   (cmd-help msg nil))
       text
-        (condp =  (lower-case text)
-          ; "станции"   (cmd-all  msg nil)
-          "рядом"     (cmd-near msg nil)
-          "мои"       (cmd-favs msg nil)
-          "меню"      (cmd-menu msg nil)
-                      (cmd-help msg nil))
+        (let [txt (lower-case text)]
+          (cond
+            (= "погода" txt) (cmd-favs msg nil)
+            (= "меню"   txt) (cmd-menu msg nil)
+            :else   (or
+                        (st-search msg txt)
+                        (cmd-help msg nil))))
       locat
         (do
           ;; TODO: save locat history

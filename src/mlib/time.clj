@@ -14,7 +14,10 @@
 
 ; (def tf-dmy (tf/formatter "dd.MM.yy" "dd.MM.yyyy" "yyyy-MM-dd"))
 
-(def tf-ddmmyy   (tf/formatter "dd.MM.yy" (t/default-time-zone)))
+(def tf-hhmm     (tf/formatter "HH:mm"    (t/default-time-zone)))
+(def tf-hhmmss   (tf/formatter "HH:mm:ss" (t/default-time-zone)))
+
+(def tf-ddmmyy   (tf/formatter "dd.MM.yy"   (t/default-time-zone)))
 (def tf-ddmmyyyy (tf/formatter "dd.MM.yyyy" (t/default-time-zone)))
 (def tf-yyyymmdd (tf/formatter "yyyy-MM-dd" (t/default-time-zone)))
 
@@ -25,13 +28,22 @@
 (defn parse-yyyymmdd [s] (try (tf/parse tf-yyyymmdd (str s)) (catch Exception ignore)))
 (defn parse-ddmmyy [s] (try (tf/parse tf-ddmmyy (str s)) (catch Exception ignore)))
 
+(defn tfmt [fmt dt]
+  (try (tf/unparse fmt dt) (catch Exception ign)))
+;
+
+(defn hhmm [dt]
+  (when dt (try (tf/unparse tf-hhmm dt) (catch Exception ignore))))
+(defn hhmmss [dt]
+  (when dt (try (tf/unparse tf-hhmmss dt) (catch Exception ignore))))
+
 (defn ddmmyy [date]
-    (if date (try (tf/unparse tf-ddmmyy date) (catch Exception ignore))))
+  (when date (try (tf/unparse tf-ddmmyy date) (catch Exception ignore))))
 (defn ddmmyyyy [date]
-    (if date (try (tf/unparse tf-ddmmyyyy date) (catch Exception ignore))))
+  (when date (try (tf/unparse tf-ddmmyyyy date) (catch Exception ignore))))
 (defn iso-date [date]
-    (if date (try (tf/unparse tf-yyyymmdd date) (catch Exception ignore))))
+  (when date (try (tf/unparse tf-yyyymmdd date) (catch Exception ignore))))
 (defn iso-datetime [ts]
-    (if ts (try (tf/unparse tf-iso-datetime ts) (catch Exception ignore))))
+  (when ts (try (tf/unparse tf-iso-datetime ts) (catch Exception ignore))))
 
 ;;.
