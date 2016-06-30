@@ -76,7 +76,7 @@
                     :limit 1000))
                 true)]
       (if (< 0 (:ok res))
-        (:results res)
+        (map #(assoc (:obj %) :dist (:dis %)) (:results res))
         (warn "st-near:" ll res)))))
 ;
 

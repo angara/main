@@ -63,17 +63,20 @@
       "\n")))
 ;
 
-(defn format-st [st & [dis]]
+(defn format-st [st]
   (when (and st (:pub st))
-    (let [data (:last st)
-          ts (:ts data)
+    (let [data  (:last st)
+          dist  (:dist st)
+          ts    (:ts data)
           fresh (tc/minus (tc/now) (tc/minutes 70))]
-      ;; clock: "\uD83D\uDD51"
-      (str "*" (:title st) "*" "  '" (tmf ts) "\n"
+      (str
+        "*" (:title st) "*"
+          (when dist (str " \u00A0(" (num (/ dist 1000)) " км)"))
+          "\n"
         (when-let [d (:descr st)] (str d "\n"))
         (when-let [a (:addr st)]  (str a "\n"))
-        (when dis (str (format "(%.1f км)" (/ dis 1000)) "\n"))
-        ;"_- " (hhmm ts) " -_" "\n"
+        ;(when dis (str (format " (%.1f км)" (/ dis 1000)) "\n"))
+        "'" (tmf ts) "\n"
         "\n"
         (when (and ts (tc/after? ts fresh))
           (str

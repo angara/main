@@ -16,7 +16,7 @@
 
 (defn api
   [token method params & [{timeout :timeout}]]
-  (try-warn "tg-api:"
+  (try
     (let [tout (or timeout socket-timeout)
           res (:body
                 (http/post (api-url token method)
@@ -27,7 +27,9 @@
                     :conn-timeout tout}))]
       (if (:ok res)
         (:result res)
-        (info "api-fail:" method res)))))
+        (info "api-fail:" method res)))
+    (catch Exception e
+      (warn "tg-api:" method e))))
 ;
 
 (defn send-text [token chat text & [markdown?]]
