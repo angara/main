@@ -9,7 +9,7 @@
     [mlib.conf :refer [conf]]
     [mlib.telegram :as tg]
     [meteo.db :refer [st-near st-by-id]]
-    [bots.meteo.sess :as sess]
+    [bots.meteo.data :refer [sess-params sess-save]]
     [bots.meteo.util :refer [format-st]]))
 ;
 
@@ -67,7 +67,7 @@
 
 
 (defn next-st [cid sts]
-  (when-let [sts (or sts (:sts (sess/params cid)))]
+  (when-let [sts (or sts (:sts (sess-params cid)))]
     (let [head (first sts)
           tail (next sts)
           kbd (when tail
@@ -75,14 +75,13 @@
                   {:inline_keyboard
                     [[{:text "Еще ..." :callback_data "more"}]]}})
           par {:text (format-st head) :parse_mode "Markdown"}]
-      (sess/save cid {:sts tail})
+      (sess-save cid {:sts tail})
       (tg/send-message apikey cid (merge par kbd)))))
-
 ;
 
 
 (defn cmd-near [msg par]
-  (let [locat (:locat (sess/params (cid msg)) (default-locat))
+  (let [locat (:locat (sess-params (cid msg)) (default-locat))
         sts   (st-near (locat-ll locat) (q-st-alive))]
     (when (seq sts)
       (next-st (cid msg) sts))))
@@ -90,7 +89,7 @@
 
 (defn cmd-favs [msg par]
   (let [cid (cid msg)
-        favs (:favs (sess/params cid) (default-favs))]
+        favs (:favs (sess-params cid) (default-favs))]
     (doseq [f favs]
       (tg/send-text apikey cid
         (format-st (dissoc (st-by-id f) :addr :descr))
@@ -123,7 +122,7 @@
                     (.contains nm txt)
                     (.contains ad txt)
                     (.contains ds txt))))
-        locat  (:locat (sess/params (cid msg)) (default-locat))
+        locat  (:locat (sess-params (cid msg)) (default-locat))
         sts (filter fnm (st-near (locat-ll locat) (q-st-alive)))]
     (if (seq sts)
       (next-st (cid msg) sts)
@@ -159,7 +158,7 @@
       locat
         (do
           ;; TODO: save locat history
-          (sess/save (cid msg) {:locat locat})
+          (sess-save (cid msg) {:locat locat})
           (cmd-near msg nil))
       :else
         nil)))
