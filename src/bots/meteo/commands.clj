@@ -9,7 +9,8 @@
     [mlib.conf :refer [conf]]
     [mlib.telegram :as tg]
     [meteo.db :refer [st-near st-by-id]]
-    [bots.meteo.data :refer [sess-params sess-save]]
+    [bots.meteo.data :refer
+      [sess-params sess-save get-favs favs-add! favs-del!]]
     [bots.meteo.util :refer [format-st]]))
 ;
 
@@ -17,6 +18,12 @@
   :start
     (-> conf :bots :meteo38bot :apikey))
 ;
+
+
+(defonce inline-kbd-serial (atom 0))
+
+;; telegram message update workaround
+(defn inkb [] (swap! inline-kbd-serial inc))
 
 
 (def buttons
@@ -66,15 +73,33 @@
 ;
 
 
+(defn st-kbd [st-id fav? more?]
+  (let [k-fav
+          { :text (str (if fav? "[*]" "[ ]") " Избранное")
+            :callback_data
+              (str (if fav? "favs-del " "favs-add ") st-id " " (inkb))}
+        k-more
+          {:text "Еще ..." :callback_data "more"}]
+    {:reply_markup
+      {:inline_keyboard
+        (if more?
+          [[k-fav k-more]]
+          [[k-fav]])}}))
+;
+
+
+(defn has-more? [cid]
+  (seq (:sts (sess-params cid))))
+
 (defn next-st [cid sts]
   (when-let [sts (or sts (:sts (sess-params cid)))]
-    (let [head (first sts)
+    (let [favs (get-favs cid)
+          st   (first sts)
+          st   (if (map? st) st (st-by-id st))
+          id   (:_id st)
           tail (next sts)
-          kbd (when tail
-                {:reply_markup
-                  {:inline_keyboard
-                    [[{:text "Еще ..." :callback_data "more"}]]}})
-          par {:text (format-st head) :parse_mode "Markdown"}]
+          kbd  (st-kbd id (some #{id} favs) (seq tail))
+          par  {:text (format-st st) :parse_mode "Markdown"}]
       (sess-save cid {:sts tail})
       (tg/send-message apikey cid (merge par kbd)))))
 ;
@@ -89,11 +114,18 @@
 
 (defn cmd-favs [msg par]
   (let [cid (cid msg)
-        favs (:favs (sess-params cid) (default-favs))]
+        favs (or (not-empty (get-favs cid)) par)]
+    (next-st cid favs)))
+;
+
+
+(defn cmd-show [msg]
+  (let [cid (cid msg)
+        favs (or (not-empty (get-favs cid)) (default-favs))]
     (doseq [f favs]
-      (tg/send-text apikey cid
-        (format-st (dissoc (st-by-id f) :addr :descr))
-        true))))
+      (when-let [st (st-by-id f)]
+        (tg/send-message apikey cid
+          {:text (format-st st) :parse_mode "Markdown"})))))
 ;
 
 (defn cmd-subs [msg par]
@@ -144,14 +176,14 @@
           "start" (cmd-help msg par)  ;; NOTE: change text?
           "help"  (cmd-help msg par)
           "near"  (cmd-near msg par)
-          "favs"  (cmd-favs msg par)
+          "favs"  (cmd-favs msg nil)
           "subs"  (cmd-subs msg par)
                   (cmd-help msg nil))
       text
         (let [txt (lower-case text)]
           (cond
-            (= "погода" txt) (cmd-favs  msg nil)
-            (= "меню"   txt) (cmd-menu  msg nil)
+            (= "погода" txt) (cmd-show msg)
+            (= "меню"   txt) (cmd-menu msg nil)
             :else  (if (<= 3 (.length text))
                       (st-search msg txt)
                       (cmd-help msg nil))))
@@ -167,14 +199,30 @@
 (defn on-callback [cbq]
   (let [msg (:message cbq)
         cid (cid msg)
-        [cmd & params] (-> cbq :data str (s/split #"\s+"))]
+        [cmd par & params] (-> cbq :data str (s/split #"\s+"))]
     (when-not
       (condp = cmd
         "more" (do
                   (tg/api apikey :editMessageReplyMarkup
                       {:chat_id cid :message_id (:message_id msg)})
                   (next-st cid nil))
-        "favs" nil
+        "favs-add"    ;; TODO: limit favs num
+                  (do
+                    (favs-add! cid par)
+                    (tg/api apikey :editMessageReplyMarkup
+                      (merge
+                        {:chat_id cid :message_id (:message_id msg)}
+                        (st-kbd par true (has-more? cid)))))    ;; check is added
+        "favs-del"
+                  (do
+                    (favs-del! cid par)
+                    (tg/api apikey :editMessageReplyMarkup
+                      (merge
+                        {:chat_id cid :message_id (:message_id msg)}
+                        (st-kbd par false (has-more? cid)))))
+        "favs" (do
+                  (cmd-favs msg nil)
+                  nil)
         "subs" nil
         "adds" nil
         (warn "cbq-unexpected:" cmd))

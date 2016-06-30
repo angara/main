@@ -6,6 +6,7 @@
     [mlib.conf :refer [conf]]
     [mlib.core :refer [to-int]]
     [mlib.telegram :as tg]
+    [bots.meteo.data :refer [mbot-log]]
     [bots.meteo.commands :refer [on-message on-callback]]))
 ;
 
@@ -32,6 +33,7 @@
 
 (defn dispatch-update [upd]
   (try
+    (mbot-log upd)
     (condp #(%1 %2) upd
       :message :>> on-message
       :callback_query :>> on-callback
