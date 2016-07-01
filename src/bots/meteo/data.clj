@@ -5,6 +5,8 @@
     [mount.core :refer [defstate]]
     [clj-time.core :as tc]
     [monger.collection :as mc]
+    [monger.query :as mq]
+
     [mlib.core :refer [try-warn]]
     [mdb.core :refer [dbc]]))
 ;
@@ -39,9 +41,9 @@
 
 
 (def SUBS-COLL "mbot_subs")
-;; {_id, ts, cid:cid,
-;;   time:"16:45", days:"01233456", sts:["uiii","npsd",...] }
-
+;; {_id, ts, cid:cid, ord:ord,
+;;   time:"16:45", days:"01233456", ids:["uiii","npsd",...] }
+;; idx: cid, idx: time
 
 
 (defn mbot-log [msg]
@@ -54,10 +56,14 @@
 ;
 
 (defn ensure-indexes []
-  (mc/ensure-index (dbc) LOG-COLL (array-map :ts 1))
-  (mc/ensure-index (dbc) LOG-COLL (array-map :ll "2dsphere")))
+  (mc/ensure-index (dbc) LOG-COLL  (array-map :ts 1))
+  (mc/ensure-index (dbc) LOG-COLL  (array-map :ll "2dsphere"))
+  ;
+  (mc/ensure-index (dbc) SUBS-COLL (array-map :cid  1))
+  (mc/ensure-index (dbc) SUBS-COLL (array-map :time 1)))
 ;
 
+;; ;; ;; ;; ;;
 
 (defn get-favs [cid]
   (try-warn "get-favs:"
@@ -78,6 +84,22 @@
       {:$pull {:favs st-id} :$set {:ts (tc/now)}})))
 ;
 
+;; ;; ;; ;; ;;
+
+(defn get-subs [cid & [ord]]
+  (try-warn "get-subs"
+    (mq/with-collection (dbc) SUBS-COLL
+      (mq/find (if ord {:cid cid :ord ord} {:cid cid}))
+      (mq/sort (array-map :ord 1)))))
+;
+
+(defn subs-add! [cid ord time days ids]
+  (try-warn "subs-add"
+    (mc/insert (dbc) SUBS-COLL
+      {:ts (tc/now) :cid cid :ord ord :time time :days days :ids ids})))
+;
+
+;; ;; ;; ;; ;;
 
 (defstate data
   :start

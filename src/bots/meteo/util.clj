@@ -1,5 +1,5 @@
 
-(ns bots.meteo.commons
+(ns bots.meteo.util
   (:require
     ; [clojure.string :refer [trim lower-case] :as s]
     ; [taoensso.timbre :refer [warn]]
@@ -18,6 +18,10 @@
     (-> conf :bots :meteo38bot :apikey))
 ;
 
+(def wd-map
+  {\0 "вс" \1 "пн" \2 "вт" \3 "ср" \4 "чт" \5 "пт" \6 "сб"})
+;
+
 (defn md-link [text url]
   (str "[" text "](" url ")"))
 ;
@@ -27,6 +31,7 @@
     (str "https://maps.google.com/maps?"
           "&q=loc:" c "&ll=" c "&t=" (or t "h") "&z=" (or z "18"))))
   ;; t = m,k,h,p
+  ;; https://moz.com/blog/new-google-maps-url-parameters
 ;
 
 (defonce inline-kbd-serial (atom 0))

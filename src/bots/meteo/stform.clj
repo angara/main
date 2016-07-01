@@ -4,7 +4,7 @@
     [clojure.string :as s]
     [clj-time.core :as tc]
     [mlib.time :refer [hhmm ddmmyy]]
-    [bots.meteo.commons :refer [md-link gmaps-link]]))
+    [bots.meteo.util :refer [md-link gmaps-link]]))
 ;
 
 (defn hpa-mmhg [h]

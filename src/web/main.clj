@@ -12,13 +12,13 @@
     [web.srv]))
 ;
 
-(defstate main
-  :start
-    identity
-  :stop
-    (when (-> conf :http :stop-uri)
-      (info "exiting")
-      (System/exit 0)))
+; (defstate main
+;   :start
+;     identity)
+;   ; :stop
+  ;   (when (-> conf :http :stop-uri)
+  ;     (info "exiting")
+  ;     (System/exit 0)))
 ;
 
 (defn -main [& args]

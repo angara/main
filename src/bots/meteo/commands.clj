@@ -8,12 +8,13 @@
     [mlib.conf :refer [conf]]
     [mlib.telegram :as tg]
     [meteo.db :refer [st-near st-by-id st-find]]
-    [bots.meteo.commons :refer
+    [bots.meteo.util :refer
       [apikey cid inkb q-st-alive
        main-buttons locat-ll default-locat default-favs]]
     [bots.meteo.data :refer
       [sess-params sess-save get-favs favs-add! favs-del!]]
     [bots.meteo.menu :refer [cmd-menu]]
+    [bots.meteo.subs :refer [cmd-adds cmd-subs on-sbed]]
     [bots.meteo.stform :refer [format-st]]))
 ;
 
@@ -100,16 +101,6 @@
           {:text (format-st st) :parse_mode "Markdown"})))))
 ;
 
-(defn cmd-subs [msg par]
-  (let [cid (cid msg)]
-    (tg/send-text apikey cid "Здесь будет список ваших рассылок.")))
-;
-
-(defn cmd-adds [msg par]
-  (let [cid (cid msg)]
-    (tg/send-text apikey cid
-      "По этой кнопке избранное попадет в новую рассылку.")))
-;
 
 
 (defn st-search [msg txt]
@@ -190,6 +181,7 @@
         "favs" (do (cmd-favs msg nil) nil)
         "subs" (do (cmd-subs msg nil) nil)
         "adds" (do (cmd-adds msg nil) nil)
+        "sbed" (do (on-sbed  msg par params) nil)
         (warn "cbq-unexpected:" cmd))
       ;
       (tg/api apikey :answerCallbackQuery
