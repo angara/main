@@ -23,7 +23,7 @@
     (hhmm ts)))
 ;
 
-(defn num [x]
+(defn nf [x]
   (let [n (format "%.1f"  (float x))]
     (if-let [m (re-matches #"^(.+)(\.0*)$" n)]
       (m 1)
@@ -32,8 +32,8 @@
 
 (defn t-plus [t]
   (if (< 0 t)
-    (str "+" (num t))
-    (num t)))
+    (str "+" (nf t))
+    (nf t)))
 ;
 
 (defn format-t [t]
@@ -42,16 +42,16 @@
 
 (defn format-h [h]
   (when h
-    (str "Влажность: *" (num h) "* %\n")))
+    (str "Влажность: *" (nf h) "* %\n")))
 
 (defn format-p [p]
   (when p
-    (str "Давление: *" (num (hpa-mmhg p)) "* мм.рт\n")))
+    (str "Давление: *" (nf (hpa-mmhg p)) "* мм.рт\n")))
 
 (defn format-wind [w g b]
   (when w
     (str
-      "Ветер: *" (num w) (when g (str "-" (num g))) "* м/с"
+      "Ветер: *" (nf w) (when g (str "-" (nf g))) "* м/с"
       (when-let [r (wind-rhumb b)] (str " (*" r "*)"))
       "\n")))
 ;
@@ -60,7 +60,7 @@
   (when (or t l)
     (str "Вода:"
       (when t (str " *" (t-plus t) "* \u00b0C"))
-      (when l (str " *" (num l) "* м"))
+      (when l (str " *" (nf l) "* м"))
       "\n")))
 ;
 
@@ -73,7 +73,7 @@
           fresh (tc/minus (tc/now) (tc/minutes 70))]
       (str
         "*" (:title st) "*"
-          (when dist (str " \u00A0(" (num (/ dist 1000)) " км)"))
+          (when dist (str " \u00A0(" (nf (/ dist 1000)) " км)"))
           "\n"
         (when-let [d (:descr st)]
           (str (md-link d gl) "\n"))
