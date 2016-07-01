@@ -1,5 +1,5 @@
 
-(ns bots.meteo.util
+(ns bots.meteo.stform
   (:require
     [clojure.string :as s]
     [clj-time.core :as tc]

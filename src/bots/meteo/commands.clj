@@ -1,5 +1,4 @@
 
-
 (ns bots.meteo.commands
   (:require
     [clojure.string :refer [trim lower-case] :as s]
@@ -9,53 +8,16 @@
     [mlib.conf :refer [conf]]
     [mlib.telegram :as tg]
     [meteo.db :refer [st-near st-by-id st-find]]
+    [bots.meteo.commons :refer
+      [apikey cid inkb q-st-alive
+       main-buttons locat-ll default-locat default-favs]]
     [bots.meteo.data :refer
       [sess-params sess-save get-favs favs-add! favs-del!]]
-    [bots.meteo.util :refer [format-st]]))
-;
-
-(defstate apikey
-  :start
-    (-> conf :bots :meteo38bot :apikey))
+    [bots.meteo.menu :refer [cmd-menu]]
+    [bots.meteo.stform :refer [format-st]]))
 ;
 
 
-(defonce inline-kbd-serial (atom 0))
-
-;; telegram message update workaround
-(defn inkb [] (swap! inline-kbd-serial inc))
-
-
-(def buttons
-  { :resize_keyboard true
-    :keyboard
-      [[{:text "Погода"}
-        {:text "Рядом" :request_location true}
-        {:text "Меню"}]]})
-;
-
-(def st-alive-days 30)
-
-(defn q-st-alive []
-  { :pub 1
-    :ts {:$gte (tc/minus (tc/now) (tc/days st-alive-days))}})
-;
-
-(defn default-locat []
-  {:latitude 52.27 :longitude 104.27})
-;
-
-(defn default-favs []
-  ["irgp" "asbtv" "uiii" "lin_list" "npsd" "zbereg" "olha"])
-;
-
-(defn cid [msg]
-  (-> msg :chat :id))
-;
-
-(defn locat-ll [locat]
-  [(:longitude locat) (:latitude locat)])
-;
 
 (defn cmd-help [msg par]
   (tg/send-message apikey (cid msg)
@@ -69,24 +31,24 @@
 Для поиска станции по названию или адресу отправьте текстовое сообщение длиной не менее трех букв.
 "
      :parse_mode "Markdown"
-     :reply_markup buttons}))
+     :reply_markup main-buttons}))
 ;
 
 
 (defn st-kbd [st-id fav? more?]
   (let [k-fav
-          { :text (str (if fav? "[*]" "[ ]") " Избранное")
+          { :text (if fav? "В избранном" "( + )")
             :callback_data
               (str (if fav? "favs-del " "favs-add ") st-id " " (inkb))}
         k-more
-          {:text "Еще ..." :callback_data "more"}]
+          { :text "Еще ..."
+            :callback_data (str "more " st-id)}]
     {:reply_markup
       {:inline_keyboard
         (if more?
           [[k-fav k-more]]
           [[k-fav]])}}))
 ;
-
 
 (defn has-more? [cid]
   (seq (:sts (sess-params cid))))
@@ -128,7 +90,6 @@
     (next-st cid favs)))
 ;
 
-
 (defn cmd-show [msg]
   (let [cid (cid msg)
         favs (or (not-empty (get-favs cid)) (default-favs))]
@@ -139,22 +100,16 @@
 ;
 
 (defn cmd-subs [msg par]
-  (let [cid (cid msg)])
-
-  (prn "subs:" par))
+  (let [cid (cid msg)]
+    (tg/send-text apikey cid "Здесь будет список ваших рассылок.")))
 ;
 
-(defn cmd-menu [msg par]
-  (tg/send-message apikey (cid msg)
-    { :text "Настройки"
-      :reply_markup
-        {:inline_keyboard
-          [
-           [{:text "Все станции"       :callback_data "all"}]
-           [{:text "Избранные"         :callback_data "favs"}]
-           [{:text "Список рассылок"   :callback_data "subs"}]
-           [{:text "Добавить рассылку" :callback_data "adds"}]]}}))
+(defn cmd-adds [msg par]
+  (let [cid (cid msg)]
+    (tg/send-text apikey cid
+      "По этой кнопке избранное попадет в новую рассылку.")))
 ;
+
 
 (defn st-search [msg txt]
   (let [fnm (fn [stn]
@@ -190,6 +145,7 @@
           "near"  (cmd-near msg par)
           "favs"  (cmd-favs msg nil)
           "subs"  (cmd-subs msg par)
+          "adds"  (cmd-adds msg par)
                   (cmd-help msg nil))
       text
         (let [txt (lower-case text)]
@@ -214,11 +170,6 @@
         [cmd par & params] (-> cbq :data str (s/split #"\s+"))]
     (when-not
       (condp = cmd
-        "more" (do
-                  ; (tg/api apikey :editMessageReplyMarkup
-                  ;     {:chat_id cid :message_id (:message_id msg)})
-                  (next-st cid nil)
-                  nil)
         "favs-add"    ;; TODO: limit favs num
                   (do
                     (favs-add! cid par)
@@ -233,14 +184,11 @@
                       (merge
                         {:chat_id cid :message_id (:message_id msg)}
                         (st-kbd par false (has-more? cid)))))
-        "all"   (do
-                  (cmd-all msg nil)
-                  nil)
-        "favs"  (do
-                  (cmd-favs msg nil)
-                  nil)
-        "subs" nil
-        "adds" nil
+        "more" (do (next-st  cid nil) nil)
+        "all"  (do (cmd-all  msg nil) nil)
+        "favs" (do (cmd-favs msg nil) nil)
+        "subs" (do (cmd-subs msg nil) nil)
+        "adds" (do (cmd-adds msg nil) nil)
         (warn "cbq-unexpected:" cmd))
       ;
       (tg/api apikey :answerCallbackQuery
