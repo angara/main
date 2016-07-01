@@ -38,6 +38,12 @@
 ;; {_id: cid, ts:ts, favs:[...]}
 
 
+(def SUBS-COLL "mbot_subs")
+;; {_id, ts, cid:cid,
+;;   time:"16:45", days:"01233456", sts:["uiii","npsd",...] }
+
+
+
 (defn mbot-log [msg]
   (let [{lat :latitude lng :longitude} (-> msg :message :location)
         ll (when (and lat lng) {:ll [lng lat]})]

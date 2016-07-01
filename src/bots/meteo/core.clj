@@ -43,34 +43,48 @@
 ;
 
 
-(defn update-loop [cnf dispatcher]
+(def running-flag (atom false))
+
+(defn update-loop [mbot cnf dispatcher]
   (let [token (:apikey cnf)
         poll-limit (:poll-limit cnf 100)
         poll-timeout (:poll-timeout cnf 1)]
+    ;
+    (reset! (:run-flag mbot) true)
+    (debug "update-loop started")
+    ;
     (loop [last-id 0  updates nil]
-      (if-let [u (first updates)]
-        (let [id (-> u :update_id to-int)]
-          (if (< last-id id)
-            (dispatcher u)
-            (debug "update-dupe:" id))
-          (recur id (next updates)))
-        ;
-        (let [upd (tg/api token :getUpdates
-                    { :offset (inc last-id)
-                      :limit poll-limit
-                      :timeout poll-timeout})]
-          (when-not upd
-            (warn "api-error")
-            (Thread/sleep api-error-sleep))
-          (recur last-id upd))))))
-        ;
+      (if (deref (:run-flag mbot))
+        (if-let [u (first updates)]
+          (let [id (-> u :update_id to-int)]
+            (if (< last-id id)
+              (dispatcher u)
+              (debug "update-dupe:" id))
+            (recur id (next updates)))
+          ;
+          (let [upd (tg/api token :getUpdates
+                      { :offset (inc last-id)
+                        :limit poll-limit
+                        :timeout poll-timeout})]
+            (when-not upd
+              (warn "api-error")
+              (Thread/sleep api-error-sleep))
+            (recur last-id upd)))
+        ;;
+        (debug "update-loop stop")))))
 ;
 
-
-(defn bot-loop []
-  (update-loop
-    (-> conf :bots :meteo38bot)
-    dispatch-update))
+(defstate mbot
+  :start
+    {:run-flag (atom nil)
+     :thread (->
+                #(update-loop mbot
+                    (-> conf :bots :meteo38bot)
+                    dispatch-update)
+                Thread. .start)}
+  :stop
+    (reset! (:run-flag mbot) false))
 ;
+
 
 ;;.

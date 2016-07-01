@@ -4,6 +4,7 @@
     [taoensso.timbre :refer [warn]]
     [monger.core :as mg]
     [monger.collection :as mc]
+    [monger.query :as mq]
     [monger.conversion :refer [from-db-object]]
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
@@ -80,9 +81,29 @@
         (warn "st-near:" ll res)))))
 ;
 
-(defn st-by-id [id]
+(defn st-by-id [id & [fields]]
   (try-warn "st-by-id:"
-    (mc/find-map-by-id (db) ST id)))
+    (mc/find-map-by-id (db) ST id (or fields []))))
+;
+
+
+(defn st-find
+  "fetch list of public stations data"
+  [q & [fields]]
+  (try-warn "st-by-id:"
+    (mq/with-collection (db) ST
+      (mq/find q)
+      (mq/fields (or fields []))
+      (mq/sort (array-map :title 1)))))
+      ;(mq/limit 1000))
+;
+
+
+(defn st-ids
+  "fetch list of public stations data"
+  [ids & [fields]]
+  (try-warn "st-by-id:"
+    (mc/find-maps (db) ST {:_id {:$in ids} :pub 1} (or fields []))))
 ;
 
 

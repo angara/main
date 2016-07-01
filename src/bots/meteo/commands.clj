@@ -8,7 +8,7 @@
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
     [mlib.telegram :as tg]
-    [meteo.db :refer [st-near st-by-id]]
+    [meteo.db :refer [st-near st-by-id st-find]]
     [bots.meteo.data :refer
       [sess-params sess-save get-favs favs-add! favs-del!]]
     [bots.meteo.util :refer [format-st]]))
@@ -105,16 +105,26 @@
 ;
 
 
+(defn cmd-all [msg par]
+  (let [cid (cid msg)
+        ids (map :_id (st-find (q-st-alive) [:_id]))]
+    (when (seq ids)
+      (tg/send-text apikey cid "Все станции:")
+      (next-st cid ids))))
+;
+
 (defn cmd-near [msg par]
   (let [locat (:locat (sess-params (cid msg)) (default-locat))
         sts   (st-near (locat-ll locat) (q-st-alive))]
     (when (seq sts)
+      (tg/send-text apikey cid "Ближайшие:")
       (next-st (cid msg) sts))))
 ;
 
 (defn cmd-favs [msg par]
   (let [cid (cid msg)
         favs (or (not-empty (get-favs cid)) par)]
+    (tg/send-text apikey cid "Избранные:")
     (next-st cid favs)))
 ;
 
@@ -140,7 +150,8 @@
       :reply_markup
         {:inline_keyboard
           [
-           [{:text "Избранные станции" :callback_data "favs"}]
+           [{:text "Все станции"       :callback_data "all"}]
+           [{:text "Избранные"         :callback_data "favs"}]
            [{:text "Список рассылок"   :callback_data "subs"}]
            [{:text "Добавить рассылку" :callback_data "adds"}]]}}))
 ;
@@ -175,6 +186,7 @@
         (condp = (lower-case cmd)
           "start" (cmd-help msg par)  ;; NOTE: change text?
           "help"  (cmd-help msg par)
+          "all"   (cmd-all  msg par)
           "near"  (cmd-near msg par)
           "favs"  (cmd-favs msg nil)
           "subs"  (cmd-subs msg par)
@@ -203,9 +215,10 @@
     (when-not
       (condp = cmd
         "more" (do
-                  (tg/api apikey :editMessageReplyMarkup
-                      {:chat_id cid :message_id (:message_id msg)})
-                  (next-st cid nil))
+                  ; (tg/api apikey :editMessageReplyMarkup
+                  ;     {:chat_id cid :message_id (:message_id msg)})
+                  (next-st cid nil)
+                  nil)
         "favs-add"    ;; TODO: limit favs num
                   (do
                     (favs-add! cid par)
@@ -220,12 +233,16 @@
                       (merge
                         {:chat_id cid :message_id (:message_id msg)}
                         (st-kbd par false (has-more? cid)))))
-        "favs" (do
+        "all"   (do
+                  (cmd-all msg nil)
+                  nil)
+        "favs"  (do
                   (cmd-favs msg nil)
                   nil)
         "subs" nil
         "adds" nil
         (warn "cbq-unexpected:" cmd))
+      ;
       (tg/api apikey :answerCallbackQuery
         {:callback_query_id (:id cbq) :text ""}))))
 ;
