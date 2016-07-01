@@ -3,7 +3,8 @@
   (:require
     [clojure.string :as s]
     [clj-time.core :as tc]
-    [mlib.time :refer [hhmm ddmmyy]]))
+    [mlib.time :refer [hhmm ddmmyy]]
+    [bots.meteo.commons :refer [md-link gmaps-link]]))
 ;
 
 (defn hpa-mmhg [h]
@@ -68,13 +69,16 @@
     (let [data  (:last st)
           dist  (:dist st)
           ts    (:ts data)
+          gl    (gmaps-link (:ll st))
           fresh (tc/minus (tc/now) (tc/minutes 70))]
       (str
         "*" (:title st) "*"
           (when dist (str " \u00A0(" (num (/ dist 1000)) " км)"))
           "\n"
-        (when-let [d (:descr st)] (str d "\n"))
-        (when-let [a (:addr st)]  (str a "\n"))
+        (when-let [d (:descr st)]
+          (str (md-link d gl) "\n"))
+        (when-let [a (:addr st)]
+          (str (md-link a gl) "\n"))
         ;(when dis (str (format " (%.1f км)" (/ dis 1000)) "\n"))
         "'" (tmf ts) "\n"
         "\n"

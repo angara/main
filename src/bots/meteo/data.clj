@@ -2,12 +2,12 @@
 (ns bots.meteo.data
   (:require
     [taoensso.timbre :refer [warn]]
+    [mount.core :refer [defstate]]
     [clj-time.core :as tc]
     [monger.collection :as mc]
     [mlib.core :refer [try-warn]]
     [mdb.core :refer [dbc]]))
 ;
-
 
 
 (defonce sess-store (atom {}))
@@ -53,7 +53,7 @@
         (warn "mbot-log:" e)))))
 ;
 
-(defn indexes []
+(defn ensure-indexes []
   (mc/ensure-index (dbc) LOG-COLL (array-map :ts 1))
   (mc/ensure-index (dbc) LOG-COLL (array-map :ll "2dsphere")))
 ;
@@ -78,5 +78,10 @@
       {:$pull {:favs st-id} :$set {:ts (tc/now)}})))
 ;
 
+
+(defstate data
+  :start
+    (ensure-indexes))
+;
 
 ;;.

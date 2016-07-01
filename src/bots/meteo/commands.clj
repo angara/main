@@ -86,7 +86,8 @@
 (defn cmd-favs [msg par]
   (let [cid (cid msg)
         favs (or (not-empty (get-favs cid)) par)]
-    (tg/send-text apikey cid "Избранные:")
+    (tg/send-text apikey cid
+      (str "В избранном [" (count favs) "]:"))
     (next-st cid favs)))
 ;
 

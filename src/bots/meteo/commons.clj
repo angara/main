@@ -18,7 +18,16 @@
     (-> conf :bots :meteo38bot :apikey))
 ;
 
+(defn md-link [text url]
+  (str "[" text "](" url ")"))
+;
 
+(defn gmaps-link [ll & [{z :z t :t}]]
+  (let [c (str (second ll) "," (first ll))]
+    (str "https://maps.google.com/maps?"
+          "&q=loc:" c "&ll=" c "&t=" (or t "h") "&z=" (or z "18"))))
+  ;; t = m,k,h,p
+;
 
 (defonce inline-kbd-serial (atom 0))
 

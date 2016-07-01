@@ -102,8 +102,9 @@
 (defn st-ids
   "fetch list of public stations data"
   [ids & [fields]]
-  (try-warn "st-by-id:"
-    (mc/find-maps (db) ST {:_id {:$in ids} :pub 1} (or fields []))))
+  (when ids
+    (try-warn "st-by-id:"
+      (mc/find-maps (db) ST {:_id {:$in ids} :pub 1} (or fields [])))))
 ;
 
 
