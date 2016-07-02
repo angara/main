@@ -22,11 +22,16 @@
 
 
 (defn week2 [days]
-  (s/join "," (map wd-map (filter (set days) "1234560"))))
+  (let [ds (set days)]
+    (s/join " "
+      (for [d "1234560"]
+        (if (ds d) (wd-map d) " -- ")))))
 ;
 
 (defn kbd [{:keys [ord time days del]}]
-  (let [cmd (str "sbed " ord " ")]
+  (let [cmd (str "sbed " ord " ")
+        ds (set days)
+        wd2 (fn [d] (if (ds d) (wd-map d) "--"))]
     {:inline_keyboard
       [
         [(if del
@@ -38,7 +43,7 @@
           {:text ">"  :callback_data (str cmd "m+")}
           {:text ">>" :callback_data (str cmd "h+")}]
         (for [d "1234560"]
-          {:text (wd-map d) :callback_data (str cmd "d " d)})]}))
+          {:text (wd2 d) :callback_data (str cmd "d " d)})]}))
 ;
 
 
@@ -59,9 +64,11 @@
           :reply_markup (kbd sb)}))))
 ;
 
-(defn change-time [sb hh mm]
-      ;;
-    (:time sb))
+(defn change-time [sb h m]
+  (let [[hh mm] (s/split (-> sb :time str) #":")
+        hh (mod (+ (to-int hh 0) h 24) 24)
+        mm (mod (+ (to-int mm 0) m 60) 60)]
+    (format "%02d:%02d" hh mm)))
 ;
 
 (defn change-days [sb d]
@@ -113,7 +120,7 @@
   (let [cid (cid msg)
         subs (get-subs cid)
         kbd (for [s subs]
-              [{:text (str (:time s) " - " (week2 (:days s)))
+              [{:text (str (:time s) " \u00A0 " (week2 (:days s)))
                 :callback_data (str "sbed " (:ord s) " show")}])]
     (tg/send-message apikey cid
       { :text "Рассылки:"

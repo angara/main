@@ -110,7 +110,8 @@
 
 
 (defn st-search [msg txt]
-  (let [fnm (fn [stn]
+  (let [cid (cid msg)
+        fnm (fn [stn]
                 (let [nm (-> stn :title str lower-case)
                       ad (-> stn :addr  str lower-case)
                       ds (-> stn :descr str lower-case)]
@@ -118,13 +119,13 @@
                     (.contains nm txt)
                     (.contains ad txt)
                     (.contains ds txt))))
-        locat  (:locat (sess-params (cid msg)) (default-locat))
+        locat  (:locat (sess-params cid) (default-locat))
         sts (filter fnm (st-near (locat-ll locat) (q-st-alive)))]
     (if (seq sts)
       (do
         (sess-save cid {:sts sts})
-        (next-st (cid msg)))
-      (tg/send-text apikey (cid msg) "Станции не найдены.\n/help" true))))
+        (next-st cid))
+      (tg/send-text apikey cid "Станции не найдены.\n/help" true))))
 ;
 
 (defn parse-command [text]
@@ -133,7 +134,8 @@
 ;
 
 (defn on-message [msg]
-  (let [text (-> msg :text str trim not-empty)
+  (let [cid (cid msg)
+        text (-> msg :text str trim not-empty)
         [cmd par] (when text (parse-command text))
         locat (:location msg)]
     (cond
@@ -158,7 +160,7 @@
       locat
         (do
           ;; TODO: save locat history
-          (sess-save (cid msg) {:locat locat})
+          (sess-save cid {:locat locat})
           (cmd-near msg nil))
       :else
         nil)))
