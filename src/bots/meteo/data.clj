@@ -41,7 +41,7 @@
 
 
 (def SUBS-COLL "mbot_subs")
-;; {_id, ts, cid:cid, ord:ord,
+;; {_id, ts, cid:cid, ord:ord, del:bool
 ;;   time:"16:45", days:"01233456", ids:["uiii","npsd",...] }
 ;; idx: cid, idx: time
 
@@ -98,6 +98,20 @@
     (mc/insert (dbc) SUBS-COLL
       {:ts (tc/now) :cid cid :ord ord :time time :days days :ids ids})))
 ;
+
+(defn subs-update! [cid ord params]
+  (try-warn "subs-update"
+    (mc/update (dbc) SUBS-COLL
+      {:cid cid :ord ord}
+      {:$set (merge {:ts (tc/now)} params)})))
+;
+
+(defn subs-remove! [cid ord]
+  (try-warn "subs-remove"
+    (mc/remove (dbc) SUBS-COLL {:cid cid :ord ord})))
+;
+
+
 
 ;; ;; ;; ;; ;;
 

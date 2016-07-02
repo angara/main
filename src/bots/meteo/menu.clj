@@ -17,14 +17,12 @@
     ; [bots.meteo.util :refer [format-st]]))
 ;
 
-
 (defn sect-favs [ids]
   (when-let [sts (not-empty (st-ids ids [:_id :title :ll]))]
     (str "В избранном:\n"
-      (s/join "" (map #(str " *" (:title %) "*\n") sts))
-      "\n")))
+      (s/join ", " (map #(str "*" (:title %) "*") sts))
+      ".\n")))
 ;
-
 
 (defn wdf [ddays]
   (s/join "," (map wd-map (filter (set ddays) "1234560"))))
@@ -41,11 +39,10 @@
 (defn cmd-menu [msg par]
   (let [cid (cid msg)
         ids (get-favs cid)
-        sbs (get-subs cid)]
+        sc  (count (get-subs cid))]
     (tg/send-message apikey cid
       { :text (str
                 (sect-favs ids)
-                (sect-subs sbs)
                 "\n")
         :parse_mode "Markdown"
         :reply_markup
@@ -53,8 +50,8 @@
             [
              [{:text "Все станции" :callback_data "all"}
               {:text "Избранное"   :callback_data "favs"}]
-             [{:text "Рассылки"    :callback_data "subs"}
-              {:text "Добавить"    :callback_data "adds"}]]}})))
+             [{:text (str "Рассылки (" sc ")") :callback_data "subs"}]]}})))
+              ; {:text "Добавить"    :callback_data "adds"}]]}})))
 ;
 
 ;;.

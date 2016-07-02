@@ -77,18 +77,19 @@
 ;
 
 (defn cmd-near [msg par]
-  (let [locat (:locat (sess-params (cid msg)) (default-locat))
+  (let [cid (cid msg)
+        locat (:locat (sess-params cid) (default-locat))
         sts   (st-near (locat-ll locat) (q-st-alive))]
     (when (seq sts)
       (tg/send-text apikey cid "Ближайшие:")
-      (next-st (cid msg) sts))))
+      (next-st cid sts))))
 ;
 
 (defn cmd-favs [msg par]
   (let [cid (cid msg)
         favs (or (not-empty (get-favs cid)) par)]
     (tg/send-text apikey cid
-      (str "В избранном [" (count favs) "]:"))
+      (str "В избранном (" (count favs) "):"))
     (next-st cid favs)))
 ;
 
@@ -100,7 +101,6 @@
         (tg/send-message apikey cid
           {:text (format-st st) :parse_mode "Markdown"})))))
 ;
-
 
 
 (defn st-search [msg txt]
