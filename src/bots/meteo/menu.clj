@@ -41,9 +41,10 @@
         ids (get-favs cid)
         sc  (count (get-subs cid))]
     (tg/send-message apikey cid
-      { :text (str
+      { :text (or
                 (sect-favs ids)
-                "\n")
+                "Для добавления рассылки добавьте в Избранное интересующие станции.")
+
         :parse_mode "Markdown"
         :reply_markup
           {:inline_keyboard

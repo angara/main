@@ -54,8 +54,8 @@
 (defn has-more? [cid]
   (seq (:sts (sess-params cid))))
 
-(defn next-st [cid sts]
-  (when-let [sts (or sts (:sts (sess-params cid)))]
+(defn next-st [cid]
+  (when-let [sts (:sts (sess-params cid))]
     (let [favs (get-favs cid)
           st   (first sts)
           st   (if (map? st) st (st-by-id st))
@@ -73,7 +73,8 @@
         ids (map :_id (st-find (q-st-alive) [:_id]))]
     (when (seq ids)
       (tg/send-text apikey cid "Все станции:")
-      (next-st cid ids))))
+      (sess-save cid {:sts ids})
+      (next-st cid))))
 ;
 
 (defn cmd-near [msg par]
@@ -82,15 +83,20 @@
         sts   (st-near (locat-ll locat) (q-st-alive))]
     (when (seq sts)
       (tg/send-text apikey cid "Ближайшие:")
-      (next-st cid sts))))
+      (sess-save cid {:sts sts})
+      (next-st cid))))
 ;
 
-(defn cmd-favs [msg par]
+(defn cmd-favs [msg]
   (let [cid (cid msg)
-        favs (or (not-empty (get-favs cid)) par)]
-    (tg/send-text apikey cid
-      (str "В избранном (" (count favs) "):"))
-    (next-st cid favs)))
+        favs (not-empty (get-favs cid))]
+    (sess-save cid {:sts favs})
+    (if favs
+      (do
+        (tg/send-text apikey cid
+          (str "В избранном (" (count favs) "):"))
+        (next-st cid))
+      (tg/send-text apikey cid "Нет выбранных станций."))))
 ;
 
 (defn cmd-show [msg]
@@ -115,7 +121,9 @@
         locat  (:locat (sess-params (cid msg)) (default-locat))
         sts (filter fnm (st-near (locat-ll locat) (q-st-alive)))]
     (if (seq sts)
-      (next-st (cid msg) sts)
+      (do
+        (sess-save cid {:sts sts})
+        (next-st (cid msg)))
       (tg/send-text apikey (cid msg) "Станции не найдены.\n/help" true))))
 ;
 
@@ -135,7 +143,7 @@
           "help"  (cmd-help msg par)
           "all"   (cmd-all  msg par)
           "near"  (cmd-near msg par)
-          "favs"  (cmd-favs msg nil)
+          "favs"  (cmd-favs msg)
           "subs"  (cmd-subs msg par)
           "adds"  (cmd-adds msg par)
                   (cmd-help msg nil))
@@ -176,9 +184,9 @@
                       (merge
                         {:chat_id cid :message_id (:message_id msg)}
                         (st-kbd par false (has-more? cid)))))
-        "more" (do (next-st  cid nil) nil)
+        "more" (do (next-st cid) nil)
         "all"  (do (cmd-all  msg nil) nil)
-        "favs" (do (cmd-favs msg nil) nil)
+        "favs" (do (cmd-favs msg) nil)
         "subs" (do (cmd-subs msg nil) nil)
         "adds" (do (cmd-adds msg nil) nil)
         "sbed" (do (on-sbed  msg par params) nil)
