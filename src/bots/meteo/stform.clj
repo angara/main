@@ -79,16 +79,16 @@
           (str (md-link d gl) "\n"))
         (when-let [a (:addr st)]
           (str (md-link a gl) "\n"))
-        ;(when dis (str (format " (%.1f км)" (/ dis 1000)) "\n"))
         "'" (tmf ts) "\n"
         "\n"
-        (when (and ts (tc/after? ts fresh))
+        (if (and ts (tc/after? ts fresh))
           (str
             (format-t (:t data))
             (format-h (:h data))
             (format-p (:p data))
             (format-wind (:w data) (:g data) (:b data))
-            (format-water (:wt data) (:wl data))))))))
+            (format-water (:wt data) (:wl data)))
+          (str "Нет данных."))))))
 ;
 
 ;;.

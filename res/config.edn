@@ -59,6 +59,7 @@
     ;; t2
     :meteo38bot {
       :apikey "tlg-api-key"
+      :sender-sleep 5000
       :poll-limit 100
       :poll-timeout 3     ;; must be less than socket-timeout!
     }

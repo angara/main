@@ -26,7 +26,7 @@
 (defn sess-cleanup [& [time-interval]]
   (let [age (tc/minus (tc/now) (or time-interval (tc/days 3)))]
     (doseq [[cid {ts :ts}] @sess-store]
-      (when (and ts (< ts age))
+      (when (and ts (tc/before? ts age))
         (swap! sess-store dissoc cid)))))
 ;
 
@@ -109,6 +109,12 @@
 (defn subs-remove! [cid ord]
   (try-warn "subs-remove"
     (mc/remove (dbc) SUBS-COLL {:cid cid :ord ord})))
+;
+
+(defn subs-hhmm [hhmm]
+  (try-warn "subs-hhmm"
+    (mq/with-collection (dbc) SUBS-COLL
+      (mq/find {:time hhmm :del {:$ne true}}))))
 ;
 
 

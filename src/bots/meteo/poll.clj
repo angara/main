@@ -26,8 +26,6 @@
 ;
 
 
-(def running-flag (atom false))
-
 (defn update-loop [mbot cnf dispatcher]
   (let [token (:apikey cnf)
         poll-limit (:poll-limit cnf 100)
