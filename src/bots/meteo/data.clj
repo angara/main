@@ -1,7 +1,9 @@
 
 (ns bots.meteo.data
+  (:import
+    [com.mongodb DuplicateKeyException])
   (:require
-    [taoensso.timbre :refer [warn]]
+    [taoensso.timbre :refer [warn debug]]
     [mount.core :refer [defstate]]
     [clj-time.core :as tc]
     [monger.collection :as mc]
@@ -11,6 +13,8 @@
     [mdb.core :refer [dbc]]))
 ;
 
+
+(def USER_TRACK_LL_NUM 1000)
 
 (defonce sess-store (atom {}))
   ;; {sid {params}}
@@ -32,9 +36,10 @@
 
 
 (def LOG-COLL "mbot_log")
-;; {ts ll[]
-;;  data
-;; TODO
+;; {ts ll[] data}
+
+(def USER-COLL "mbot_user")
+;; {_id:tg-id, ts:<last>. start:{ts:ts, group:par}, locs: [{ts:ts ll:[]} ... ]}
 
 (def FAVS-COLL "mbot_favs")
 ;; {_id: cid, ts:ts, favs:[...]}
@@ -45,6 +50,25 @@
 ;;   time:"16:45", days:"01233456", ids:["uiii","npsd",...] }
 ;; idx: cid, idx: time
 
+
+(defn start-user [uid data]
+  (try
+    (mc/insert (dbc) USER-COLL
+      (merge {:_id uid :ts (tc/now)} data))
+    (catch DuplicateKeyException e
+      (debug "start-user duplicate:" uid (-> data :start :group)))
+    (catch Exception e
+      (warn "start-user:" e))))
+;
+
+(defn user-track [uid ll]
+  (try
+    (mc/update (dbc) USER-COLL {:_id uid}
+      {:$push {:locs {:$each [{:ts (tc/now) :ll ll}]
+                      :$slice USER_TRACK_LL_NUM}}})
+    (catch Exception e
+      (warn "user-track:" e))))
+;
 
 (defn mbot-log [msg]
   (let [{lat :latitude lng :longitude} (-> msg :message :location)
@@ -58,6 +82,8 @@
 (defn ensure-indexes []
   (mc/ensure-index (dbc) LOG-COLL  (array-map :ts 1))
   (mc/ensure-index (dbc) LOG-COLL  (array-map :ll "2dsphere"))
+  ;
+  ;; user-coll
   ;
   (mc/ensure-index (dbc) SUBS-COLL (array-map :cid  1))
   (mc/ensure-index (dbc) SUBS-COLL (array-map :time 1)))

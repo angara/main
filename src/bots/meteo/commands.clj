@@ -12,7 +12,9 @@
       [apikey cid inkb q-st-alive
        main-buttons locat-ll default-locat default-favs]]
     [bots.meteo.data :refer
-      [sess-params sess-save get-favs favs-add! favs-del!]]
+      [ sess-params sess-save
+        get-favs favs-add! favs-del!
+        start-user user-track]]
     [bots.meteo.menu :refer [cmd-menu]]
     [bots.meteo.subs :refer [cmd-adds cmd-subs on-sbed]]
     [bots.meteo.stform :refer [format-st]]))
@@ -35,6 +37,12 @@
      :reply_markup main-buttons}))
 ;
 
+
+(defn cmd-start [msg par]
+  ;; telegram.me/bot_name?startgroup=...
+  (start-user (-> msg :from :id) {:start {:ts (tc/now) :group par}})
+  (cmd-help msg par))
+;
 
 (defn st-kbd [st-id fav? more?]
   (let [k-fav
@@ -141,7 +149,7 @@
     (cond
       cmd
         (condp = (lower-case cmd)
-          "start" (cmd-help msg par)  ;; NOTE: change text?
+          "start" (cmd-start msg par)
           "help"  (cmd-help msg par)
           "all"   (cmd-all  msg par)
           "near"  (cmd-near msg par)
@@ -159,8 +167,8 @@
                       (cmd-help msg nil))))
       locat
         (do
-          ;; TODO: save locat history
           (sess-save cid {:locat locat})
+          (user-track (-> msg :from :id) (locat-ll locat))
           (cmd-near msg nil))
       :else
         nil)))
