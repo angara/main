@@ -28,7 +28,7 @@
   (start-user
     (-> msg :from :id)
     { :start {:ts (tc/now) :group par}
-      :forn (:from msg)})
+      :from (:from msg)})
 
   (tg/send-message apikey (cid msg)
     {:text
