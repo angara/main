@@ -22,6 +22,7 @@
         ids  (reduce  #(into %1 (:ids %2))  #{}  subs)
         stm  (into {} (for [s (st-ids ids)] [(:_id s) s]))]
     (doseq [s subs :let [cid (:cid s) ids (:ids s)]]
+      (debug "time:" tm "subs:" (count subs) "ids:" (count ids))
       (doseq [id ids]
         (tg/send-message apikey cid
           {:text (format-st (stm id)) :parse_mode "Markdown"})))))

@@ -9,17 +9,10 @@
     [taoensso.timbre :refer [info error]]
     [mount.core :refer [defstate start-with-args]]
     [mlib.conf :refer [conf]]
-    [web.srv]))
+    [web.srv]
+    [bots.meteo.core]))
 ;
 
-; (defstate main
-;   :start
-;     identity)
-;   ; :stop
-  ;   (when (-> conf :http :stop-uri)
-  ;     (info "exiting")
-  ;     (System/exit 0)))
-;
 
 (defn -main [& args]
   (if-let [rc (-> args first slurp edn/read-string)]

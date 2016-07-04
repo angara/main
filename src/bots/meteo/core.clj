@@ -2,7 +2,8 @@
 (ns bots.meteo.core
   (:require
     [bots.meteo.data]
-    [bots.meteo.poll]))
+    [bots.meteo.poll]
+    [bots.meteo.sender]))
 ;
 
 ;; BotFather:
