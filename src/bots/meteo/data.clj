@@ -39,7 +39,7 @@
 ;; {ts ll[] data}
 
 (def USER-COLL "mbot_user")
-;; {_id:tg-id, ts:<last>. start:{ts:ts, group:par}, locs: [{ts:ts ll:[]} ... ]}
+;; {_id:tg-id, ts:<last>. start:{ts:ts, param:par}, locs: [{ts:ts ll:[]} ... ]}
 
 (def FAVS-COLL "mbot_favs")
 ;; {_id: cid, ts:ts, favs:[...]}

@@ -27,7 +27,7 @@
   ;; TODO: shoulb be in cmd-start !!!
   (start-user
     (-> msg :from :id)
-    { :start {:ts (tc/now) :group par}
+    { :start {:ts (tc/now) :param par}
       :from (:from msg)})
 
   (tg/send-message apikey (cid msg)
