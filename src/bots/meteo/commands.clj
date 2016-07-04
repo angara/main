@@ -23,6 +23,13 @@
 
 
 (defn cmd-help [msg par]
+
+  ;; TODO: shoulb be in cmd-start !!!
+  (start-user
+    (-> msg :from :id)
+    { :start {:ts (tc/now) :group par}
+      :forn (:from msg)})
+
   (tg/send-message apikey (cid msg)
     {:text
       (str
@@ -40,10 +47,10 @@
 
 (defn cmd-start [msg par]
   ;; telegram.me/bot_name?startgroup=...
-  (start-user 
-    (-> msg :from :id)
-    { :start {:ts (tc/now) :group par}
-      :forn (:from msg)})
+  ; (start-user
+  ;   (-> msg :from :id)
+  ;   { :start {:ts (tc/now) :group par}
+  ;     :forn (:from msg)})
   (cmd-help msg par))
 ;
 
