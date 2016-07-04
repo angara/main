@@ -1,5 +1,6 @@
 
 (ns bots.meteo.stform
+  (:import [java.util Locale])
   (:require
     [clojure.string :as s]
     [clj-time.core :as tc]
@@ -24,7 +25,7 @@
 ;
 
 (defn nf [x]
-  (let [n (format "%.1f"  (float x))]
+  (let [n (String/format Locale/ROOT "%.1f" (to-array [(float x)]))]
     (if-let [m (re-matches #"^(.+)(\.0*)$" n)]
       (m 1)
       n)))
