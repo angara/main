@@ -10,7 +10,7 @@
     [cheshire.core :as json]
     [cheshire.generate :refer [add-encoder]])
   (:import
-    java.security.MessageDigest))
+    [java.security MessageDigest]))
 ;
 
 
@@ -66,7 +66,7 @@
 ;
 
 (defn urand32 []
-  (reduce #(+ (* 256 %1) (bit-and 255 %2))) 0 (urand-bytes 4))
+  (reduce #(+ (* 256 %1) (bit-and 255 %2)) 0 (urand-bytes 4)))
 ;
 
 
@@ -137,10 +137,9 @@
 (defn calc-hash
   "calculate hash byte array of utf string using hash-function"
   [hash-name s]
-  (doto
-    (MessageDigest/getInstance hash-name)
-    (.update (.getBytes s "UTF-8"))
-    (.digest)))
+  (let [md (MessageDigest/getInstance hash-name)]
+    (.update md (.getBytes s "UTF-8"))
+    (.digest md)))
 ;
 
 (defn ^String sha256
