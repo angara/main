@@ -17,7 +17,10 @@
 
 
 (defn worker [apikey tm]
-  (let [dc   (week-dayc (tc/day-of-week (tc/now)))
+  (let [day-of-week 
+          (tc/day-of-week 
+            (tc/to-time-zone (tc/now) (tc/time-zone-for-id (:tz conf))))
+        dc   (week-dayc day-of-week)
         subs (filter  #(some #{dc} (:days %))  (subs-hhmm tm))
         ids  (reduce  #(into %1 (:ids %2))  #{}  subs)
         stm  (into {} (for [s (st-ids ids)] [(:_id s) s]))]
