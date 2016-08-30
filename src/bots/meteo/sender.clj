@@ -17,8 +17,8 @@
 
 
 (defn worker [apikey tm]
-  (let [day-of-week 
-          (tc/day-of-week 
+  (let [day-of-week
+          (tc/day-of-week
             (tc/to-time-zone (tc/now) (tc/time-zone-for-id (:tz conf))))
         dc   (week-dayc day-of-week)
         subs (filter  #(some #{dc} (:days %))  (subs-hhmm tm))
@@ -36,9 +36,11 @@
   (loop [prev ""]
     (let [tm (hhmm (tc/now))]
       (when (not= prev tm)
-        (do
+        (try
           (worker (:apikey cnf) tm)
-          (sess-cleanup)))
+          (sess-cleanup)
+          (catch Exception e
+            (warn "minute-loop:" e))))
       (when @run-flag
         (Thread/sleep (:sender-sleep cnf))
         (recur tm)))))

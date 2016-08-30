@@ -8,7 +8,7 @@
 ; https://github.com/boot-clj/boot/wiki/Community-Tasks
 
 
-(def VER {:name "angara.net/main" :version "0.7.0"})
+(def VER {:name "angara.net/main" :version "0.7.2"})
 
 (set-env!
   :resource-paths #{"res"}
@@ -20,31 +20,31 @@
   '[
     [org.clojure/clojure "1.8.0"]
     [org.clojure/tools.namespace "0.2.11" :scope "test"]
-    [com.taoensso/timbre "4.4.0"]   ; https://github.com/ptaoussanis/timbre
+    [com.taoensso/timbre "4.7.4"]   ; https://github.com/ptaoussanis/timbre
     [org.clojure/core.cache "0.6.5"]
 
     [clj-time "0.12.0"]
-    [clj-http "3.1.0"]
+    [clj-http "3.2.0"]
 
     [ring/ring-core "1.5.0"]
     [ring/ring-json "0.4.0"]
     [ring/ring-headers "0.2.0"]
     [ring/ring-jetty-adapter "1.5.0"]
 
-    [cheshire "5.6.2"]
+    [cheshire "5.6.3"]
     [compojure "1.5.1"]
     ;; [hiccup "1.0.5"]
-    [rum "0.9.1"]
+    [rum "0.10.6"]
     [garden "1.3.2"]
     [mount "0.1.10"]
 
     [com.novemberain/monger "3.0.2"]
     [org.clojure/java.jdbc "0.6.1"]
-    [org.postgresql/postgresql "9.4.1208"]
+    [org.postgresql/postgresql "9.4.1209"]
     [com.mchange/c3p0 "0.9.5.2"]
-    [honeysql "0.7.0"]  ; https://github.com/jkk/honeysql
+    [honeysql "0.8.0"]  ; https://github.com/jkk/honeysql
 
-    [org.martinklepsch/boot-garden "1.3.0-0" :scope "test"]])
+    [org.martinklepsch/boot-garden "1.3.2-0" :scope "test"]])
     ;; [com.draines/postal "1.11.3"]
     ;; [enlive "1.1.5"]     ;; https://github.com/cgrand/enlive
 
