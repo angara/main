@@ -72,8 +72,8 @@
 
 ;;;;;; edn ;;;;;;
 
-(defn edn-slurp [file]
-  (-> file slurp edn/read-string))
+(defn edn-read [file]
+  (edn/read-string (slurp file)))
 ;
 
 (defn edn-resource [res]
@@ -105,7 +105,7 @@
 (defn ^String str-head
   "Returns the first n characters of s."
   [n ^String s]
-  (if (> (count s) n) s (.substring s (- 0 n))))
+  (if (>= n (.length s)) s (.substring s 0 n)))
 ;
 
 (defn ^String str-tail
@@ -142,6 +142,16 @@
     (.digest md)))
 ;
 
+(defn ^String md5
+  "returns md5 lowercase string calculated on utf-8 bytes of input"
+  [^String s]
+  (apply str (map hexbyte (calc-hash "MD5" s))))
+
+(defn ^String sha1
+  "returns sha1 lowercase string calculated on utf-8 bytes of input"
+  [^String s]
+  (apply str (map hexbyte (calc-hash "SHA-1" s))))
+
 (defn ^String sha256
   "returns sha256 lowercase string calculated on utf-8 bytes of input"
   [^String s]
@@ -165,14 +175,6 @@
   (let [maps (filter identity maps)]
     (assert (every? map? maps))
     (apply merge-with deep-merge* maps)))
-;
-
-;;;;;; macros ;;;;;;
-
-(defmacro try-warn [label & body]
-  `(try ~@body
-    (catch Exception e#
-      (~'warn ~label (or (.getMessage e#) e#)))))
 ;
 
 ;;.

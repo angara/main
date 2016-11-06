@@ -8,13 +8,13 @@
     [monger.conversion :refer [from-db-object]]
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
-    [mdb.core :refer [connect disconnect]]
-    [db.util :refer [try-warn]]))
+    [mdb.core :refer [connect disconnect try-warn]]))
 ;
+
 
 (defstate mdb
   :start
-    (-> conf :db :meteo connect)
+    (connect (-> conf :mdb :meteo))
   :stop
     (disconnect mdb))
 ;

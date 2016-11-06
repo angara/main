@@ -1,10 +1,10 @@
 #!/bin/bash
 
-PROD_PATH="/www/main"
-PROD_VAR="/www/main/var"
+PIDFILE="var/.pid"
+WDIR=$(dirname ${BASH_SOURCE[0]})
+PID=$(cat ${WDIR}/${PIDFILE})
 
-PID=$(cat $PROD_VAR/_pid)
-
+echo "kill pid:" $PID
 kill $PID
 
 #.

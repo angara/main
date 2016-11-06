@@ -2,8 +2,6 @@
 (ns html.frame
   (:require
     [rum.server-render :refer [render-static-markup]]
-    ; [hiccup.core :refer [html]]
-    ; [hiccup.page :refer [html5]]
     [mlib.conf :refer [conf]]
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [one-pix-src yandex-metrika mailru-top analytics]]

@@ -1,10 +1,9 @@
 
 (ns mlib.telegram
   (:require
-    [taoensso.timbre :refer [debug info warn]]
+    [taoensso.timbre :refer [info warn]]
     [clj-http.client :as http]
-    [mlib.conf :refer [conf]]
-    [mlib.core :refer [try-warn]]))
+    [mlib.conf :refer [conf]]))
 ;
 
 
@@ -38,6 +37,17 @@
       (when markdown? [:parse_mode "Markdown"]))))
 ;
 
+(defn send-md [token chat text]
+  (api token :sendMessage
+    {:chat_id chat :text text :parse_mode "Markdown"}))
+;
+
+(defn send-html [token chat text]
+  (api token :sendMessage 
+    {:chat_id chat :text text :parse_mode "HTML"}))
+;
+
+
 
 (defn send-message [token chat params]
   (api token :sendMessage (merge {:chat_id chat} params)))
@@ -47,7 +57,7 @@
   "params should be stringable (json/generate-string)
     or File/InputStream/byte-array"
   [token method mpart & [{timeout :timeout}]]
-  (try-warn "send-file:"
+  (try
     (let [tout (or timeout socket-timeout)
           res (:body
                 (http/post (api-url token method)
@@ -60,7 +70,9 @@
           ;
       (if (:ok res)
         (:result res)
-        (info "send-file:" method res)))))
+        (info "send-file:" method res)))
+    (catch Exception e
+      (warn "send-file:" method e))))
 ;
 
 

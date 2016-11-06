@@ -3,29 +3,13 @@
 ;;
 
 {
+  :dev true
 
   :tz "Asia/Irkutsk"
 
-  :dev true
-
   :mdb {
-    :uri "mongodb://set.correct.host.name:27017/angara"
-
-    ; :host "localhost"
-    ; :port 27017
-    ; :db "angara"
-    ; ;; user "user"
-    ; ;; pass "pass"
-    ; :opts {
-    ;   :connections-per-host 20
-    ;   :threads-allowed-to-block-for-connection-multiplier 11
-    ; }
-  }
-
-  :db {
-    :meteo {
-      :uri "mongodb://localhost:27017/meteo"
-    }
+    :angara { :uri "mongodb://localhost:22022/angara" }
+    :meteo  { :uri "mongodb://localhost:22022/meteo"  }
   }
 
   ;; https://github.com/ring-clojure/ring/blob/master/ring-jetty-adapter/src/ring/adapter/jetty.clj
@@ -35,11 +19,20 @@
     :join? false
   }
 
-  ;; http://www.mchange.com/projects/c3p0/
+  ;; https://github.com/brettwooldridge/HikariCP
   :psql {
-    :jdbc "jdbc:postgresql://localhost:5432/angara"
-    :user "angara"
-    :password ""
+    :jdbc-url "jdbc:postgresql://localhost:5516/angara"
+    ; :connection-timeout 30000
+    ; :idle-timeout 600000
+    ; :max-lifetime 1800000
+    ; :minimum-idle 10
+    ; :maximum-pool-size  10
+    ; :adapter "postgresql"
+    :username "angara"
+    :password "PASSWORD"
+    ; :database-name "database"
+    ; :server-name "localhost"
+    ; :port-number 5432
   }
 
   :yandex-metrika     "12139321"
@@ -48,11 +41,6 @@
 
   :slowreq {
     :ms 1000
-  }
-
-  :sysctl {
-    :prefix "/_sysctl"
-    :psw "1"
   }
 
   :bots {

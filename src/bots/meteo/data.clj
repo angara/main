@@ -8,11 +8,8 @@
     [clj-time.core :as tc]
     [monger.collection :as mc]
     [monger.query :as mq]
-
-    [mlib.core :refer [try-warn]]
-    [mdb.core :refer [dbc]]))
+    [mdb.core :refer [dbc try-warn]]))
 ;
-
 
 (def USER_TRACK_LL_NUM 1000)
 
@@ -105,9 +102,10 @@
 ;
 
 (defn favs-del! [cid st-id]
-  (try-warn "favs-del:"
+  (try
     (mc/update-by-id (dbc) FAVS-COLL cid
-      {:$pull {:favs st-id} :$set {:ts (tc/now)}})))
+      {:$pull {:favs st-id} :$set {:ts (tc/now)}})
+    (catch Exception e (warn "favs-del:" e))))
 ;
 
 ;; ;; ;; ;; ;;
@@ -142,7 +140,6 @@
     (mq/with-collection (dbc) SUBS-COLL
       (mq/find {:time hhmm :del {:$ne true}}))))
 ;
-
 
 
 ;; ;; ;; ;; ;;

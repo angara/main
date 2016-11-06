@@ -17,36 +17,18 @@
 ;
 
 
+(defmacro try-warn [label & body]
+  `(try ~@body
+    (catch Exception e#
+      (~'warn ~label e#))))
+;
+
 (defn id_id [r]
   (if-let [id (:_id r)]
     (assoc (dissoc r :_id) :id id)
     r))
 ;
 
-
-(def seq-coll      "seq")
-
-; (defn connect []
-;   (let [cnf (:mdb conf)
-;         ^ServerAddress sa (mg/server-address (:host cnf) (:port cnf))
-;         ^MongoOptions opts (mg/mongo-options (:opts cnf))
-;         conn (mg/connect sa opts)
-;         db   (mg/get-db conn (:database cnf))
-;         user (:user cnf)
-;         pass (.toCharArray (:pass cnf ""))]
-;
-;       ; https://github.com/clojurewerkz/monger.docs/blob/master/articles/connecting.md
-;       ; (require '[monger.credentials :as mcr])
-;
-;       ; (let [creds (mcr/for "username" "db-name" "pa$$w0rd")
-;       ;       conn  (mg/connect-with-credentials "127.0.0.1" creds)]
-;       ;       )
-;
-;     (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
-;     ; http://api.mongodb.org/java/current/com/mongodb/WriteConcern.html
-;     ; WriteConcern/NORMAL, WriteConcern/REPLICAS_SAFE
-;     db))
-; ;
 
 (defn connect [cnf]
   (-> (:tz conf "Asia/Irkutsk") DateTimeZone/forID DateTimeZone/setDefault)
@@ -59,17 +41,17 @@
   (mg/disconnect (:conn mdb)))
 ;
 
-(defn indexes [mdb]
-  (let [db (:db mdb)])
-  ; (mc/ensure-index db user-coll {:auth 1})
-  ; (mc/ensure-index db story-coll (array-map :locs 1 :ct 1))
-  ; (mc/ensure-index db story-coll (array-map :ts 1))
-  mdb)
-;
+; (defn indexes [mdb]
+;   (let [db (:db mdb)])
+;   ; (mc/ensure-index db user-coll {:auth 1})
+;   ; (mc/ensure-index db story-coll (array-map :locs 1 :ct 1))
+;   ; (mc/ensure-index db story-coll (array-map :ts 1))
+;   mdb)
+; ;
 
 (defstate mdb
   :start
-    (-> conf :mdb connect indexes)
+    (connect (-> conf :mdb :angara))
   :stop
     (disconnect mdb))
 ;
@@ -77,13 +59,18 @@
 (defn dbc []
   (:db mdb))
 
+;;; ;;; ;;; ;;; ;;;
+
 (defn new_id [] (ObjectId.))
 
 (defn oid [s]
   (try (ObjectId. s) (catch Exception e (str s))))
 
 
-;;; ;;; ;;;
+;;; ;;; ;;; ;;; ;;;
+
+(def seq-coll      "seq")
+
 
 (defn next-serial [seq-name]
   (try
@@ -93,7 +80,6 @@
                 {:return-new true :upsert true})))
     (catch Exception e (warn "db/next-serial:" e))))
 ;
-
 
 (defn next-sn [sn]
   (try

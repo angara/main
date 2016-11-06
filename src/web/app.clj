@@ -23,7 +23,8 @@
     [html.views :as views]
     [html.search :as search]
     [front.core :refer [main-page]]
-    [web.sysctl :as sysctl]))
+    [web.sysctl :as sysctl]
+    [meteo.old-ws :as old-ws]))
 ;
 
 (defn wrap-user-required [handler]
@@ -44,11 +45,13 @@
 
 (defn make-routes []
   (routes
-    (GET  "/"         _  main-page)
-    (GET  "/search"   _  (redirect "/yasearch"))
-    (GET  "/yasearch" _  search/yasearch)
+    (GET  "/"         _ main-page)
+    (GET  "/search"   _ (redirect "/yasearch"))
+    (GET  "/yasearch" _ search/yasearch)
 
-    (context (-> conf :sysctl :prefix) _ sysctl/routes)
+    (context "/meteo/old-ws" _ old-ws/routes)
+
+    ; (context (-> conf :sysctl :prefix) _ sysctl/routes)
 
     (if (:dev conf)
       (route/files "/" {:root "tmp/res/public"})
@@ -67,9 +70,10 @@
 
 (defn wrap-user [handler]
   (fn [req]
-    (let [uid (-> req :sess :uid str)
-          user (user-by-id uid FLDS_REQ_USER)]
-      (handler (assoc req :user user)))))
+    (if-let [uid (-> req :sess :uid str not-empty)]
+      (handler (assoc req :user
+                  (user-by-id uid FLDS_REQ_USER)))
+      (handler req))))
 ;
 
 

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # /etc/init/ws-main.conf:
 
 # description   "angara-main service"
@@ -17,11 +16,12 @@
 #   exec /bin/su anga -c "./run"
 # end script
 
-exec java -jar main.jar var/prod.edn >> /var/log/angara/main-out.log 2>&1 &
-PID=$!
-echo $PID > var/_pid
-wait $PID
+STDOUT=/var/log/angara/main-out.log
+STDERR=/var/log/angara/main-err.log
 
-# kill $(cat var/_pid)
+exec java -jar main.jar var/prod.edn >> $STDOUT 2>>$STDERR &
+PID=$!
+echo $PID > var/.pid
+wait $PID
 
 #.
