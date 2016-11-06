@@ -54,7 +54,7 @@
 ; ;
 
 (defn st-data []
-  (let [fresh-ts (tc/minus (tc/now) (tc/months 2))]
+  (let [fresh-ts (tc/minus (tc/now) (tc/hours 2))]
     (try
       (mq/with-collection (db) ST
         (mq/find {:last.ts {:$gt fresh-ts} :pub {:$gt 0}})

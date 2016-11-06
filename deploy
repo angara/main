@@ -12,8 +12,8 @@ JAR="tmp/target/main.jar"
 
 chmod g+r $JAR
 scp $JAR ${PROD_HOST}:${PROD_PATH}
-#scp var/prod.edn ${PROD_HOST}:${PROD_VAR}/
-# scp run stop ${PROD_HOST}:${PROD_PATH}
+scp var/prod.edn ${PROD_HOST}:${PROD_VAR}/
+scp run stop ${PROD_HOST}:${PROD_PATH}
 
 ssh $PROD_HOST $PROD_PATH/stop
 
