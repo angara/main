@@ -96,7 +96,7 @@
         var ymap;
         ymap = new ymaps.Map(METEO.map_div_id, {
           center: [104.276084, 52.270944],
-          zoom: 11,
+          zoom: 10,
           type: 'yandex#hybrid'
         });
         window.ymap = ymap;

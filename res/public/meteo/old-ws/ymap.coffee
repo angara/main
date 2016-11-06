@@ -17,14 +17,14 @@ mmmdd_hhmm = (t) ->
     ""+MON_RU[t.getMonth()]+"."+d02(t.getDate())+" "+d02(t.getHours())+":"+d02(t.getMinutes())
 #-
 
-t_deg = (t) -> 
+t_deg = (t) ->
     t = Math.round(t)
     return (if t > 0 then "+"+t else ""+t)+"&deg;"
 #-
 
-st_hint = (st) -> 
+st_hint = (st) ->
     return "<b style='font-size: 12px;'>"+st.title+"</b>"+
-        "<br/>"+ 
+        "<br/>"+
         "<span style='color:#77b; margin: auto 4px;'>"+
             mmmdd_hhmm(new Date(st.last.ts))+"</span>"
 #-
@@ -91,7 +91,7 @@ $ ->
         ymaps.ready () ->
             ymap = new ymaps.Map(METEO.map_div_id, {
                 center: [104.276084, 52.270944]
-                zoom: 11
+                zoom: 10
                 type: 'yandex#hybrid'
             })
             window.ymap = ymap

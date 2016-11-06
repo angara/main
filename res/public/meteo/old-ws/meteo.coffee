@@ -7,7 +7,7 @@
 
 window.meteo =
   map_div_id:   "mapdiv"
-  st_url:       "/meteo/st"
+  st_url:       "/meteo/old-ws/st"
   last_st_data: null
 #
 

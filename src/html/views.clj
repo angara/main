@@ -188,9 +188,9 @@ google.setOnLoadCallback(function() {
     color: #008000;
   }
 </style>
-"
-)]
-]))
+")]]))
+
+
 
 ;
 
