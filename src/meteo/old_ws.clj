@@ -1,14 +1,15 @@
 
 (ns meteo.old-ws
   (:require
-    ; [rum.server-render :refer [render-static-markup]]
-    ; [mlib.conf :refer [conf]]
-    ; [mlib.http :refer [make-url]]
-    ; [mlib.web.snippets :refer [one-pix-src yandex-metrika mailru-top analytics]]
-    ; [html.util :refer [ficon json-resp inner-html]]))
+    [clj-time.core :as tc]
+    [taoensso.timbre :refer [warn]]
+    [monger.collection :as mc]
+    [monger.query :as mq]
     [compojure.core :refer [GET ANY defroutes]]
     [compojure.route :refer [resources]]
-    [html.frame :refer [html5]]))
+    [mlib.http :refer [json-resp]]
+    [html.frame :refer [html5]]
+    [meteo.db :refer [db ST]]))
 ;
 
 (def BASE "/meteo/old-ws")
@@ -37,13 +38,7 @@
 ;         res.send JSON.stringify data, null, 2
 ; #-
 ;
-; x.meteo_st = (req, res) ->
-;     db.meteo_st().find()
-;         {"last.ts": {"$gt": moment().subtract('hours',2).toDate()}, "pub":{"$gt":0}},
-;         {_id:1, ts:1, last:1, ll:1, elev:1, title:1, addr:1, descr:1, url:1}
-;     .toArray (err, data) -> res.json data
-; #-
-;
+
 ; x.st_series = (req, res) ->
 ;     db.meteo_st().findOne()
 ;         {_id:req.query.st, pub:{$gt:0}}
@@ -53,22 +48,39 @@
 ; #-
 
 
-(defn get-dat [req]
-  (prn "dat.")
-  "dat.text")
+; (defn get-dat [req]
+;   (prn "dat.")
+;   "dat.text")
+; ;
+
+(defn st-data []
+  (let [fresh-ts (tc/minus (tc/now) (tc/months 2))]
+    (try
+      (mq/with-collection (db) ST
+        (mq/find {:last.ts {:$gt fresh-ts} :pub {:$gt 0}})
+        (mq/fields [:_id :ts :last :ll :elev :title :addr :descr :url])
+        (mq/sort (array-map :ts -1))
+        (mq/limit 100))
+      (catch Exception e (warn e)))))
+  ;
 ;
 
-(defn get-st [req])
-;
-
-(defn get-series [req])
+(defn get-series [{{st :st} :params}]
+  (->
+    (try
+      (mc/find-one-as-map (db) ST
+        {:_id st :pub {:$gt 0}}
+        [:_id :series])
+      (catch Exception e (warn e)))
+    (json-resp)
+    (assoc-in [:headers "Access-Control-Allow-Origin"] "*")))
 ;
 
 
 (defroutes routes
   (GET "/"          [] index)
-  (GET "/dat"       [] get-dat)
-  (GET "/st"        [] get-st)
+;  (GET "/dat"       [] get-dat)
+  (GET "/st"        [] (json-resp (st-data)))
   (GET "/st_series" [] get-series)
   (resources "/" {:root (str "public" BASE)}))
 ;
