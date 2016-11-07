@@ -40,7 +40,7 @@
 (defn inkb [] (swap! inline-kbd-serial inc))
 
 
-(def st-alive-days 30)
+(def st-alive-days 7)
 
 (defn q-st-alive []
   { :pub 1
