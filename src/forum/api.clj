@@ -75,7 +75,7 @@
     (when (and uid tid)
       {:ok
         (->
-          (h/update [FORUM_LASTREAD])
+          (h/update FORUM_LASTREAD)
           (h/sset {:watch (if nfy 1 0)})
           (h/where [:= :uid uid] [:= :tid tid])
           exec)})))
@@ -106,7 +106,7 @@
 
 (defn- update-title [tid title & where]
   (let [rc (->
-              (h/update [FORUM_TOPICS])
+              (h/update FORUM_TOPICS)
               (h/sset {:title title})
               (h/where [:= :tid tid])
               (h/merge-where where)
@@ -163,7 +163,7 @@
     (when (and uid tid)
       (let [rc
               (->
-                (h/update [FORUM_TOPICS])
+                (h/update FORUM_TOPICS)
                 (h/sset {:closed closed})
                 (h/where [:= :cuser uid] [:= :tid tid])
                 exec (= 1))]
