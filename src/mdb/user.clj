@@ -7,7 +7,7 @@
     [mlib.conf :refer [conf]]
     [mlib.core :refer [urand-bytes hexbyte]]
     [mlib.time :refer [now-ms]]
-    [mdb.core :refer [dbc]]))
+    [mdb.core :refer [dbc id_id]]))
 ;
 
 (def sess-coll     "sess")
@@ -64,21 +64,21 @@
 (defn user-by-id [uid flds]
   (when uid
     (try
-      (mc/find-map-by-id (dbc) user-coll uid flds)
+      (id_id (mc/find-map-by-id (dbc) user-coll uid flds))
       (catch Exception e (warn "user-by-id:" e)))))
 ;
 
 (defn users-by-ids [uids flds]
   (when-let [uv (not-empty (vec uids))]
     (try
-      (mc/find-maps (dbc) user-coll {:_id {:$in uv}} flds)
+      (map id_id (mc/find-maps (dbc) user-coll {:_id {:$in uv}} flds))
       (catch Exception e (warn "users-by-ids:" e)))))
 ;
 
 (defn user-by-auth [auth flds]
   (when-let [a (str auth)]
     (try
-      (mc/find-one-as-map (dbc) user-coll {:auth a} flds)
+      (id_id (mc/find-one-as-map (dbc) user-coll {:auth a} flds))
       (catch Exception e (warn "db/user-by-auth:" e)))))
 ;
 

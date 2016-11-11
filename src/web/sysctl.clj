@@ -27,7 +27,7 @@
 (defn login [{params :params}]
   (let [uid (:uid params)]
     (if-let [u (user-by-id uid FLDS_REQ_USER)]
-      (let [sid (:_id (sess-new {:uid (:_id u) :login (:login u)}))]
+      (let [sid (:_id (sess-new {:uid uid :login (:login u)}))]
         (sid-resp (rc-text (str u)) sid))
       (rc-text "!uid"))))
 ;

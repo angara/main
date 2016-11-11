@@ -22,6 +22,7 @@
     [html.frame :refer [not-found]]
     [html.views :as views]
     [html.search :as search]
+    [forum.api :as forum-api]
     [front.core :refer [main-page]]
     [web.sysctl :as sysctl]
     [meteo.old-ws :as old-ws]))
@@ -49,7 +50,8 @@
     (GET  "/search"   _ (redirect "/yasearch"))
     (GET  "/yasearch" _ search/yasearch)
 
-    (context "/meteo/old-ws" _ old-ws/routes)
+    (context "/forum/api"     _ forum-api/routes)
+    (context "/meteo/old-ws"  _ old-ws/routes)
 
     ; (context (-> conf :sysctl :prefix) _ sysctl/routes)
 
