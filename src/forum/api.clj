@@ -163,17 +163,17 @@
 (defn topic-state [{user :user params :params}]
   (let [uid (-> user :id to-int)
         tid (-> params :tid to-int)
-        closed (-> params :closed boolean)]
+        close (-> params :close (= "true"))]
     (when (and uid tid)
       (let [rc
               (->
                 (h/update FORUM_TOPICS)
-                (h/sset {:closed closed})
-                (h/where [:= :cuser uid] [:= :tid tid])
+                (h/sset {:closed close})
+                (h/where [:= :owner uid] [:= :tid tid])
                 exec (= 1))]
         (json-resp
           (if rc
-            {:ok 1 :tid tid :state (if closed "closed" "opened")}
+            {:ok 1 :tid tid :state (if close "closed" "opened")}
             {:err :not_found :msg "Тема не найдена."}))))))
 ;
 
