@@ -11,7 +11,7 @@
     [compojure.core :refer [GET POST ANY defroutes]]
     [mlib.http :refer [json-resp]]
     [mlib.core :refer [to-int]]
-    [sql.core :refer [exec]]))
+    [sql.core :refer [fetch exec]]))
 ;
 
 (def FORUM_LASTREAD (keyword "forum_lastread"))
@@ -54,10 +54,10 @@
 
 (defn user-role-set [uid]
   (->
-    (h/select [:roles])
-    (h/from [USERS])
+    (h/select :roles)
+    (h/from USERS)
     (h/where [:= :uid uid])
-    exec first :roles str set))
+    fetch first :roles str set))
 ;
 
 
@@ -73,12 +73,13 @@
         tid (-> params :tid to-int)
         nfy (-> params :nfy not-empty)]
     (when (and uid tid)
-      {:ok
-        (->
-          (h/update FORUM_LASTREAD)
-          (h/sset {:watch (if nfy 1 0)})
-          (h/where [:= :uid uid] [:= :tid tid])
-          exec)})))
+      (json-resp
+        {:ok
+          (->
+            (h/update FORUM_LASTREAD)
+            (h/sset {:watch (if nfy 1 0)})
+            (h/where [:= :uid uid] [:= :tid tid])
+            exec)}))))
 ;
 
 
@@ -106,30 +107,33 @@
 
 (defn- update-title [tid title & where]
   (let [rc (->
+              (apply h/where [:= :tid tid] where)
               (h/update FORUM_TOPICS)
               (h/sset {:title title})
-              (h/where [:= :tid tid])
-              (h/merge-where where)
               exec (= 1))]
     (if rc
-      {:ok 1 :title title}
-      {:err :update_failed :msg "Невозможно изменить заголовок темы."})))
+      { :ok 1
+        :title title}
+      { :err :update_failed
+        :msg "Невозможно изменить заголовок темы."})))
 ;
 
 (defn topic-title [{user :user params :params}]
   (let [uid (-> user :id to-int)
         tid (-> params :tid to-int)]
     (when (and uid tid)
-      (if-let [title (-> params :nfy str s/trim correct-title)]
-        (if ((user-role-set uid) ROLE_FORUM)
-          (update-title tid title)
-          (update-title tid title
-            [:= :closed false]
-            [:> :ctime (tc/minus (tc/now) FORUM_EDIT_AGE)]))
+      (json-resp
+        (if-let [title (-> params :title str s/trim correct-title)]
+          (if ((user-role-set uid) ROLE_FORUM)
+            (update-title tid title)
+            (update-title tid title
+              [:= :owner uid]
+              [:= :closed false]
+              [:> :created (tc/minus (tc/now) FORUM_EDIT_AGE)]))
+          ;
+          {:err :bad_data :msg "Недопустимый текст заголовока."})))))
+          ;
         ;
-        {:err :bad_data :msg "Недопустимый текст заголовока."}))))
-        ;
-      ;
 
     ;      title = util.space_dot_replace(title[:1].upper()+title[1:])
     ;      if util.title_penalty(title) > 0:
@@ -167,15 +171,16 @@
                 (h/sset {:closed closed})
                 (h/where [:= :cuser uid] [:= :tid tid])
                 exec (= 1))]
-        (if rc
-          {:ok 1 :tid tid :state (if closed "closed" "opened")}
-          {:err :not_found :msg "Тема не найдена."})))))
+        (json-resp
+          (if rc
+            {:ok 1 :tid tid :state (if closed "closed" "opened")}
+            {:err :not_found :msg "Тема не найдена."}))))))
 ;
 
 (defroutes routes
   (POST "/topic/notify" [] topic-notify)
   (POST "/topic/title"  [] topic-title)
-  (POST "/topic/state"  [] topic-state)   ;; {:tid tid :closed true|false}
+  (POST "/topic/state"  [] topic-state)  ;; {:tid tid :closed true|false}
 
   (ANY "/*" _ (json-resp {:err :req})))
 ;
