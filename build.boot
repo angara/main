@@ -49,9 +49,11 @@
 
     [honeysql "0.8.1"]  ; https://github.com/jkk/honeysql
 
+    [com.draines/postal "2.0.2"]
+
     ;; https://github.com/martinklepsch/boot-garden
     [org.martinklepsch/boot-garden "1.3.2-0" :scope "test"]])
-    ;; [com.draines/postal "1.11.3"]
+
     ;; [enlive "1.1.5"]     ;; https://github.com/cgrand/enlive
 
 ;

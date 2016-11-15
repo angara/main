@@ -25,7 +25,8 @@
     [forum.api :as forum-api]
     [front.core :refer [main-page]]
     [web.sysctl :as sysctl]
-    [meteo.old-ws :as old-ws]))
+    [meteo.old-ws :as old-ws]
+    [misc.icestorm :as icestorm]))
 ;
 
 (defn wrap-user-required [handler]
@@ -52,6 +53,7 @@
 
     (context "/forum/api"     _ forum-api/routes)
     (context "/meteo/old-ws"  _ old-ws/routes)
+    (context "/icestorm"      _ icestorm/routes)
 
     ; (context (-> conf :sysctl :prefix) _ sysctl/routes)
 

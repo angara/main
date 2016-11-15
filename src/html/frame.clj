@@ -52,7 +52,7 @@
   (list
     [:link
       { :rel "stylesheet" :type "text/css"
-        :href "//cdn.angara.net/libs/uikit/2.26.3/css/uikit.gradient.min.css"}]
+        :href "//cdn.angara.net/libs/uikit/2.27.2/css/uikit.gradient.min.css"}]
         ; almost-flat
 
     ; [:link
@@ -65,8 +65,8 @@
     ;   { :rel "stylesheet" :type "text/css"
     ;     :href "//cdn.angara.net/libs/font-awesome/4.6.3/css/font-awesome.min.css"}]
 
-    [:script {:src "//cdn.angara.net/libs/jquery/3.0.0/jquery.min.js"}]
-    [:script {:src "//cdn.angara.net/libs/uikit/2.26.3/js/uikit.min.js"}]))
+    [:script {:src "//cdn.angara.net/libs/jquery/3.1.1/jquery.min.js"}]
+    [:script {:src "//cdn.angara.net/libs/uikit/2.27.2/js/uikit.min.js"}]))
 
     ; [:script
     ;   { :src "//cdn.angara.net/libs/bootstrap/3.3.6/js/bootstrap.min.js"

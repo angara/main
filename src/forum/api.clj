@@ -61,13 +61,6 @@
 ;
 
 
-;     tid = lib.to_i( ctx.request.args.get('tid'))
-;     eml = lib.to_i( ctx.request.args.get('eml') ) and 1 or 0
-;     lib.local.db_main.query(ForumLastread).filter_by()
-;         user_id=ctx.user.id, topic_id=tid .update( values={'watch':eml})
-;     lib.local.db_main.commit()
-
-
 (defn topic-notify [{user :user params :params}]
   (let [uid (-> user :id to-int)
         tid (-> params :tid to-int)
@@ -134,31 +127,8 @@
           {:err :bad_data :msg "Недопустимый текст заголовока."})))))
           ;
         ;
-
-    ;      title = util.space_dot_replace(title[:1].upper()+title[1:])
-    ;      if util.title_penalty(title) > 0:
-    ;          return {'err':'bad_data','msg':'Недопустимый текст заголовока.'}
-    ;      #-
-    ;      rc = db.query(ForumTopic)\
-    ;              .filter_by(cuser=ctx.user.id, id=tid, closed=False)\
-    ;              .filter(ForumTopic.ctime > datetime.now()-FORUM_EDIT_AGE)\
-    ;              .update(values=dict(title=title), synchronize_session=False)
-    ;      lib.local.db_main.commit()
-    ;  #-
-    ;  if rc:
-    ;      return {'ok':1, 'title':title}
-    ;  #-
-    ;  return {'err':'update_failed','msg':u'Невозможно изменить заголовок темы.'}
 ;
 
-; rc = lib.local.db_main.query(ForumTopic).filter_by()
-;      cuser=ctx.user.id, id=tid .update( values=dict(closed=closed))
-;  lib.local.db_main.commit()
-;
-;  if not rc:
-;      return {'err':'not_found','msg':u'Тема не найдена.'}
-;
-;  return {'ok':1, 'tid':tid, 'state':['opened','closed'][closed]}
 
 (defn topic-state [{user :user params :params}]
   (let [uid (-> user :id to-int)

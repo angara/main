@@ -56,6 +56,21 @@
       :apikey "tlg-api-key"
     }
   }
+
+  :icestorm {
+    :smtp {
+      :host "smtp.yandex.com"
+      :ssl  true
+      :port 465
+      :user "noreply@angara.net"
+      :pass "anga.smtp16"
+    }
+    :envel {
+      :from "noreply@angara.net"
+      :to ["maxp@ya.ru"]
+      :subject "IceStorm 2017: регистрация"
+    }
+  }
 }
 
 ;;.

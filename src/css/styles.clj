@@ -167,9 +167,18 @@
 ;
 
 
+(def content
+  [:.content
+    [:.page-title
+      { :margin-top "8px"
+        :text-align 'center
+        :color "#48c"}]])
+
 (defstyles main
   commons
   margins
+
+  content
 
   topbar
   botnav
