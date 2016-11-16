@@ -70,7 +70,7 @@
 
 
 (def RE_NAME
-  #"(?i)^[abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя\.\-\ ]{5,80}$")
+  #"(?ui)^[abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьэюя\.\-\ ]{5,80}$")
 ;
 
 (def RE_PHONE
