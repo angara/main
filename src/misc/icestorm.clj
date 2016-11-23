@@ -15,10 +15,12 @@
 (defn index [req]
   (layout req
     {:title "IceStorm - 2017: регистрация"
-     :page-title "IceStorm - 2017: регистрация"}
+     :page-title "Ледовый Шторм 2017 - Ice Storm 2017"}
     [:div.icestorm
       [:div.uk-container-center.uk-width-medium-5-6
-        {:style {:padding "10px"}}
+        {:style {:padding "14px"}}
+
+        [:h2 {:style {:text-align "center"}} "Регистрация / Registration"]
 
         [:script {:src "/incs/misc/icestorm.js"}]
 
@@ -28,12 +30,13 @@
         [:div#form.uk-form.uk-form-horizontal
 
           [:.uk-form-row
-            [:label.uk-form-label {:for "name"} "Ф.И.О. участника:"]
+            [:label.uk-form-label {:for "name"}
+              "Ф.И.О. / Full name:"]
             [:.uk-form-controls
               [:input#name.uk-width-5-6 {:type "text"}]]]
           ;
           [:.uk-form-row
-            [:label.uk-form-label {:for "town"} "Город:"]
+            [:label.uk-form-label {:for "town"} "Город / Country, City:"]
             [:.uk-form-controls
               [:input#town.uk-width-3-6 {:type "text"}]]]
           ;
@@ -43,29 +46,31 @@
               [:input#email.uk-width-3-6 {:type "text"}]]]
           ;
           [:.uk-form-row
-            [:label.uk-form-label {:for "phone"} "Контактный телефон:"]
+            [:label.uk-form-label {:for "phone"}
+              "Телефон / Phone:"]
             [:.uk-form-controls
               [:input#phone.uk-width-2-6 {:type "text"}]]]
           ;
           [:.uk-form-row
-            [:label.uk-form-label {:for "age"} "Возраст:"]
+            [:label.uk-form-label {:for "age"} "Возраст / Age:"]
             [:.uk-form-controls
               [:input#age
                 { :type "text"
                   :style {:text-align :center :width "4em"}}]]]
           ;
           [:.uk-form-row
-            [:label.uk-form-label {:for "disc"} "Дисциплина:"]
+            [:label.uk-form-label {:for "disc"} "Дисциплина / Sport:"]
             [:.uk-form-controls
               [:select#disc.uk-width-2-6
-                [:option]
-                [:option "Велосипед"]
-                [:option "Коньки"]
-                [:option "Лыжи"]]]]
+                [:option {:value ""}]
+                [:option {:value "Велосипед"} "Велосипед / Bicycle"]
+                [:option {:value "Коньки"} "Коньки / Skating"]
+                [:option {:value "Лыжи"} "Лыжи / Skiing"]]]]
           ;
           [:.uk-form-row
-            [:button#send.uk-button.uk-button-success.uk-button-large.uk-width-1-6
-              [:b "Подать заявку"]]]]]]))
+            [:label.uk-form-label ""]
+            [:button#send.uk-button.uk-button-success.uk-button-large.uk-width-2-6
+              [:b "Подать заявку / Submit"]]]]]]))
 ;
 
 

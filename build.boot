@@ -24,7 +24,7 @@
     [org.clojure/core.cache "0.6.5"]
 
     [clj-time "0.12.2"]
-    [clj-http "3.3.0"]
+    [clj-http "3.4.1"]
 
     [ring/ring-core "1.5.0"]
     [ring/ring-json "0.4.0"]
