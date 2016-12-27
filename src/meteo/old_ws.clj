@@ -37,21 +37,6 @@
 ;         res.set "Content-Type", "text/plain; charset=utf-8"
 ;         res.send JSON.stringify data, null, 2
 ; #-
-;
-
-; x.st_series = (req, res) ->
-;     db.meteo_st().findOne()
-;         {_id:req.query.st, pub:{$gt:0}}
-;         {_id:1, series:1}
-;         (err, data) -> res.set(ACL_HDR).json(data)
-;
-; #-
-
-
-; (defn get-dat [req]
-;   (prn "dat.")
-;   "dat.text")
-; ;
 
 (defn st-data []
   (let [fresh-ts (tc/minus (tc/now) (tc/hours 2))]
@@ -79,7 +64,7 @@
 
 (defroutes routes
   (GET "/"          [] index)
-;  (GET "/dat"       [] get-dat)
+  (GET "/dat"       [] (json-resp (st-data)))
   (GET "/st"        [] (json-resp (st-data)))
   (GET "/st_series" [] get-series)
   (resources "/" {:root (str "public" BASE)}))

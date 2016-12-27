@@ -48,11 +48,11 @@
 ;
 
 
-(def cdn-libs
+(def incs
   (list
     [:link
       { :rel "stylesheet" :type "text/css"
-        :href "//cdn.angara.net/libs/uikit/2.27.2/css/uikit.gradient.min.css"}]
+        :href "//api.angara.net/incs/uikit/2.27.2/css/uikit.gradient.min.css"}]
         ; almost-flat
 
     ; [:link
@@ -65,8 +65,8 @@
     ;   { :rel "stylesheet" :type "text/css"
     ;     :href "//cdn.angara.net/libs/font-awesome/4.6.3/css/font-awesome.min.css"}]
 
-    [:script {:src "//cdn.angara.net/libs/jquery/3.1.1/jquery.min.js"}]
-    [:script {:src "//cdn.angara.net/libs/uikit/2.27.2/js/uikit.min.js"}]))
+    [:script {:src "//api.angara.net/incs/jquery/3.1.1/jquery.min.js"}]
+    [:script {:src "//api.angara.net/incs/uikit/2.27.2/js/uikit.min.js"}]))
 
     ; [:script
     ;   { :src "//cdn.angara.net/libs/bootstrap/3.3.6/js/bootstrap.min.js"
@@ -82,7 +82,7 @@
       [:link {:rel "shortcut icon" :href "/incs/img/favicon.ico"}]
       ;
       (og-meta-tags req wt og-meta)
-      cdn-libs
+      incs
       ;
       [:link {:rel "stylesheet" :type "text/css" :href "/incs/css/main.css"}]
       [:script {:src "/incs/js/mlib.js"}]
