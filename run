@@ -1,27 +1,11 @@
 #!/bin/bash
 
-# /etc/init/ws-main.conf:
+STDOUT=/www/log/main-out.log
+STDERR=/www/log/main-err.log
 
-# description   "angara-main service"
-
-# start on runlevel [2]
-# stop on runlevel [!2]
-
-# respawn
-# respawn limit 0 10
-
-# script
-#   sleep 1
-#   cd /www/main
-#   exec /bin/su anga -c "./run"
-# end script
-
-STDOUT=/var/log/angara/main-out.log
-STDERR=/var/log/angara/main-err.log
-
-exec java -jar main.jar var/prod.edn >> $STDOUT 2>>$STDERR &
+exec java -jar main.jar ../conf/main.edn >> $STDOUT 2>>$STDERR &
 PID=$!
-echo $PID > var/.pid
+echo $PID > .pid
 wait $PID
 
 #.
