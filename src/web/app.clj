@@ -55,7 +55,7 @@
     (context "/forum/api"     _ forum-api/routes)
     (context "/meteo/old-ws"  _ old-ws/routes)
     (context "/icestorm"      _ icestorm/routes)
-    (context "/photomap"      _ photomap/routes)
+    (context "/photomap"      _ (photomap/make-routes))
 
     ; (context (-> conf :sysctl :prefix) _ sysctl/routes)
 

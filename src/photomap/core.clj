@@ -2,12 +2,11 @@
 (ns photomap.core
   (:require
     [taoensso.timbre :refer [debug info warn]]
-    [compojure.core :refer [GET POST ANY defroutes]]
+    [compojure.core :refer [GET POST routes]]
     [compojure.route :refer [files]]
     [mlib.conf :refer [conf]]
     [html.frame :refer [layout]]
     [photomap.db :as db]))
-
 ;
 
 
@@ -35,9 +34,10 @@
             (str (:chat p))]])]))
 ;
 
-(defroutes routes
-  (files JPG {:root (-> conf :photomap :hash-dir)})
-  (GET "/list" [] photo-list))
+(defn make-routes []
+  (routes
+    (files JPG {:root (-> conf :photomap :hash-dir)})
+    (GET "/list" [] photo-list)))
 ;
 
 ;;.

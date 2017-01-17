@@ -2,7 +2,7 @@
 ;;  Angara.Net main
 ;;
 
-(def project {:name "angara.net/main" :version "0.9.0"})
+(def project {:name "angara.net/main" :version "0.10.0"})
 
 (def jar-main 'web.main)
 (def jar-file "main.jar")
