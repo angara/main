@@ -2,13 +2,11 @@
 ;;  Angara.Net main
 ;;
 
-(def project
-  {:name "angara.net/main"
-   :version "0.8.0"})
+(def project {:name "angara.net/main" :version "0.9.0"})
 
 (def jar-main 'web.main)
 (def jar-file "main.jar")
-(def dev-main 'web.srv)
+
 
 (set-env!
   :resource-paths #{"res"}
@@ -20,23 +18,26 @@
   '[
     [org.clojure/clojure "1.8.0"]
     [org.clojure/tools.namespace "0.2.11" :scope "test"]
-    [com.taoensso/timbre "4.7.4"]   ; https://github.com/ptaoussanis/timbre
     [org.clojure/core.cache "0.6.5"]
 
-    [clj-time "0.12.2"]
+    [com.taoensso/timbre "4.8.0"]   ; https://github.com/ptaoussanis/timbre
+    [org.clojure/tools.logging "0.3.1"]
+    [ch.qos.logback/logback-classic "1.1.8"]
+
+    [clj-time "0.13.0"]
     [clj-http "3.4.1"]
 
-    [ring/ring-core "1.5.0"]
+    [ring/ring-core "1.5.1"]
     [ring/ring-json "0.4.0"]
     [ring/ring-headers "0.2.0"]
-    [ring/ring-jetty-adapter "1.5.0"]
+    [ring/ring-jetty-adapter "1.5.1"]
 
-    [cheshire "5.6.3"]
-    [compojure "1.5.1"]
+    [cheshire "5.7.0"]
+    [compojure "1.5.2"]
 
-    [rum "0.10.7"]
+    [rum "0.10.8"]
     [garden "1.3.2"]
-    [mount "0.1.10"]
+    [mount "0.1.11"]
 
     [com.novemberain/monger "3.1.0"]
 
@@ -47,7 +48,7 @@
     ;; https://github.com/tomekw/hikari-cp
     [hikari-cp "1.7.5"]
 
-    [honeysql "0.8.1"]  ; https://github.com/jkk/honeysql
+    [honeysql "0.8.2"]  ; https://github.com/jkk/honeysql
 
     [com.draines/postal "2.0.2"]
 
@@ -60,12 +61,11 @@
 ;
 
 (require
-  '[clojure.tools.namespace.repl :refer [refresh set-refresh-dirs]]
+  '[clojure.tools.namespace.repl :refer [set-refresh-dirs]]
   '[clojure.edn :as edn]
   '[clj-time.core :as tc]
   '[boot.git :refer [last-commit]]
-  '[org.martinklepsch.boot-garden :refer [garden]]
-  '[mount.core])
+  '[org.martinklepsch.boot-garden :refer [garden]])
 ;
 
 (task-options!
@@ -73,19 +73,9 @@
   garden {
           :styles-var 'css.styles/main
           :output-to  "public/incs/css/main.css"
-          :pretty-print false})
-;
-
-(defn start []
-  (require dev-main)
-  (mount.core/start-with-args
-    (-> "var/dev.edn" slurp edn/read-string)))
-;
-
-(defn go []
-  (mount.core/stop)
-  (apply set-refresh-dirs (get-env :source-paths))
-  (refresh :after 'boot.user/start))
+          :pretty-print false}
+  repl {
+        :init-ns 'user})
 ;
 
 (defn increment-build []
@@ -110,10 +100,9 @@
 ;
 
 (deftask dev []
-  (comp
-    (test-env)
-    ;; (javac)
-    (repl)))
+  (set-env! :source-paths #(conj % "dev" "test"))
+  (apply set-refresh-dirs (get-env :source-paths))
+  identity)
 ;
 
 (deftask build []

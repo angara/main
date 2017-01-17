@@ -5,7 +5,7 @@
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
     [mlib.core :refer [to-int]]
-    [mlib.telegram :as tg]
+    [mlib.tlg.core :as tg]
     [bots.meteo.data :refer [mbot-log]]
     [bots.meteo.commands :refer [on-message on-callback]]))
 ;

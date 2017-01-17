@@ -6,7 +6,7 @@
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
     [mlib.time :refer [hhmm]]
-    [mlib.telegram :as tg]
+    [mlib.tlg.core :as tg]
     [bots.meteo.data :refer [sess-cleanup subs-hhmm]]
     [bots.meteo.stform :refer [format-st]]
     [meteo.db :refer [st-ids]]))
@@ -48,14 +48,13 @@
 
 (defstate sender
   :start
-    {:run-flag (atom nil)
-     :thread (->
-                #(minute-loop
-                  (:run-flag sender)
-                  (-> conf :bots :meteo38bot))
-                Thread. .start)}
+    (let [run-flag (atom nil)
+          cnf (-> conf :bots :meteo38bot)]
+      {:run-flag run-flag
+       :thread (-> #(minute-loop run-flag cnf) Thread. .start)})
   :stop
-    (reset! (:run-flag sender) false))
+    (when sender
+      (reset! (:run-flag sender) false)))
 
 
 ;;.

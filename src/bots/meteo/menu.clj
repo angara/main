@@ -2,10 +2,7 @@
 (ns bots.meteo.menu
   (:require
     [clojure.string :as s]
-    ; [taoensso.timbre :refer [warn]]
-    ; [clj-time.core :as tc]
-    ; [mlib.conf :refer [conf]]
-    [mlib.telegram :as tg]
+    [mlib.tlg.core :as tg]
     [bots.meteo.util :refer [apikey cid gmaps-link wd-map]]
 
       ;  inkb q-st-alive

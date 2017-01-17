@@ -6,13 +6,20 @@
   (:gen-class)
   (:require
     [clojure.edn :as edn]
-    [taoensso.timbre :refer [info error]]
+    [taoensso.timbre :refer [info error merge-config!]]
     [mount.core :refer [defstate start-with-args]]
     [mlib.conf :refer [conf]]
     [web.srv]
-    [bots.meteo.core]))
+    [bots.meteo.core]
+    [photomap.core]))
 ;
 
+(merge-config!
+  {:timestamp-opts
+    {:pattern  "yy-MM-dd HH:mm:ss"
+     :locale   :jvm-default
+     :timezone (java.util.TimeZone/getDefault)}})
+;
 
 (defn -main [& args]
   (if-let [rc (-> args first slurp edn/read-string)]

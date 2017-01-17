@@ -7,7 +7,7 @@
     [clj-time.local :refer [local-now]]
     [mlib.core :refer [to-int]]
     [mlib.time :refer [hhmm]]
-    [mlib.telegram :as tg]
+    [mlib.tlg.core :as tg]
     [bots.meteo.util :refer [apikey cid gmaps-link inkb wd-map]]
     [meteo.db :refer [st-ids]]
     [bots.meteo.data :refer

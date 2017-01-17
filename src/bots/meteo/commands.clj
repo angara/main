@@ -6,7 +6,7 @@
     [clj-time.core :as tc]
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
-    [mlib.telegram :as tg]
+    [mlib.tlg.core :as tg]
     [meteo.db :refer [st-near st-by-id st-find]]
     [bots.meteo.util :refer
       [apikey cid inkb q-st-alive

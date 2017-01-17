@@ -19,8 +19,8 @@
     {:id :main    :href "/"         :text "Главная"}      ;; Избранное
     {:id :events  :href "/events"   :text "События"}
     {:id :info    :href "/info"     :text "Информация"}   ;; Статьи
-    {:id :maps    :href "/maps"     :text "Карты"}
-    {:id :equip   :href "/equip"    :text "Снаряжение"}   ;; Магазины, Прокат
+    ; {:id :maps    :href "/maps"     :text "Карты"}
+    ; {:id :equip   :href "/equip"    :text "Снаряжение"}   ;; Магазины, Прокат
     {:id :touserv :href "/tourserv" :text "Турсервис"}
     {:id :meteo   :href "/meteo"    :text "Погода"}
     {:id :photo   :href "/photo"    :text "Фото"}
@@ -53,6 +53,7 @@
     [:link
       { :rel "stylesheet" :type "text/css"
         :href "//api.angara.net/incs/uikit/2.27.2/css/uikit.gradient.min.css"}]
+        ;; :href "//api.angara.net/incs/uikit/3.0.0/css/uikit.min.css"}]
         ; almost-flat
 
     ; [:link
@@ -67,6 +68,7 @@
 
     [:script {:src "//api.angara.net/incs/jquery/3.1.1/jquery.min.js"}]
     [:script {:src "//api.angara.net/incs/uikit/2.27.2/js/uikit.min.js"}]))
+    ;; [:script {:src "//api.angara.net/incs/uikit/3.0.0/js/uikit.min.js"}]))
 
     ; [:script
     ;   { :src "//cdn.angara.net/libs/bootstrap/3.3.6/js/bootstrap.min.js"
@@ -115,7 +117,7 @@
 
 (defn top-bar [req user curr]
   [:header.b-topbar
-    [:.uk-container.amar.uk-clearfix
+    [:div {:style {:padding "0 8px"}}
       [:.uk-grid.uk-grid-small
         [:.uk-width-medium-1-3
           [:.b-logo
@@ -135,9 +137,9 @@
 ;
 
 (defn footer [req]
-  [:.uk-container.amar
-    [:footer.b-footer
-      [:div.footer-bg
+  [:footer.b-footer
+    [:div.footer-bg
+      [:div.uk-container.amar
         [:div.uk-grid.uk-clearfix
           [:div.uk-width-1-3.uk-text-left
              [:a {:href "http://angara.net/about/"} "О сайте"]
