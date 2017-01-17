@@ -1,0 +1,45 @@
+
+{
+  :dev false
+
+  :mdb {
+    :angara { :uri "mongodb://angara:angaweb.6@ex1:22022/angara" }
+    :meteo  { :uri "mongodb://meteo:metaweb.6@ex1:22022/meteo"  }
+    ;; :angara { :uri "mongodb://localhost:27017/angara" }
+    ;; :meteo  { :uri "mongodb://localhost:27017/meteo"  }
+  }
+
+  :psql {
+    :jdbc-url "jdbc:postgresql://ex1:5516/angara"
+    ;; :jdbc-url "jdbc:postgresql://localhost:5516/angara"
+    :username "angara"
+    :password "anga.ex1.16"
+  }
+
+  :bots {
+    :meteo38bot {
+      :apikey "129123506:AAEq5PEcUNdcC-EHwBYlr--mNSYjH04A6mk"
+    }
+  }
+
+  :photomap {
+    :google-key "AIzaSyCp3t3SQOk4qPJBjSwdx2L2jKsl9HmOB8Qq"
+  }
+
+  :icestorm {
+      :smtp {
+        :host "smtp.yandex.com"
+        :ssl  true
+        :port 465
+        :user "noreply@angara.net"
+        :pass "anga.smtp16"
+      }
+      :envel {
+        :from "noreply@angara.net"
+        :to ["icestorm@angara.net"]
+        :subject "IceStorm 2017: регистрация"
+      }
+  }
+
+}
+

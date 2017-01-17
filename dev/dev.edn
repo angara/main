@@ -1,0 +1,30 @@
+
+{
+  :dev true
+
+  :mdb {
+    :angara { :uri "mongodb://angara:angaweb.6@localhost:22022/angara" }
+    :meteo  { :uri "mongodb://meteo:metaweb.6@localhost:22022/meteo"  }
+  }
+
+  :psql {
+    :jdbc-url "jdbc:postgresql://localhost:5516/angara"
+    :username "angara"
+    :password "anga.ex1.16"
+  }
+
+  :bots {
+    :meteo38bot {
+      ;; meteo38_bot
+      :apikey "178313410:AAFh2h-WdKT9ydT7lrW7KZWIDcNrHu2pRA4"
+
+      ;; meteo38bot
+      ; :apikey "129123506:AAEq5PEcUNdcC-EHwBYlr--mNSYjH04A6mk"
+    }
+  }
+
+  :photomap {
+    :google-key "AIzaSyCp3t3SQOk4qPJBjSwdx2L2jKsl9HmOB8Qq"
+  }
+
+}

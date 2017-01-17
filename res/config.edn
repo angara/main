@@ -44,7 +44,8 @@
   }
 
   :photomap {
-    :base-dir "var/photos"
+    :hash-dir "../bots/var/photos"
+    :base-uri "/photomap"
     :google-key "__KEY__"
   }
 
