@@ -24,10 +24,15 @@
 (defn photo-list [req]
   (layout req {}
     [:div
-      (for [p (db/hist)]
+      (for [p (db/hist) :let [hash (:hash p)] :when hash]
         [:div
-          [:img {:src (photo-uri (:hash p) "_xs.jpg")}]
-          (str (:user p))])]))
+          [:div "timestamp: " (:ts p)]
+          [:a {:href (photo-uri hash ".jpg")}
+            [:img {:src (photo-uri hash "_xs.jpg")}]]
+          [:div
+            (str (:user p))]
+          [:div
+            (str (:chat p))]])]))
 ;
 
 (defroutes routes
