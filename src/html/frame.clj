@@ -75,7 +75,7 @@
     ;     :defer 1}]))
 ;
 
-(defn head [req {:keys [title page-title js css og-meta]}]
+(defn head [req {:keys [title page-title og-meta css js]}]
   (let [wt (or title page-title)]
     [:head
       [:title "Angara.Net" (and wt (str ": " wt))]
@@ -87,8 +87,12 @@
       incs
       ;
       [:link {:rel "stylesheet" :type "text/css" :href "/incs/css/main.css"}]
+      (for [c css]
+        [:link {:rel "stylesheet" :type "text/css" :href c}])
       [:script {:src "/incs/js/mlib.js"}]
-      [:script {:src "/incs/js/site.js"}]]))
+      [:script {:src "/incs/js/site.js"}]
+      (for [j js]
+        [:script {:src j}])]))
 ;
 
 
@@ -128,12 +132,19 @@
           [:.uk-width-medium-2-3.flex-mid
             [:.b-search.uk-form.uk-width-1-1
               [:input.search
-                {:type 'text' :placeholder "Яндекс.Поиск по сайту ..."}]
+                {:type "text" :placeholder "Яндекс.Поиск по сайту ..."}]
               [:a.btn-search {:href "/yasearch"} (ficon "search")]]]
           ;;;
           [:.uk-width-medium-1-3.flex-mid (b-user req user)]]]
       ; top-grid
       (nav-topmenu curr)]])
+;
+
+(defn counters []
+  (list
+    (inner-html (yandex-metrika (:yandex-metrika conf)))
+    (inner-html (mailru-top (:mailru-top conf)))
+    (inner-html (analytics (:analytics conf)))))
 ;
 
 (defn footer [req]
@@ -156,11 +167,7 @@
               "\u2122"]]
           ;
           [:div.clearfix]]]]
-
-    ;; counters
-    (inner-html (yandex-metrika (:yandex-metrika conf)))
-    (inner-html (mailru-top (:mailru-top conf)))
-    (inner-html (analytics (:analytics conf)))])
+    (counters)])
 ;
 
 

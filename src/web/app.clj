@@ -57,8 +57,6 @@
     (context "/icestorm"      _ icestorm/routes)
     (context "/photomap"      _ (photomap/make-routes))
 
-    ; (context (-> conf :sysctl :prefix) _ sysctl/routes)
-
     (if (:dev conf)
       (route/files "/" {:root "tmp/res/public"})
       (route/resources "/" {:root "public"}))

@@ -24,7 +24,8 @@
   }
 
   :photomap {
-    :google-key "AIzaSyCp3t3SQOk4qPJBjSwdx2L2jKsl9HmOB8Qq"
+    :google-key "AIzaSyCQR4ahK5BKgpQlxv5-gCvIpMAVvERV0Bg"
+    ;:google-key "AIzaSyCp3t3SQOk4qPJBjSwdx2L2jKsl9HmOB8Qq"
   }
 
 }
