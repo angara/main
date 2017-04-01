@@ -1,7 +1,7 @@
 
 (ns html.util
   (:require
-    [taoensso.timbre :refer [warn]]
+    [mlib.log :refer [warn]]
     [mlib.http :as h]
     [mlib.conf :refer [conf]]
     [mlib.web.snippets :as snip]))

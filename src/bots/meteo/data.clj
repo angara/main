@@ -3,7 +3,7 @@
   (:import
     [com.mongodb DuplicateKeyException])
   (:require
-    [taoensso.timbre :refer [warn debug]]
+    [mlib.log :refer [debug warn]]
     [mount.core :refer [defstate]]
     [clj-time.core :as tc]
     [monger.collection :as mc]

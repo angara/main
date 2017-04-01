@@ -1,7 +1,7 @@
 
 (ns mdb.core
   (:require
-    [taoensso.timbre :refer [warn]]
+    [mlib.log :refer [warn]]
     [clj-time.core :as t]
     [mount.core :refer [defstate]]
     [monger.json]

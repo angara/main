@@ -2,7 +2,7 @@
 (ns meteo.old-ws
   (:require
     [clj-time.core :as tc]
-    [taoensso.timbre :refer [warn]]
+    [mlib.log :refer [warn]]
     [monger.collection :as mc]
     [monger.query :as mq]
     [compojure.core :refer [GET ANY defroutes]]

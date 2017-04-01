@@ -1,7 +1,7 @@
 
 (ns meteo.db
   (:require
-    [taoensso.timbre :refer [warn]]
+    [mlib.log :refer [warn]]
     [monger.core :as mg]
     [monger.collection :as mc]
     [monger.query :as mq]

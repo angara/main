@@ -1,7 +1,7 @@
 
 (ns photomap.db
   (:require
-    [taoensso.timbre :refer [debug info warn]]
+    [mlib.log :refer [debug info warn]]
     [monger.collection :as mc]
     [monger.query :as mq]
     [mdb.core :refer [dbc try-warn]]))

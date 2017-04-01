@@ -4,7 +4,7 @@
   (:require
     [clojure.string :as s]
     [clj-time.core :as tc]
-    [taoensso.timbre :refer [warn]]
+    [mlib.log :refer [warn]]
     ; [monger.collection :as mc]
     ; [monger.query :as mq]
     [honeysql.helpers :as h]

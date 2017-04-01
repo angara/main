@@ -1,10 +1,10 @@
 
 (ns bots.meteo.sender
   (:require
-    [taoensso.timbre :refer [warn debug]]
     [clj-time.core :as tc]
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
+    [mlib.log :refer [debug warn]]
     [mlib.time :refer [hhmm]]
     [mlib.tlg.core :as tg]
     [bots.meteo.data :refer [sess-cleanup subs-hhmm]]

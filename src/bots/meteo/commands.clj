@@ -2,7 +2,7 @@
 (ns bots.meteo.commands
   (:require
     [clojure.string :refer [trim lower-case] :as s]
-    [taoensso.timbre :refer [warn]]
+    [mlib.log :refer [warn]]
     [clj-time.core :as tc]
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]

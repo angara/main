@@ -1,8 +1,8 @@
 
 (ns mlib.tlg.core
   (:require
-    [taoensso.timbre :refer [info warn]]
-    [clj-http.client :as http]))
+    [clj-http.client :as http]
+    [mlib.log :refer [info warn]]))
 ;
 
 

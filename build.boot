@@ -2,7 +2,7 @@
 ;;  Angara.Net main
 ;;
 
-(def project {:name "angara.net/main" :version "0.10.0"})
+(def project {:name "angara.net/main" :version "0.12.0"})
 
 (def jar-main 'web.main)
 (def jar-file "main.jar")
@@ -20,9 +20,9 @@
     [org.clojure/tools.namespace "0.2.11" :scope "test"]
     [org.clojure/core.cache "0.6.5"]
 
-    [com.taoensso/timbre "4.8.0"]   ; https://github.com/ptaoussanis/timbre
+    ;; [com.taoensso/timbre "4.8.0"]   ; https://github.com/ptaoussanis/timbre
     [org.clojure/tools.logging "0.3.1"]
-    [ch.qos.logback/logback-classic "1.1.8"]
+    [ch.qos.logback/logback-classic "1.2.3"]
 
     [clj-time "0.13.0"]
     [clj-http "3.4.1"]
@@ -41,7 +41,7 @@
 
     [com.novemberain/monger "3.1.0"]
 
-    [org.postgresql/postgresql "9.4.1212"]
+    [org.postgresql/postgresql "42.0.0"]
 
     ;; https://funcool.github.io/clojure.jdbc/latest/
     [funcool/clojure.jdbc "0.9.0"]
@@ -61,22 +61,38 @@
 ;
 
 (require
-  '[clojure.tools.namespace.repl :refer [set-refresh-dirs]]
+  '[clojure.tools.namespace.repl :refer [set-refresh-dirs refresh]]
   '[clojure.edn :as edn]
   '[clj-time.core :as tc]
+  '[mount.core :as mount]
   '[boot.git :refer [last-commit]]
   '[org.martinklepsch.boot-garden :refer [garden]])
 ;
 
 (task-options!
-  aot {:all true}
   garden {
           :styles-var 'css.styles/main
           :output-to  "public/incs/css/main.css"
-          :pretty-print false}
-  repl {
-        :init-ns 'user})
+          :pretty-print false})
 ;
+
+;;; ;;; ;;; ;;;
+
+(defn start []
+  (require jar-main)
+  (-> "dev/dev.edn"
+    (slurp)
+    (edn/read-string)
+    (mount/start-with-args)))
+;
+
+(defn go []
+  (mount/stop)
+  (apply set-refresh-dirs (get-env :source-paths))
+  (refresh :after 'boot.user/start))
+;
+
+;;; ;;; ;;; ;;;
 
 (defn increment-build []
   (let [bf "res/build.edn"
@@ -100,8 +116,15 @@
 ;
 
 (deftask dev []
-  (set-env! :source-paths #(conj % "dev" "test"))
+  (set-env! :source-paths #(conj % "test"))
   (apply set-refresh-dirs (get-env :source-paths))
+  ;;
+  (create-ns 'user)
+  (intern 'user 'reset
+    (fn []
+      (prn "(user/reset)")
+      ((resolve 'boot.user/go))))
+  ;;
   identity)
 ;
 
@@ -110,7 +133,7 @@
   (comp
     ;; (javac)
     (garden)
-    (aot)
+    (aot :all true)
     (uber)
     (jar :main jar-main :file jar-file)
     (target :dir #{"tmp/target"})))

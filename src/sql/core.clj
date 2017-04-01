@@ -2,7 +2,7 @@
 (ns sql.core
   (:require
     [clojure.string :as s]
-    [taoensso.timbre :refer [warn]]
+    [mlib.log :refer [warn]]
     [jdbc.core :as jdbc]
     [honeysql.core :as sql]
     [sql.conn :refer [dbc]]))

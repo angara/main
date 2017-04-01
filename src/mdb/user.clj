@@ -1,7 +1,7 @@
 
 (ns mdb.user
   (:require
-    [taoensso.timbre :refer [warn]]
+    [mlib.log :refer [warn]]
     [clojure.core.cache :as cache]
     [monger.collection :as mc]
     [mlib.conf :refer [conf]]

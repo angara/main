@@ -1,7 +1,7 @@
 
 (ns sql.conn
   (:require
-    [taoensso.timbre :refer [info warn]]
+    [mlib.log :refer [info warn]]
     [clj-time.coerce :as tc]
     [jdbc.core :as jdbc]
     [jdbc.proto :refer [ISQLType ISQLResultSetReadColumn]]

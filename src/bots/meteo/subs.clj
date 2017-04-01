@@ -2,9 +2,9 @@
 (ns bots.meteo.subs
   (:require
     [clojure.string :as s]
-    [taoensso.timbre :refer [debug]]
     [clj-time.core :as tc]
     [clj-time.local :refer [local-now]]
+    [mlib.log :refer [debug]]
     [mlib.core :refer [to-int]]
     [mlib.time :refer [hhmm]]
     [mlib.tlg.core :as tg]

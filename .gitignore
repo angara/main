@@ -4,7 +4,6 @@
 
 # clojure
 /tmp/
-/target/
 /var/
 
 .*
@@ -19,5 +18,7 @@
 *.log
 *.tmp
 *.swp
+
+!.gitignore
 
 #.

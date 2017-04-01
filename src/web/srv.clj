@@ -1,7 +1,7 @@
 
 (ns web.srv
   (:require
-    [taoensso.timbre :refer [info warn]]
+    [mlib.log :refer [debug info warn]]
     [ring.adapter.jetty :refer [run-jetty]]
     [mount.core :refer [defstate] :as mount]
     [mlib.conf :refer [conf]]

@@ -1,7 +1,7 @@
 
 (ns photomap.core
   (:require
-    [taoensso.timbre :refer [debug info warn]]
+    [mlib.log :refer [debug info warn]]
     [compojure.core :refer [GET POST routes]]
     [compojure.route :refer [files]]
     [mlib.conf :refer [conf]]

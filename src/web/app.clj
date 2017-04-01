@@ -4,7 +4,7 @@
 
 (ns web.app
   (:require
-    [taoensso.timbre :refer [info warn error]]
+    [mlib.log :refer [debug info warn]]
     [ring.util.response :refer [redirect]]
     [compojure.core :refer [GET POST ANY context routes]]
     [compojure.route :as route]
@@ -24,7 +24,6 @@
     [html.search :as search]
     [forum.api :as forum-api]
     [front.core :refer [main-page]]
-    [web.sysctl :as sysctl]
     [meteo.old-ws :as old-ws]
     [misc.icestorm :as icestorm]
     [photomap.core :as photomap]))

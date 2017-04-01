@@ -2,7 +2,7 @@
 (ns misc.icestorm
   (:require
     [clojure.string :as s]
-    [taoensso.timbre :refer [warn]]
+    [mlib.log :refer [warn]]
     [compojure.core :refer [GET POST defroutes]]
     [postal.core :refer [send-message]]
     [mlib.conf :refer [conf]]

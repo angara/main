@@ -1,9 +1,9 @@
 
 (ns bots.meteo.poll
   (:require
-    [taoensso.timbre :refer [warn debug]]
     [mount.core :refer [defstate]]
     [mlib.conf :refer [conf]]
+    [mlib.log :refer [debug warn]]
     [mlib.core :refer [to-int]]
     [mlib.tlg.core :as tg]
     [bots.meteo.data :refer [mbot-log]]

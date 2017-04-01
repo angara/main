@@ -1,6 +1,6 @@
 (ns front.core
   (:require
-    [taoensso.timbre :refer [warn]]
+    [mlib.log :refer [warn]]
     [mlib.conf :refer [conf]]
     [html.frame :refer [layout]]))
 ;
