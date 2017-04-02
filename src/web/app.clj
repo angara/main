@@ -36,14 +36,6 @@
       (redirect (str "/user/login?next=" (:uri req))))))
 ;
 
-; (defn logout [req]
-;   ;; logout user
-;   (sess-update (-> req :sess :sid)
-;     {:uid nil :auth nil :login nil :logout (-> req :user :_id)})
-;   (json-resp {:ok 1 :redir "/"}))
-; ;
-;
-
 
 (defn make-routes []
   (routes
@@ -54,6 +46,7 @@
     (context "/forum/api"     _ forum-api/routes)
     (context "/meteo/old-ws"  _ old-ws/routes)
     (context "/icestorm"      _ icestorm/routes)
+    ;; (context "/tourserv" _ touserv/routes)
     (context "/photomap"      _ (photomap/make-routes))
 
     (if (:dev conf)
@@ -63,13 +56,6 @@
     (ANY "/*" _  not-found)))
 ;
 
-  ; /txt/
-
-  ; (GET  "/usr/" [] views/main-page)       ;; !!!
-  ;
-  ; (GET  "/me" [] (redirect "/me/"))
-  ; (context "/me" [] (wrap-user-required me-routes))
-;
 
 (defn wrap-user [handler]
   (fn [req]

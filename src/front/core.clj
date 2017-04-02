@@ -2,15 +2,15 @@
   (:require
     [mlib.log :refer [warn]]
     [mlib.conf :refer [conf]]
-    [html.frame :refer [layout]]))
+    [html.frame :refer [render]]))
 ;
 
 (defn main-page [req]
-  (layout req
-    {:topmenu :main}
+  (render
+    req
+    {:topmenu :main
+      :page-title "Angara.Net main page"}
     [:.uk-panel.uk-panel-box.uk-panel-space.uk-panel-header
-      [:.uk-panel-badge.uk-badge "hi!"]
-      [:h3.uk-panel-title "Angara.Net main page"]
       [:p
         "some text"]
 
@@ -130,6 +130,5 @@ drovosek26.06.16 19:51Горный туризм
 
       [:hr]]))
 ;
-
 
 ;;.

@@ -1,14 +1,13 @@
 
 (ns html.search
   (:require
-    [html.util :refer [ficon inner-html]]
-    [html.frame :refer [layout]]))
+    [html.util :refer [inner-html]]
+    [html.frame :refer [render]]))
 ;
 
 
 (defn yasearch [req]
-
-  (layout req
+  (render req
     {:title "Яндекс Поиск"}
 
     (inner-html "

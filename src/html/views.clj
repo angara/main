@@ -1,7 +1,7 @@
 
 (ns html.views
   (:require
-    [html.util :refer [ficon inner-html]]
+    [html.util :refer [inner-html]]
     [html.frame :refer [layout]]))
 ;
 
@@ -19,24 +19,15 @@
     {:title "Личная информация"}
     ;
     [:div {:style "margin: 20px;"}
-      [:a {:href (str "http://angara.net/user/" (:login (:user req)) "/")}
+      [:a {:href (str "http://angara.net/user/" (:username (:user req)) "/")}
           "Личная страница пользователя сайта Angara.Net"]]
-    [:hr]
-    [:button#btn_logout.btn "Выйти"
-      [:span.glyphicon.glyphicon-log-out {:style "margin-left: 8px;"}]]
-    [:script
-     "
-$('#btn_logout').click(function(){
-    lib.post('/me/logout', {}, function(resp){
-        if(resp.redir){ window.location.href = resp.redir; }
-    });
-});"]))
-
+    [:hr]))
+;
 
 (defn search [req]
 
   (layout req {:title "Поиск"}
-    [:.uk-container.amar
+    [:.container.amar
       [:div (inner-html "
 <script>(function(){
   var cx = '005972809166297187429:5ljljpstcsw';
@@ -189,9 +180,5 @@ google.setOnLoadCallback(function() {
   }
 </style>
 ")]]))
-
-
-
-;
 
 ;;.

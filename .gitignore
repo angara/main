@@ -2,7 +2,7 @@
 #	generic .gitignore
 #
 
-# clojure
+/conf/
 /tmp/
 /var/
 

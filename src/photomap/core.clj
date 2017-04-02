@@ -1,13 +1,16 @@
 
 (ns photomap.core
   (:require
-    [mlib.log :refer [debug info warn]]
+    [hiccup.page :refer [html5]]
     [compojure.core :refer [GET POST routes]]
     [compojure.route :refer [files]]
+    ;
+    [mlib.log :refer [debug info warn]]
     [mlib.conf :refer [conf]]
     [mlib.http :refer [json-resp]]
     [mlib.time :refer [ddmmyy-hhmm]]
-    [html.frame :refer [layout html5 head]]
+    ;
+    [html.frame :refer [layout head]]
     [photomap.db :as db]))
 ;
 

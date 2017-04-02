@@ -35,7 +35,8 @@
     [cheshire "5.7.0"]
     [compojure "1.5.2"]
 
-    [rum "0.10.8"]
+    ; [rum "0.10.8"]
+    [hiccup "1.0.5"]
     [garden "1.3.2"]
     [mount "0.1.11"]
 
@@ -55,9 +56,6 @@
     ;; https://github.com/martinklepsch/boot-garden
     [org.martinklepsch/boot-garden "1.3.2-0" :scope "test"]
     [proto-repl "0.3.1" :scope "test"]])
-
-    ;; [enlive "1.1.5"]     ;; https://github.com/cgrand/enlive
-
 ;
 
 (require
@@ -70,17 +68,18 @@
 ;
 
 (task-options!
-  garden {
-          :styles-var 'css.styles/main
-          :output-to  "public/incs/css/main.css"
-          :pretty-print false})
+  garden
+  {
+    :styles-var 'css.styles/main
+    :output-to  "public/incs/css/main.css"
+    :pretty-print false})
 ;
 
 ;;; ;;; ;;; ;;;
 
 (defn start []
   (require jar-main)
-  (-> "dev/dev.edn"
+  (-> "conf/dev.edn"
     (slurp)
     (edn/read-string)
     (mount/start-with-args)))

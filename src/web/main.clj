@@ -3,15 +3,14 @@
 ;;;;
 
 (ns web.main
-  (:gen-class)
   (:require
     [clojure.edn :as edn]
-    [mount.core :refer [defstate start-with-args]]
+    [mount.core :refer [start-with-args]]
     [mlib.log :refer [warn]]
     [mlib.conf :refer [conf]]
-    [web.srv]
-    [bots.meteo.core]
-    [photomap.core]))
+    [photomap.core]
+    [web.srv])
+  (:gen-class))
 ;
 
 (defn -main [& args]

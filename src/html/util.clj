@@ -9,20 +9,17 @@
 
 ;; rum.server-render
 (defn inner-html [s]
-  [:span {:dangerouslySetInnerHTML {:__html s}}])
+  ;; [:span {:dangerouslySetInnerHTML {:__html s}}])
+  s)
 ;
 
-; (defn inc-pfx [s]
-;   (if (= (first s) \/) (str s) (str (:inc-pfx conf) s)))
-;
-; (defn inc-js [js]
-;   [:script {:src (inc-pfx js) :type "text/javascript" :defer 1}])
-;
-; (defn inc-css [css]
-;   [:link {:href (inc-pfx css) :rel "stylesheet" :type "text/css"}])
 
-(defn ficon [s]
-  [:span {:class (str "uk-icon-" (name s))}])
+(defn script [js-file]
+  [:script {:src js-file :type "text/javascript" :defer 1}])
+
+(defn css-link [css-file]
+   [:link {:href css-file :rel "stylesheet" :type "text/css"}])
+
 
 (defn glyphicon [nm]
   [:span {:class (str "glyphicon glyphicon-" nm)}])
