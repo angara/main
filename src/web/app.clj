@@ -26,7 +26,8 @@
     [front.core :refer [main-page]]
     [meteo.old-ws :as old-ws]
     [misc.icestorm :as icestorm]
-    [photomap.core :as photomap]))
+    [photomap.core :as photomap]
+    [tourserv.core :as tourserv]))
 ;
 
 (defn wrap-user-required [handler]
@@ -46,7 +47,7 @@
     (context "/forum/api"     _ forum-api/routes)
     (context "/meteo/old-ws"  _ old-ws/routes)
     (context "/icestorm"      _ icestorm/routes)
-    ;; (context "/tourserv" _ touserv/routes)
+    (context "/tourserv"      _ tourserv/routes)
     (context "/photomap"      _ (photomap/make-routes))
 
     (if (:dev conf)
