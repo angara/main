@@ -19,15 +19,51 @@
 
 (def hdr-brd "#039be5")
 
+(def c_a          "#18d")
+(def c_av         "#18e")
+(def c_ah         "#09f")
+(def c_aa         "#a80")
+(def c_em         "#E65100")
+(def c_dlg_title  "#3949AB")
+
+
+
 (def abs-pos
   {:position :absolute :top 0 :left 0 :bottom 0 :right 0})
 ;
 
-
-
 (defn brd1 [place color]
   {(str "border-" (name place)) (str "1px solid " color)})
 ;
+
+
+(comment
+  [:.header
+    {:margin-bottom "8px"
+     :padding "4px 12px"
+     :border-bottom "1px solid #ddd"
+     :background-color f4}
+    [:.top-nav]]
+
+  [:.content
+    [:.form-group
+      [:label
+        {:color "#555"}]]]
+
+  [:.b-auth
+    {:margin-bottom (px 12)}]
+
+  [:.b-login
+    {:margin-bottom (px 12)}]
+
+  [:.b-register
+    {:margin-bottom (px 12)}]
+
+  [:.b-me
+    {:margin "1rem auto"}])
+
+;
+
 
 (def commons
   [
@@ -54,8 +90,17 @@
     [:.flex-bot
       { :display 'flex
         :flex-direction 'column
-        :justify-content 'flex-end}]])
+        :justify-content 'flex-end}]
 
+    [:.msg
+      { :color "#888"
+        :padding (px 2)}]
+    [:.msg_ok
+      { :color "#090"
+        :font-weight "bold"}]
+    [:.msg_err
+      { :color "#a00"
+        :font-weight "bold"}]])
 ;
 
 (def margins
@@ -74,10 +119,20 @@
 (def topbar
   [
     [:.b-topbar
-        {:margin-bottom (px 12)}
+      { :margin-bottom (px 12)
+        :border-bottom "1px solid #039BE5"}           ; light blue 600}
 
-      [:.b-logo {:margin "8px 8px 8px 8px"}
-        [:.logo {:display "block"}]]
+      [:.logo
+        { :margin "3px 4px 3px 4px"}]
+
+      [:.signin
+        { :margin "15px 2px 4px 8px"
+          :text-align 'right}]
+
+      [:.user
+        { :margin "10px 2px 4px 8px"
+          :text-align 'right}]
+
 
       [:.b-search
         { :padding "4px 10px"

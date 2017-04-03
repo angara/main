@@ -14,7 +14,8 @@
 (def user-coll     "user")
 
 
-(def FLDS_REQ_USER [:_id :login :name :family :upic :admin])
+(def FLDS_REQ_USER
+  [:username :email :first_name :last_name :upic :admin])
 
 ;;; sess
 
