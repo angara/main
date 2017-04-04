@@ -65,12 +65,12 @@
   (let [user (:user req)]
     (if user
       (let [nm (str (:first_name user) " " (:last_name user))]
-        [:div.user
+        [:div.b-user
           [:a {:href "/me/" :title (str (:username user) ": " nm)}
             [:b (:username user)] [:br] nm]])
       ;; no logged in
       (when (not= false user)
-        [:div.signin
+        [:div.b-signin
           [:a.btn.btn-default {:href (login-url (:uri req))}
             "Войти" (glyphicon "log-in marl-8")]]))))
 ;

@@ -53,6 +53,8 @@
 
     [com.draines/postal "2.0.2"]
 
+    ;; [clj-yaml "0.4.0" :scope "test"]  ;; services migration
+
     ;; https://github.com/martinklepsch/boot-garden
     [org.martinklepsch/boot-garden "1.3.2-0" :scope "test"]
     [proto-repl "0.3.1" :scope "test"]])

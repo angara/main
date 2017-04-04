@@ -1,12 +1,13 @@
 
 (ns meteo.db
   (:require
-    [mlib.log :refer [warn]]
     [monger.core :as mg]
     [monger.collection :as mc]
     [monger.query :as mq]
     [monger.conversion :refer [from-db-object]]
     [mount.core :refer [defstate]]
+    ;
+    [mlib.log :refer [warn]]
     [mlib.conf :refer [conf]]
     [mdb.core :refer [connect disconnect try-warn]]))
 ;

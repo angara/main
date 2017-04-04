@@ -26,6 +26,10 @@
 (def c_em         "#E65100")
 (def c_dlg_title  "#3949AB")
 
+(def c_topbar_brd "#039BE5")      ; light blue 600
+
+
+;;; ;;; ;;; ;;;
 
 
 (def abs-pos
@@ -34,34 +38,6 @@
 
 (defn brd1 [place color]
   {(str "border-" (name place)) (str "1px solid " color)})
-;
-
-
-(comment
-  [:.header
-    {:margin-bottom "8px"
-     :padding "4px 12px"
-     :border-bottom "1px solid #ddd"
-     :background-color f4}
-    [:.top-nav]]
-
-  [:.content
-    [:.form-group
-      [:label
-        {:color "#555"}]]]
-
-  [:.b-auth
-    {:margin-bottom (px 12)}]
-
-  [:.b-login
-    {:margin-bottom (px 12)}]
-
-  [:.b-register
-    {:margin-bottom (px 12)}]
-
-  [:.b-me
-    {:margin "1rem auto"}])
-
 ;
 
 
@@ -120,18 +96,10 @@
   [
     [:.b-topbar
       { :margin-bottom (px 12)
-        :border-bottom "1px solid #039BE5"}           ; light blue 600}
+        :border-bottom (str "1px solid " c_topbar_brd)}
 
       [:.logo
         { :margin "3px 4px 3px 4px"}]
-
-      [:.signin
-        { :margin "15px 2px 4px 8px"
-          :text-align 'right}]
-
-      [:.user
-        { :margin "10px 2px 4px 8px"
-          :text-align 'right}]
 
 
       [:.b-search
@@ -157,11 +125,17 @@
            :top "5px"
            :right "11px"}]]
 
+      [:.b-signin
+        { :margin "15px 2px 4px 8px"
+          :text-align 'right}]
+
       [:.b-user
         { :text-align 'right
-          :padding "8px 4px 8px 0"
+          ; :padding "8px 4px 8px 0"
+          :margin "10px 2px 4px 8px"
           :overflow 'hidden
-          :white-space 'nowrap}
+          :white-space 'nowrap}]
+
 
         ; [:.upic
         ;   { :display 'block
@@ -170,21 +144,6 @@
         ;     :height (px 40)
         ;     :border-radius "10px"
         ;     :background "#f4f4f4"}]
-        [:.name
-          { :color "#05a"
-            :display 'block
-            :overflow 'hidden
-            :white-space 'nowrap}]
-        [:.login
-          { :display 'block
-            :font-weight 'bold
-            :overflow 'hidden
-            :white-space 'nowrap}]
-
-        [:.signin
-          {:text-decoration 'none
-            :border-bottom "1px dashed"
-            :font-size (pt 14)}]]
 
       [:.b-navbar
         [:.uk-navbar-nav {:padding "0 8px"}]
@@ -195,19 +154,24 @@
         [:a.topmenu:hover
           { :color "#08f"
             :text-shadow 'none}]
-        [:.uk-active [:a {:color "#04b"}]]]]])
+        [:.uk-active [:a {:color "#04b"}]]]
+
+      (at-media {:max-width (px 320)}
+        [:.container {:padding-left 0 :padding-right 0}]
+        [:.b-signin  {:margin-right (px 10)}]
+        [:.b-user    {:margin-right (px 10)}])]])
 ;
 
+;;; ;;; ;;; ;;;
+
 (def botnav
-  [:.b-botnav
-    {:text-align 'center
-     :margin "8px"}])
+  [:.b-botnav {:text-align 'center :margin "8px"}])
 ;
 
 (def footer
   [:.b-footer
     (merge
-      (brd1 :top "#ddd")
+      (brd1 :top c_topbar_brd)
       { :margin-top (px 8)
         :padding "1px 0 4px 0"})
 
@@ -238,28 +202,11 @@
   topbar
   botnav
   footer)
-
-  ; [:.header
-  ;   {:margin-bottom "8px"
-  ;    :padding "4px 12px"
-  ;    :border-bottom "1px solid #ddd"
-  ;    :background-color f4}
-  ;   [:.top-nav]])
 ;
 
 ;;.
 
 
-; c_a  = #18d
-; c_av = #18e
-; c_ah = #09f
-; c_aa = #a80
-;
-; c_em = #E65100
-;
-; c_dlg_title = #3949AB
-;
-;
 ; // c_dark  = #3a609e
 ; // c_norm  = #5b86c9
 ; // c_light = #e6edf8
@@ -322,16 +269,6 @@
 ; // c5 = #def
 ;
 ; c_bbtitle = #3949AB
-;
-;
-; .msg
-;     color: #999
-;
-; .ok
-;     color: #090
-;
-; .err
-;     color: #a00
 ;
 
 
@@ -401,66 +338,6 @@
 ; .mfp-zoom-out-cur .mfp-image-holder button.mfp-close
 ;     cursor: auto
 ;
-; .b-topbar
-;     background-color: #fff
-;     // border-bottom: 1px solid #81D4FA        // light blue 200
-;     // border-bottom: 1px solid #039BE5           // light blue 600
-;
-;     // #4af
-;     // box-shadow: 0 0 3px rgba(0,0,0,0.6)
-;
-;     border-bottom: 1px solid #039BE5           // light blue 600
-;     margin-bottom: 10px
-;
-;     .logo
-;         margin: 3px 4px 3px 4px
-;
-;     .signin
-;         margin: 15px 2px 4px 8px
-;         text-align: right
-;
-;     .user
-;         margin: 10px 2px 4px 8px
-;         text-align: right
-;
-; @media (max-width: 320px)
-;     .b-topbar
-;         .container
-;             padding-left: 0
-;             padding-right: 0
-;         .signin
-;             margin-right: 10px
-;         .user
-;             margin-right: 10px
-;
-;
-; .b-botnav
-;     margin-top: 4px
-;     color: #ccc
-;     text-align: center
-;
-; .b-footer
-;     margin-top: 8px
-;     padding-top: 1px
-;     border-top: 1px solid #039BE5           // light blue 600
-;     // font-family: Verdana,Helvetica,sans-serif
-;     font-size: 14px
-;     line-height: 180%
-;
-;     .footer-bg
-;         background-color: #f4f4f4
-;         padding: 2px 0 4px 0
-;
-;     .row
-;         padding: 10px 8px
-;
-;     .copy
-;         margin-top: 14px
-;         font-size: 15px
-;
-;     .copy-tm
-;         // font-weight: bold
-;         // color: #04b
 ;
 ;
 ; m-square()
