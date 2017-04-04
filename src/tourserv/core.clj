@@ -2,20 +2,15 @@
 (ns tourserv.core
   (:require
     [compojure.core :refer [defroutes GET POST]]
-    [html.frame :refer [render]]))
-;
-
-
-(defn index-page [req]
-
-  (render {} req
-    [:div.text-center {:style "margin: 10ex;"}
-      "Раздел на реконструкции."]))
+    [html.frame :refer [render]]
+    [tourserv.db]
+    [tourserv.html :refer [index-page serv-page]]))
 ;
 
 
 (defroutes routes
-  (GET "/" [] index-page))
+  (GET "/"      [] index-page)
+  (GET "/:type" [] serv-page))
 ;
 
 ;;.

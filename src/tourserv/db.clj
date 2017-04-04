@@ -66,12 +66,12 @@
 ;;; ;;; ;;; ;;;
 
 
-(defn indexes [db]
+(defn make-indexes [db]
   (try
     (mc/create-index db TOURSERV_COLL  (array-map :uid  1))
     (mc/create-index db TOURSERV_COLL  (array-map :type 1))
     (mc/create-index db TOURSERV_COLL  (array-map :town 1))
-    true
+    db
     (catch Exception e
       (warn "tourserv-indexes:" e))))
 ;
@@ -79,7 +79,7 @@
 
 (defstate indexes
   :start
-    (indexes (dbc)))
+    (make-indexes (dbc)))
 ;
 
 ;;.
