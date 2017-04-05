@@ -1,9 +1,11 @@
 
-(ns css.styles
+(ns css.root
   (:require
     [garden.def :refer [defstyles]]
     [garden.units :refer [px pt em ex]]
-    [garden.stylesheet :refer [at-media]]))
+    [garden.stylesheet :refer [at-media]]
+    ;
+    [css.tourserv :refer [b-tourserv]]))
 ;
 
 (def p100 "100%")
@@ -190,6 +192,7 @@
   [:.content
     [:.page-title
       { :margin-top "8px"
+        :letter-spacing "0.12ex"
         :text-align 'center
         :color "#48c"}]])
 
@@ -201,7 +204,9 @@
 
   topbar
   botnav
-  footer)
+  footer
+
+  b-tourserv)
 ;
 
 ;;.

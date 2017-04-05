@@ -2,7 +2,7 @@
 ;;  Angara.Net main
 ;;
 
-(def project {:name "angara.net/main" :version "0.12.0"})
+(def project {:name "angara.net/main" :version "0.14.0"})
 
 (def jar-main 'web.main)
 (def jar-file "main.jar")
@@ -72,7 +72,7 @@
 (task-options!
   garden
   {
-    :styles-var 'css.styles/main
+    :styles-var 'css.root/main
     :output-to  "public/incs/css/main.css"
     :pretty-print false})
 ;
