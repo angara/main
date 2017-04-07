@@ -23,26 +23,33 @@
 ;
 
 
+(def DESCR
+  (str "Активный отдых, спорт, туризм, путешествия, фото."
+      " Новости экстремального спорта, календарь событий, фотографии."
+      " Байкал и Прибайкалье. Прогноз погоды."))
+;
+
 (defn head-meta
   [req {:keys [title page-title og-title og-image og-url og-descr]}]
   (let [wt (or title page-title)
+        ds (or og-descr DESCR)
         og-tit (or og-title wt "Angara.Net")
         og-img (str "http://angara.net" (or og-image (inc-pfx "img/angara-og.png")))
         og-url (or og-url
-                (make-url "http" "angara.net" (:uri req) (:query-string req)))]
+                (make-url "https" "angara.net" (:uri req) (:query-string req)))]
     (list
       [:title "Angara.Net" (and wt (str ": " wt))]
       [:meta {:charset "utf-8"}]
       [:meta {:http-equiv "X-UA-Compatible" :content "IE=edge"}]
       [:meta {:name "viewport" :content "width=device-width,initial-scale=1"}]
+      [:meta {:name "description" :content ds}]
       [:meta {:property "og:site_name" :content "Angara.Net"}]
       [:meta {:property "og:type"   :content "article"}]
       [:meta {:property "og:locale" :content "ru_RU"}]
       [:meta {:property "og:image"  :content og-img}]
       [:meta {:property "og:title"  :content og-tit}]
       [:meta {:property "og:url"    :content og-url}]
-      (when og-descr
-        [:meta {:property "og:description" :content og-descr}])
+      [:meta {:property "og:description" :content ds}]
       [:link {:rel "shortcut icon" :href "//angara.net/favicon.ico"}])))
 ;
 

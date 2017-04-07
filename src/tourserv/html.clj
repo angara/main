@@ -141,7 +141,7 @@
               [:h3 (:title t)]]
             (:descr t)])]
       [:div.col-md-4.col-md-offset-1
-        [:br]
+        [:hr]
         [:div
           [:a {:href "/rest/pikcher/"} [:h4 "Турбаза Пик Черского"]]
           [:a {:href "/rest/pikcher/"}

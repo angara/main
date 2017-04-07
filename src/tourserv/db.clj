@@ -70,7 +70,7 @@
   (try
     (mc/create-index db TOURSERV_COLL  (array-map :uid  1))
     (mc/create-index db TOURSERV_COLL  (array-map :type 1))
-    (mc/create-index db TOURSERV_COLL  (array-map :town 1))
+    (mc/create-index db TOURSERV_COLL  (array-map :type 1 :town 1))
     db
     (catch Exception e
       (warn "tourserv-indexes:" e))))
