@@ -179,11 +179,11 @@
 
     [:.footer-bg
       { :padding "1.3ex 2.4ex 1.4ex 2.4ex"
-        :background-color "#f8f8f8"
+        :background-color "#f4f4f4"
         :border-bottom-left-radius "4px"
         :border-bottom-right-radius "4px"}
       [:.copy
-        {:color "#888"}
+        {:color "#777"}
         [:.brand {:margin-left "2 px" :margin-right "1px"}]]]])
 ;
 
