@@ -75,7 +75,7 @@
             "Войти" (glyphicon "log-in marl-8")]]))))
 ;
 
-(defn top-bar [req]
+(defn topbar [req]
   [:div.b-topbar
     [:div.container
       ;
@@ -114,6 +114,33 @@
       [:div.col-sm-3.pull-right
         (user-block req)]]
     [:div.clearfix]])
+;
+
+
+(def TOP_NAVS
+  [
+    {:id "main"     :href "/"           :menu "Главная"}
+    ;; События
+    {:id "info"     :href "/info/"      :menu "Информация"}
+    ;; Карты
+    ;; Снаряжение
+    {:id "text"     :href "/live/"      :menu "Статьи"}
+    {:id "shops"    :href "/shops/"     :menu "Магазины"}
+    {:id "tourserv" :href "/tourserv/"  :menu "Турсервис"}
+    {:id "bb"       :href "/bb/"        :menu "Объявления"}
+    {:id "meteo"    :href "/meteo/"     :menu "Погода"}
+    {:id "photo"    :href "/photo/"     :menu "Фото"}
+    {:id "forum"    :href "/forum/"     :menu "Форум"}])
+;
+
+(defn topnav [active]
+  (let [act (and active (name active))]
+    [:div.b-topnav
+      [:div.container
+        [:ul.nav.nav-pills
+          (for [n TOP_NAVS]
+            [:li {:class (when (= act (:id n)) "active")}
+              [:a {:href (:href n)} (:menu n)]])]]]))
 ;
 
 (defn footer [req]
@@ -155,7 +182,7 @@
 
 (defn layout
   [ req
-    {:keys [page-title page-nav] :as params}
+    {:keys [page-title page-nav topmenu] :as params}
     &
     content]
   ;
@@ -170,7 +197,8 @@
           (when-let [uid (:id user)]
             [:script "window.uid='" uid "';"])
           ;
-          (top-bar req)
+          (topbar req)
+          (topnav topmenu)
           ;
           [:div.content
             [:div.container
@@ -181,12 +209,10 @@
               [:div.clearfix]
               [:div.b-botnav
                 [:a {:href "http://angara.net/"} "Главная"]
-                " | "
-                [:a {:href "/bb/"} "Объявления"]
-                " | "
-                [:a {:href "/meteo/"} "Погода"]
-                " | "
-                [:a {:href "/forum/"} "Форум"]]]]
+                (for [n (next TOP_NAVS)]
+                  (list
+                    " | "
+                    [:a {:href (:href n)} (:menu n)]))]]]
           ;
           (footer req)]])))
     ; /html5

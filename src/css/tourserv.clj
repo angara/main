@@ -10,7 +10,7 @@
 
 (def b-tourserv
   [:.b-tourserv
-    {:margin-bottom (em 1)}
+    {:margin-bottom "1.4rem"}
 
     [:.town-title
       { :background-color bg_h4
@@ -29,13 +29,16 @@
           :margin "3px 1rem 0 1rem"
           :text-indent "1.2rem;"}]
 
-      [:b {:color c_label_green}]
-      [:i.fa {:color c_label_green}]
+      [:b {:color c_label_grey}]
+      [:i.fa {:color c_label_lgrey :margin-right "6px"}]
 
       [:.addr  { :margin "auto 1rem"}]
       [:.price { :margin "auto 1rem"}]
       [:.phone { :margin "auto 1rem"}]
-      [:.email { :margin "auto 1rem"}]]])
+      [:.email { :margin "auto 1rem"}]
+      [:.person { :margin "auto 1rem"}]]
+    [:.b-index]])
+
 ;
 
 ;;.

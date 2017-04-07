@@ -6,7 +6,7 @@
     [mlib.core :refer [hesc]]
     ;
     [html.frame :refer [render]]
-    [tourserv.const :refer [TYPE_MAP TOWNS TOWN_MAP]]
+    [tourserv.const :refer [TYPES TYPE_MAP TOWNS TOWN_MAP]]
     [tourserv.db :refer [tourserv-by-type]]))
 ;
 
@@ -27,7 +27,8 @@
     ;
       (render req
         { :title (str "Турсервис - " (:title type))
-          :page-title (:title type)}
+          :page-title (:title type)
+          :topmenu :tourserv}
         ;
         [:div.b-tourserv
           (for [t TOWNS
@@ -55,42 +56,40 @@
 (defn serv-town [{params :params :as req}]
   (when-let [town (TOWN_MAP (:town params))]
     (let [type (TYPE_MAP "apart")
-          tsrv (tourserv-by-type (:id type) (:id town))]
+          twn_id (:id town)
+          tsrv (tourserv-by-type (:id type) twn_id)]
 
       (render req
-        { :title (str "Турсервис - " (:title type) " - " (:title town))
-          :page-title (str (:title type) " / " (:title town))}
-
+        { :title (str "Турсервис / " (:title type) " / " (:title town))
+          :page-title (str (:title type) ": " (:title town))
+          :topmenu :tourserv}
+        ;
         [:div.b-tourserv
+          [:ol.breadcrumb
+            (for [twn TOWNS
+                  :let [tid (:id twn)
+                        cls (when (= tid twn_id) "active")]]
+              [:li {:class cls}
+                [:a {:href (url-town tid)} (:title twn)]])]
+
           (for [t tsrv]
             [:div.b-tserv.col-md-6
               [:div.title (hesc (:title t))]
               [:div.descr (hesc (:descr t))]
-
-              (when-let [addr (:addr t)]
-                [:div.addr [:b "Адрес: "] (hesc addr)])
               (when-let [price (:price t)]
                 [:div.price [:b "Цена: "] (hesc price)])
+              (when-let [addr (:addr t)]
+                [:div.addr [:i.fa.fa-map-marker.fa-fw] (hesc addr)])
               (when-let [p (:email t)]
-                [:div.email [:b "E-mail: "] (hesc p)])
-
+                [:div.email [:i.fa.fa-envelope.fa-fw] (hesc p)])
               (when-let [p (:phone t)]
-                [:div.phone
-                  ;[:b "Телефон: "] (hesc p)
-                  [:i.fa.fa-phone-square] "&nbsp; " (hesc p)
-                  (when-let [p (:person t)]
-                    [:span " &nbsp;" [:i.fa.fa-user-circle ] " " (hesc p)])])
+                [:div.phone [:i.fa.fa-phone-square.fa-fw] (hesc p)])
+              (when-let [p (:person t)]
+                [:div.person [:i.fa.fa-user-circle.fa-fw] (hesc p)])
 
               [:hr]])
 
           [:div.clearfix]]))))
-
-        ;
-        ; [:div.text-center {:style ""}
-        ;   (for [t TOWNS :let [recs ()]])
-        ;
-        ;   (for [s tsrv]
-        ;     [:div (:town s)])]))))
 ;
 
 
@@ -99,8 +98,9 @@
     (let [tsrv (tourserv-by-type (:id type))]
 
       (render req
-        { :title (str "Турсервис - " (:title type))
-          :page-title (:title type)}
+        { :title (str "Турсервис / " (:title type))
+          :page-title (:title type)
+          :topmenu :tourserv}
         ;
         [:div.b-tourserv
           "test serv-page"
@@ -112,10 +112,18 @@
 (defn index-page [req]
   (render req
     { :title "Турсервис"
-      :page-title "Турсервис"}
+      ; :page-title "Турсервис"
+      :topmenu :tourserv}
     ;
-    [:div.text-center {:style "margin: 10ex;"}
-      "Раздел на реконструкции."]))
+    [:div.b-tourserv
+      [:div.col-md-6.col-md-offset-2.b-index
+        (for [t TYPES]
+          [:div.tsrv
+            [:a {:href (str "/tourserv/" (:id t))}
+              [:h3 (:title t)]]
+            (:descr t)])]
+
+      [:div.clearfix]]))
 ;
 
 

@@ -12,12 +12,14 @@
 ; (def bg_h4 "#607D8B")
 ; (def bg_h4 "#78909C")
 ; (def bg_h4 "#5a90ca")
-(def bg_h4 "#59c")
+; (def bg_h4 "#59c")
+(def bg_h4 "#7cafd8")
 
 (def c_grey "#777")
 
 (def c_label_green "#484")
-
+(def c_label_grey "#555")
+(def c_label_lgrey "#888")
 
 
 ;;.

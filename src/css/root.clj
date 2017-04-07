@@ -1,8 +1,10 @@
 
 (ns css.root
+  (:refer-clojure :exclude [>])
   (:require
     [garden.def :refer [defstyles]]
     [garden.units :refer [px pt em ex]]
+    [garden.selectors :refer [>]]
     [garden.stylesheet :refer [at-media]]
     ;
     [css.tourserv :refer [b-tourserv]]))
@@ -97,12 +99,11 @@
 (def topbar
   [
     [:.b-topbar
-      { :margin-bottom (px 12)
+      { :margin-bottom (px 4)
         :border-bottom (str "1px solid " c_topbar_brd)}
 
       [:.logo
         { :margin "3px 4px 3px 4px"}]
-
 
       [:.b-search
         { :padding "4px 10px"
@@ -147,21 +148,25 @@
         ;     :border-radius "10px"
         ;     :background "#f4f4f4"}]
 
-      [:.b-navbar
-        [:.uk-navbar-nav {:padding "0 8px"}]
-        [:a.topmenu
-          { :font-size (pt 13)
-            :padding "0 12px"
-            :color "#778"}]
-        [:a.topmenu:hover
-          { :color "#08f"
-            :text-shadow 'none}]
-        [:.uk-active [:a {:color "#04b"}]]]
 
       (at-media {:max-width (px 320)}
         [:.container {:padding-left 0 :padding-right 0}]
         [:.b-signin  {:margin-right (px 10)}]
-        [:.b-user    {:margin-right (px 10)}])]])
+        [:.b-user    {:margin-right (px 10)}])]
+    ;;;
+
+    [:.b-topnav
+      { :font-size "1.6rem"
+        :letter-spacing "0.1rem"
+        :padding-bottom "4px"
+        :border-bottom (str "1px solid " c_topbar_brd)
+        ; :border-bottom "1px solid #def"
+        :margin-bottom "10px"}
+      ;
+      [:.nav
+        [:li [:a {:padding "5px 10px" :color "#47c"}]]
+        [:li.active [:a {:background-color "#f0f0f0"}]]
+        [:li.active [:a:hover {:color "#6bf"}]]]]])
 ;
 
 ;;; ;;; ;;; ;;;
