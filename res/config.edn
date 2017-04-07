@@ -12,6 +12,15 @@
     :meteo  { :uri "mongodb://localhost:22022/meteo"  }
   }
 
+  ;; common
+  :urls
+  {
+    :login      "https://angara.net/auth/login"
+    :logout     "https://angara.net/auth/logout"
+    :auth_reset "https://angara.net/auth/reset"
+    :register   "https://angara.net/auth/register"
+  }
+
   ;; https://github.com/ring-clojure/ring/blob/master/ring-jetty-adapter/src/ring/adapter/jetty.clj
   :http {
     :host  "127.0.0.1"

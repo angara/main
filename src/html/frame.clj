@@ -149,7 +149,7 @@
       [:div.container
         [:div.row
           [:div.col-sm-4.text-left
-             [:a {:href "http://angara.net/about/"} "О сайте"]
+             [:a {:href "//angara.net/about/"} "О сайте"]
              [:br]
              [:a {:href "http://top.mail.ru/visits?id=474619" :target "_blank"}
                  "Статистика"]]
@@ -208,7 +208,7 @@
               content
               [:div.clearfix]
               [:div.b-botnav
-                [:a {:href "http://angara.net/"} "Главная"]
+                [:a {:href "//angara.net/"} "Главная"]
                 (for [n (next TOP_NAVS)]
                   (list
                     " | "
