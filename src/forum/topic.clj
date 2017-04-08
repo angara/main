@@ -1,14 +1,13 @@
 
 
-(ns forum.api
+(ns forum.topic
   (:require
     [clojure.string :as s]
     [clj-time.core :as tc]
-    [mlib.log :refer [warn]]
-    ; [monger.collection :as mc]
-    ; [monger.query :as mq]
     [honeysql.helpers :as h]
     [compojure.core :refer [GET POST ANY defroutes]]
+    ;
+    [mlib.log :refer [warn]]
     [mlib.http :refer [json-resp]]
     [mlib.core :refer [to-int]]
     [sql.core :refer [fetch exec]]))
@@ -147,12 +146,10 @@
             {:err :not_found :msg "Тема не найдена."}))))))
 ;
 
-(defroutes routes
-  (POST "/topic/notify" [] topic-notify)
-  (POST "/topic/title"  [] topic-title)
-  (POST "/topic/state"  [] topic-state)  ;; {:tid tid :closed true|false}
-
-  (ANY "/*" _ (json-resp {:err :req})))
+(defroutes topic-routes
+  (POST "/notify" [] topic-notify)
+  (POST "/title"  [] topic-title)
+  (POST "/state"  [] topic-state))  ;; {:tid tid :closed true|false}
 ;
 
 ;;.

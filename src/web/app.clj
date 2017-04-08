@@ -22,7 +22,7 @@
     [html.frame :refer [not-found]]
     [html.views :as views]
     [html.search :as search]
-    [forum.api :as forum-api]
+    [forum.core :refer [forum-api-routes]]
     [front.core :refer [main-page]]
     [meteo.old-ws :as old-ws]
     [misc.icestorm :as icestorm]
@@ -44,7 +44,7 @@
     (GET  "/search"   _ (redirect "/yasearch"))
     (GET  "/yasearch" _ search/yasearch)
 
-    (context "/forum/api"     _ forum-api/routes)
+    (context "/forum/api"     _ forum-api-routes)
     (context "/meteo/old-ws"  _ old-ws/routes)
     (context "/icestorm"      _ icestorm/routes)
     (context "/tourserv"      _ tourserv/routes)
