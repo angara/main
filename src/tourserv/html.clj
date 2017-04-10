@@ -4,6 +4,7 @@
   (:require
     [mlib.log :refer [debug info warn]]
     [mlib.core :refer [hesc]]
+    [mlib.web.snippets :refer [ya-rtb]]
     ;
     [html.frame :refer [render]]
     [tourserv.const :refer [TYPES TYPE_MAP TOWNS TOWN_MAP]]
@@ -19,6 +20,10 @@
     (when srv_id (str "#" srv_id))))
 ;
 
+(defn ads []
+  ;; tourserv-bot
+  (ya-rtb "R-A-1908-3" true))
+;
 
 (def APARTS_TOP_NUM 4)
 
@@ -90,7 +95,8 @@
                 [:div.person [:i.fa.fa-user-circle.fa-fw] (hesc p)])
               [:hr]])
 
-          [:div.clearfix]]))))
+          [:div.clearfix]
+          (ads)]))))
 ;
 
 
@@ -123,7 +129,8 @@
                 [:div.person [:i.fa.fa-user-circle.fa-fw] (hesc p)])
               [:hr]])
 
-          [:div.clearfix]]))))
+          [:div.clearfix]
+          (ads)]))))
 ;
 
 
@@ -173,7 +180,8 @@
         [:div.clearfix]
         [:hr]]
         ;
-      [:div.clearfix]]))
+      [:div.clearfix]
+      (ads)]))
 ;
 
 
