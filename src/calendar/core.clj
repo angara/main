@@ -7,6 +7,12 @@
     [calendar.html :refer [index-page]]))
 ;
 
+
+(defn get-topic [tid])
+
+;
+
+
 (defroutes calendar-routes
   (GET "/" [] index-page))
   ; (ANY      "/*"      _ (json-resp {:err :req})))

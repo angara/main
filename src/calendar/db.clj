@@ -22,6 +22,8 @@
     :date   "event date"
     :date_1 "optional end date"
 
+    :status ""    ;; :new :apply :publ :canc
+
     :title  ""
     :descr  ""
     :thumb  ""    ;; thumbnail
