@@ -20,8 +20,8 @@
 
     [mdb.user :refer [user-by-id sess-load FLDS_REQ_USER]]
     [html.frame :refer [not-found]]
-    [html.views :as views]
     [html.search :as search]
+    [calendar.core :refer [calendar-routes]]
     [forum.core :refer [forum-api-routes]]
     [front.core :refer [main-page]]
     [meteo.old-ws :as old-ws]
@@ -34,7 +34,8 @@
   (fn [req]
     (if (:user req)
       (handler req)
-      (redirect (str "/user/login?next=" (:uri req))))))
+      (redirect
+        (str (-> conf :urls :login) "?redir=" (:uri req))))))
 ;
 
 
@@ -44,6 +45,7 @@
     (GET  "/search"   _ (redirect "/yasearch"))
     (GET  "/yasearch" _ search/yasearch)
 
+    (context "/calendar"      _ calendar-routes)
     (context "/forum/api"     _ forum-api-routes)
     (context "/meteo/old-ws"  _ old-ws/routes)
     (context "/icestorm"      _ icestorm/routes)

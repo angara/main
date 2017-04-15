@@ -5,25 +5,6 @@
     [html.frame :refer [layout]]))
 ;
 
-(defn main-page [req]
-  (layout req
-    {}
-    [:div.jumbotron
-      [:h1.text-center "Раздел в разработке."]
-      [:p
-        [:a {:href "/bb/"} "Доска объявлений"]]]))
-;
-
-(defn home [req]
-  (layout req
-    {:title "Личная информация"}
-    ;
-    [:div {:style "margin: 20px;"}
-      [:a {:href (str "http://angara.net/user/" (:username (:user req)) "/")}
-          "Личная страница пользователя сайта Angara.Net"]]
-    [:hr]))
-;
-
 (defn search [req]
 
   (layout req {:title "Поиск"}

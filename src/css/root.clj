@@ -165,7 +165,7 @@
       ;
       [:.nav
         [:li [:a {:padding "5px 10px" :color "#47c"}]]
-        [:li.active [:a {:background-color "#f0f0f0"}]]
+        [:li.active [:a {:background-color "#eaeaea"}]]
         [:li.active [:a:hover {:color "#6bf"}]]]]])
 ;
 
