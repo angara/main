@@ -60,6 +60,7 @@
   [
     { :id "arshan"    :title "Аршан"}
     { :id "baik"      :title "Байкальск"}
+    { :id "buguld"    :title "Бугульдейка"}
     { :id "vydrino"   :title "Выдрино"}
     { :id "goloust"   :title "Голоустное"}
     { :id "irkutsk"   :title "Иркутск"}

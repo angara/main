@@ -3,6 +3,7 @@
   (:require
     [clojure.java.shell :refer [sh]]
     [compojure.core :refer [defroutes GET POST]]  ;context ANY
+    [mlib.conf :refer [conf]]
     [mlib.http :refer [json-resp]]
     ;
     [calendar.html :refer [index-page]]
@@ -42,15 +43,15 @@
                     (str dir base ".jpg")
                     (str dir t100))
                   (str (:upload-uri cnf) t100))
-          topic (:topic tinfo)])
-    ;
-    {
-      :uid    (str (:owner topic))
-      :title  (:title topic)
-      :descr  (-> tinfo :msg :body)
-      :link   (str "/forum/t" (:tid topic))
-      :thumb  thumb}))
-      ;; tags by tgroup ???
+          topic (:topic tinfo)]
+      ;
+      {
+        :uid    (str (:owner topic))
+        :title  (:title topic)
+        :descr  (-> tinfo :msg :body)
+        :link   (str "/forum/t" (:tid topic))
+        :thumb  thumb})))
+        ;; tags by tgroup ???
 ;
 
 

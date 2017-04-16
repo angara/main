@@ -2,11 +2,16 @@
 //  forum/api routines
 //
 
-// window.uio required
+//
+// authorized users only
+//
+if(window.uid) {
+  $(function(){
 
-$(function(){
+    // console.log("init forum/api");
 
-  console.log("init forum/api");
-});
+  });
+}
+//
 
 //.
