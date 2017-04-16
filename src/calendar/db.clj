@@ -26,7 +26,7 @@
 
     :title  ""
     :descr  ""
-    :thumb  ""    ;; thumbnail
+    :thumb  ""    ;; thumbnail-100 uri
 
     :link   ""
 

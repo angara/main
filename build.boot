@@ -25,7 +25,7 @@
     [ch.qos.logback/logback-classic "1.2.3"]
 
     [clj-time "0.13.0"]
-    [clj-http "3.4.1"]
+    [clj-http "3.5.0"]
 
     [ring/ring-core "1.5.1"]
     [ring/ring-json "0.4.0"]

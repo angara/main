@@ -10,34 +10,13 @@
     [mlib.log :refer [warn]]
     [mlib.http :refer [json-resp]]
     [mlib.core :refer [to-int]]
-    [sql.core :refer [fetch exec]]))
+    [sql.core :refer [fetch exec]]
+    ;
+    [forum.db :refer [FORUM_TOPICS FORUM_LASTREAD USERS]]))
 ;
 
-(def FORUM_LASTREAD (keyword "forum_lastread"))
-; uid            | integer                     | not null
-; tid            | integer                     | not null
-; msgid          | integer                     | not null
-; watch          | integer                     | not null default 0
-; post_count     | integer                     | not null default 0
-; last_post_time | timestamp without time zone |
 
-(def FORUM_TOPICS (keyword "forum_topics"))
-; tid        | integer                     | not null default nextval('forum_topics_tid_seq'::regclass)
-; tgroup     | integer                     | not null
-; owner      | integer                     | not null
-; title      | character varying(400)      | not null
-; created    | timestamp without time zone | not null default ('now'::text)::timestamp(6) with time zone
-; lastupdate | timestamp without time zone | not null default ('now'::text)::timestamp(6) with time zone
-; lastposter | integer                     |
-; closed     | boolean                     | not null default false
-; msgnum     | integer                     | not null default 0
-; lastmsgid  | integer                     | not null default 0
-; ordi       | integer                     | not null default 0
-
-
-(def USERS (keyword "users"))
 (def ROLE_FORUM \F)
-
 (def FORUM_EDIT_AGE (tc/days 60))
 
 (def FIRST_CHARS

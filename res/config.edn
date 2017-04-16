@@ -52,6 +52,15 @@
     :ms 1000
   }
 
+
+  ;; app modules ;;
+
+  :forum {
+    ;; hardcoded in jsp module
+    :upload-uri "/upload/"
+    :upload-dir "/www/angara/upload/"
+  }
+
   :photomap {
     :hash-dir "../bots/var/photos"
     :base-uri "/photomap"
