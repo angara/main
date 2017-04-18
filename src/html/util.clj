@@ -68,7 +68,6 @@
     (catch Exception e (warn "req-tempfile:" e))))
 
 
-
 (defn ya-direct [{:keys [client stat type limit]
                   :or {client 1908 stat 1 type "horizontal" limit 2}}]
   (snip/ya-direct (str "yad_" stat) client stat type limit))

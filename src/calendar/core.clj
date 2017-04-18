@@ -4,13 +4,18 @@
     [clojure.java.shell :refer [sh]]
     [compojure.core :refer [defroutes GET POST]]  ;context ANY
     [mlib.conf :refer [conf]]
+    [mlib.core :refer [to-int]]
     [mlib.http :refer [json-resp]]
     ;
+    [html.frame :refer [wrap-user-required]]
     [calendar.html :refer [index-page]]
+    [calendar.my :refer [my-page]]
     [forum.db :refer
       [get-topic get-messages attach-params]]))
 ;
 
+
+(def URL_CALENDAR_MY "/calendar/my")
 
 (defn thumb-100 [orig dest]
   (when (and orig dest)
@@ -55,11 +60,68 @@
 ;
 
 
-(defroutes calendar-routes
-  (GET "/" [] index-page))
-  ; (ANY      "/*"      _ (json-resp {:err :req})))
+(defn add-tinfo [uid tinfo]
+  (let [crec (tinfo-calendar tinfo)]
+    (assoc crec :uid uid)))
+    ;;
 ;
 
-#_ (topic-info 113992)
+(defn allow-add? [uid tinfo]
+  (cond
+    ;; is admin
+    (= "1" uid)
+    true
+
+    ;; no commercial topics
+    (<= 1000 (-> tinfo :topic :tid))
+    false
+
+    ;; only by owner owner
+    (not= uid (-> tinfo :topic :owner str))
+    false
+
+    ;; title
+    ;; attach ?
+
+    :else true))
+;
+
+
+(defn topic-check [{params :params :as req}]
+  (let [uid (-> req :user :id)
+        tid (-> params :tid to-int)]
+    (if-let [tinfo (topic-info tid)]
+      (json-resp
+        {:ok 1 :allowed (allow-add? uid tinfo)})
+      (json-resp
+        {:err :not_found}))))
+;
+
+(defn topic-add [{params :params :as req}]
+  (let [uid (-> req :user :id)
+        tid (-> params :tid to-int)]
+    (if-let [tinfo (topic-info tid)]
+      (if (allow-add? uid tinfo)
+        (if (add-tinfo uid tinfo)
+          (json-resp
+            {:ok 1 :redir URL_CALENDAR_MY})
+          (json-resp
+            {:err :syserr :msg "Ошибка при добавлении темы"}))
+        ;
+        (json-resp
+          {:err :denied :msg "Невозможно добавить тему в календарь"}))
+      ;
+      (json-resp
+        {:err :not_found}))))
+;
+
+(defroutes calendar-routes
+  (GET  "/"           [] index-page)
+  ;
+  (GET  "/my"         []  (wrap-user-required my-page))
+  ;
+  (GET  "/add-topic"  [] topic-check)
+  (POST "/add-topic"  [] topic-add))
+;
 
 ;;

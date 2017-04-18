@@ -27,10 +27,11 @@
     [clj-time "0.13.0"]
     [clj-http "3.5.0"]
 
-    [ring/ring-core "1.5.1"]
+    ;; [ring/ring-core "1.5.1"]
+    [ring/ring-core "1.6.0-RC3"]
+    [ring/ring-jetty-adapter "1.6.0-RC3"]
     [ring/ring-json "0.4.0"]
     [ring/ring-headers "0.2.0"]
-    [ring/ring-jetty-adapter "1.5.1"]
 
     [cheshire "5.7.0"]
     [compojure "1.5.2"]

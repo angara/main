@@ -30,13 +30,13 @@
     [tourserv.core :as tourserv]))
 ;
 
-(defn wrap-user-required [handler]
-  (fn [req]
-    (if (:user req)
-      (handler req)
-      (redirect
-        (str (-> conf :urls :login) "?redir=" (:uri req))))))
-;
+; (defn wrap-user-required [handler]
+;   (fn [req]
+;     (if (:user req)
+;       (handler req)
+;       (redirect
+;         (str (-> conf :urls :login) "?redir=" (:uri req))))))
+; ;
 
 
 (defn make-routes []

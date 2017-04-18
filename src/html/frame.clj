@@ -238,8 +238,12 @@
    :body
       (layout req {:title "Нет доступа"}
         [:div.jumbotron
-          [:h1 "У вас нет доступа к этой странице"]
-          [:p  "Проверьте правильность входа на сайт."]])})
+          [:h1.text-center "Нет доступа к странице"]
+          [:br] [:br]
+          [:p  "Проверьте правильность "
+            [:a {:href (-> conf :urls :login)} "входа на сайт"]
+            "."]
+          [:br]])})
 ;
 
 
@@ -262,6 +266,13 @@
       (layout req {}
         [:div.jumbotron.error
           [:h1 msg]])})
+;
+
+(defn wrap-user-required [handler]
+  (fn [req]
+    (if (:user req)
+      (handler req)
+      (no-access req))))
 ;
 
 ;;.
