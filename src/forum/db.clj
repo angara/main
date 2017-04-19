@@ -100,7 +100,7 @@
   "returns: [type '34/56/f_123456']"
   [msg]
   ;; sample field data  :attach "jpg 2073044"
-  (when-let [type (-> msg :attach str (s/split #" +") first)]
+  (when-let [type (-> msg :attach str (s/split #" +") first not-empty)]
     (let [id (-> msg :msgid str)
           padded (str "0000" id)
           len (.length padded)

@@ -2,12 +2,16 @@
 (ns calendar.core
   (:require
     [clojure.java.shell :refer [sh]]
+    [clj-time.core :as tc]
     [compojure.core :refer [defroutes GET POST]]  ;context ANY
+    ;
     [mlib.conf :refer [conf]]
     [mlib.core :refer [to-int]]
     [mlib.http :refer [json-resp]]
     ;
     [html.frame :refer [wrap-user-required]]
+    [web.middleware :refer [wrap-throttle]]
+    [calendar.db :refer [add-crec]]
     [calendar.html :refer [index-page]]
     [calendar.my :refer [my-page]]
     [forum.db :refer
@@ -16,6 +20,9 @@
 
 
 (def URL_CALENDAR_MY "/calendar/my")
+
+(def FRESH_TOPIC_AGE (tc/days 30))
+
 
 (defn thumb-100 [orig dest]
   (when (and orig dest)
@@ -32,9 +39,14 @@
 
 (defn topic-info [tid]
   (when-let [topic (get-topic tid)]
-    (let [msg (first (get-messages tid 0 1))
-          att (attach-params msg)]
-      {:topic topic :msg msg :attach att})))
+    (let [[msg msg1] (first (get-messages tid 0 2))
+          att (or
+                (attach-params msg)
+                (attach-params msg1))]
+      {
+        :topic  topic
+        :msg    msg
+        :attach att})))
 ;
 
 (defn tinfo-calendar [tinfo]
@@ -61,29 +73,40 @@
 
 
 (defn add-tinfo [uid tinfo]
-  (let [crec (tinfo-calendar tinfo)]
-    (assoc crec :uid uid)))
-    ;;
+  (when-let [crec (tinfo-calendar tinfo)]
+    (let [now   (tc/now)
+          crec  (assoc crec
+                  :uid uid :ct now :ts now
+                  :date (tc/plus now (tc/days 1))    ;; lookup date in descr
+                  :status nil)]
+      (add-crec crec))))
 ;
 
 (defn allow-add? [uid tinfo]
-  (cond
-    ;; is admin
-    (= "1" uid)
-    true
+  (when-let [topic (:topic tinfo)]
+    (cond
+      ;; is admin
+      (= "1" uid)
+      true
 
-    ;; no commercial topics
-    (<= 1000 (-> tinfo :topic :tid))
-    false
+      ;; no commercial topics
+      (<= 1000 (:tid topic))
+      false
 
-    ;; only by owner owner
-    (not= uid (-> tinfo :topic :owner str))
-    false
+      ;; no old topics
+      (tc/before?
+        (:created topic)
+        (tc/minus (tc/now) FRESH_TOPIC_AGE))
+      false
 
-    ;; title
-    ;; attach ?
+      ;; only by owner owner
+      (not= uid (str (:owner topic)))
+      false
 
-    :else true))
+      ;; title
+      ;; attach ?
+
+      :else true)))
 ;
 
 
@@ -118,10 +141,11 @@
 (defroutes calendar-routes
   (GET  "/"           [] index-page)
   ;
-  (GET  "/my"         []  (wrap-user-required my-page))
+  (GET  "/my"         [] (wrap-user-required my-page))
   ;
   (GET  "/add-topic"  [] topic-check)
-  (POST "/add-topic"  [] topic-add))
+  (POST "/add-topic"  []
+          (wrap-throttle topic-add {:time 1000 :limit 2})))
 ;
 
 ;;

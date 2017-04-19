@@ -237,8 +237,9 @@
    :headers {"Content-Type" "text/html;charset=utf-8"}
    :body
       (layout req {:title "Нет доступа"}
+        [:br]
         [:div.jumbotron
-          [:h1.text-center "Нет доступа к странице"]
+          [:h2.text-center "Нет доступа к странице"]
           [:br] [:br]
           [:p  "Проверьте правильность "
             [:a {:href (-> conf :urls :login)} "входа на сайт"]

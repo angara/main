@@ -7,7 +7,7 @@
     ;
     [mlib.log :refer [warn]]
     [mlib.conf :refer [conf]]
-    [mdb.core :refer [dbc try-warn]]))
+    [mdb.core :refer [dbc try-warn new_id]]))
 ;
 
 
@@ -34,6 +34,13 @@
 ;
 
 
+(defn add-crec [crec]
+  (let [_id (new_id)]
+    (try-warn "add-crec:"
+      (mc/insert (dbc) CALENDAR_COLL
+        (assoc crec :_id _id))
+      crec)))
+;
 
 
 (defn make-indexes [db]
