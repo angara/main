@@ -5,11 +5,7 @@
 //
 // authorized users only
 //
-if(window.uid) {
-
-  //
-  // vote msg
-  //
+if(window.uid && window.topic_page == 0) {
 
   $(function(){
     var ADD_TOPIC = "/calendar/add-topic";

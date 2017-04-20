@@ -39,7 +39,7 @@
 
 (defn topic-info [tid]
   (when-let [topic (get-topic tid)]
-    (let [[msg msg1] (first (get-messages tid 0 2))
+    (let [[msg msg1] (get-messages tid 0 2)
           att (or
                 (attach-params msg)
                 (attach-params msg1))]
