@@ -7,7 +7,7 @@
     ;
     [mlib.log :refer [warn]]
     [mlib.conf :refer [conf]]
-    [mdb.core :refer [dbc try-warn new_id]]))
+    [mdb.core :refer [dbc try-warn new_id oid]]))
 ;
 
 
@@ -25,7 +25,7 @@
     :date   "event date"
     :date_1 "optional end date"
 
-    :status ""    ;; :new :apply :publ :canc
+    :status ""    ;; :new :apply :publ :canc  :removed
 
     :title  ""
     :descr  ""
@@ -37,7 +37,29 @@
 ;
 
 
-(defn recs-by-uid [uid]
+(defn crec-by-id [id]
+  (try-warn (str "crec-by-id: " id)
+    (mc/find-by-id (dbc) CALENDAR_COLL (oid id))))
+;
+
+(defn crec-by-id-uid [id uid]
+  (try-warn "crec-by-id-uid: " id uid
+    (mc/find-one-as-map (dbc) CALENDAR_COLL
+      {:_id (oid id) :uid uid})))
+;
+
+(defn crec-update [id upd]
+  (let [_id (oid id)]
+    (try-warn (str "crec-update: " id)
+      (->
+        (mc/update (dbc) CALENDAR_COLL
+          {:_id _id}
+          {:$set upd})
+        (.getN)
+        (= 1)))))
+;
+
+(defn crecs-by-uid [uid]
   (try-warn (str "recs-by-uid: " uid);
     (mq/with-collection (dbc) CALENDAR_COLL
       (mq/find {:uid uid})

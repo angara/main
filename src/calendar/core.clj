@@ -13,7 +13,7 @@
     [web.middleware :refer [wrap-throttle]]
     [calendar.db :refer [add-crec]]
     [calendar.html :refer [index-page]]
-    [calendar.my :refer [my-page]]
+    [calendar.my :refer [my-page my-update]]
     [forum.db :refer
       [get-topic get-messages attach-params]]))
 ;
@@ -147,6 +147,8 @@
   (GET  "/"           [] index-page)
   ;
   (GET  "/my"         [] (wrap-user-required my-page))
+  (POST "/my"         [] (wrap-user-required my-update))
+
   ;
   (GET  "/add-topic"  [] topic-check)
   (POST "/add-topic"  []

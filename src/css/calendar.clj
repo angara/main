@@ -13,8 +13,8 @@
     {:margin "1.4rem auto 1.5rem auto;"}
     [:.b-crec
       { :background-color "#f8f8f8"
-        :border-radius "2px"
-        :margin "8px 10px"
+        :border-radius "3px"
+        :margin "10px 10px"
         :padding "8px"}
       ;
       [:.thumb
@@ -22,8 +22,8 @@
           :width "100px"
           :height "100px"
           :border-radius "3px"
-          :margin-right "4px"
-          :margin-left "6px"}]
+          :margin-right "0"
+          :margin-left "4px"}]
       ;
       [:.date
         {
@@ -34,6 +34,10 @@
           :text-align :center}]
       ;
       [:.status]
+      ;
+      [:.lbl-status
+        { :margin-left "10px" :color "#555" 
+          :font-weight "normal" :cursor "pointer"}]
       ;
       [:.title
         {

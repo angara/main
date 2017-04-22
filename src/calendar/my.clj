@@ -3,17 +3,19 @@
   (:require
     [mlib.log :refer [debug info warn]]
     [mlib.core :refer [hesc]]
-    [mlib.time :refer [ddmmyyyy]]
+    [mlib.http :refer [json-resp]]
+    [mlib.time :refer [ddmmyyyy parse-ddmmyyyy]]
     ;
+    [mdb.core :refer [oid]]
     [html.frame :refer [render]]
-    [calendar.db :refer [recs-by-uid]]))
+    [calendar.db :refer [crecs-by-uid crec-by-id-uid crec-update]]))
 ;
 
 
 (defn my-page [req]
   (let [uid (-> req :user :id)
-        recs (recs-by-uid uid)]
-
+        recs (crecs-by-uid uid)]
+    ;
     (render req
       {
         :page-title "Календарь моих событий"
@@ -26,15 +28,20 @@
           [:div.b-my
             (for [r recs]
               [:div.b-crec {:data-id (:_id r)}
-                ;; [:div.col-sm-2.text-center
                 [:a {:href (:link r)}
                   [:img.thumb {:src (:thumb r)}]]
                 [:div.row
-                    
                   [:div.col-sm-10
                     [:div
                       [:input.date
                         {:type "text" :value (ddmmyyyy (:date r))}]
+                      " "
+                      [:label.lbl-status
+                        [:input.status
+                          (if (not-empty (:status r))
+                            {:type "checkbox" :checked "1"}
+                            {:type "checkbox"})]
+                        " Показывать"]
                       [:span.status (:status r)]]
                     [:div
                       [:input.title {:type "text" :value (:title r)}]]]]
@@ -49,5 +56,31 @@
               <nobr>[в календарь]</nobr> в заголовке."]
             [:br][:br]])])))
 ;
+
+
+(defn my-update [req]
+  (let [par (:params req)
+        id  (:id par)
+        uid (-> req :user :id)
+        crec (crec-by-id-uid id uid)]
+    (if (and crec (not= "removed" (:status crec)))
+      ;; TODO: validate params
+      (let [date   (-> par :date parse-ddmmyyyy)
+            status (-> par :status)
+            title  (-> par :title)]
+        (if-let [upd (cond-> nil
+                        date   (assoc :date   date)
+                        status (assoc :status status)
+                        title  (assoc :title  title))]
+          (if (crec-update id upd)
+            (json-resp {:ok 1})
+            (json-resp {:err :db}))
+          ;;
+          (json-resp {:err :params})))
+        ;;
+      ;
+      (json-resp {:err :not_found :msg "Запись не найдена."}))))
+;
+
 
 ;;.

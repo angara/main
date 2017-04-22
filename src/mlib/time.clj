@@ -29,6 +29,8 @@
 
 (defn parse-yyyymmdd [s]
   (try (tf/parse tf-yyyymmdd (str s)) (catch Exception ignore)))
+(defn parse-ddmmyyyy [s]
+  (try (tf/parse tf-ddmmyyyy (str s)) (catch Exception ignore)))
 (defn parse-ddmmyy [s]
   (try (tf/parse tf-ddmmyy (str s)) (catch Exception ignore)))
 
