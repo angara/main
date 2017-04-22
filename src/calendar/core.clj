@@ -82,11 +82,16 @@
       (add-crec crec))))
 ;
 
+
+(defn is-admin? [uid]
+  (-> conf :calendar :admins (get uid)))
+;
+
 (defn allow-add? [uid tinfo]
   (when-let [topic (:topic tinfo)]
     (cond
       ;; is admin
-      (= "1" uid)
+      (is-admin? uid)
       true
 
       ;; no commercial topics

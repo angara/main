@@ -12,6 +12,16 @@
     :meteo  { :uri "mongodb://localhost:22022/meteo"  }
   }
 
+
+  ;; calendar
+  :calendar {
+    :admins
+      #{
+        "1" 
+        "6441"
+      }
+  }
+
   ;; common
   :urls
   {

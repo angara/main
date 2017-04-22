@@ -13,6 +13,9 @@
 
 (def CALENDAR_COLL "calendar")
 
+(def CRECS_FETCH_LIMIT (int 1000))
+
+
 (def CALENDAR_STRUCT
   [ :_id    "oid"
     :uid    "uid"
@@ -31,6 +34,15 @@
     :link   ""
 
     :tags   []])
+;
+
+
+(defn recs-by-uid [uid]
+  (try-warn (str "recs-by-uid: " uid);
+    (mq/with-collection (dbc) CALENDAR_COLL
+      (mq/find {:uid uid})
+      (mq/sort {:date -1})
+      (mq/limit CRECS_FETCH_LIMIT))))
 ;
 
 

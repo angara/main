@@ -7,6 +7,7 @@
     [garden.selectors :refer [>]]
     [garden.stylesheet :refer [at-media]]
     ;
+    [css.calendar :refer [b-calendar]]
     [css.tourserv :refer [b-tourserv]]))
 ;
 
@@ -211,6 +212,7 @@
   botnav
   footer
 
+  b-calendar
   b-tourserv)
 ;
 
