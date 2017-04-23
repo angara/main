@@ -12,7 +12,7 @@
     [html.frame :refer [wrap-user-required]]
     [web.middleware :refer [wrap-throttle]]
     [calendar.db :refer [add-crec]]
-    [calendar.html :refer [index-page]]
+    [calendar.html :refer [index-page all-page]]
     [calendar.my :refer [my-page my-update]]
     [forum.db :refer
       [get-topic get-messages attach-params]]))
@@ -108,9 +108,6 @@
       (not= uid (str (:owner topic)))
       false
 
-      ;; title
-      ;; attach ?
-
       :else true)))
 ;
 
@@ -145,6 +142,8 @@
 
 (defroutes calendar-routes
   (GET  "/"           [] index-page)
+
+  (GET  "/all"        [] all-page)
   ;
   (GET  "/my"         [] (wrap-user-required my-page))
   (POST "/my"         [] (wrap-user-required my-update))

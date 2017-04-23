@@ -17,7 +17,9 @@
 
 (def c_grey "#777")
 
-(def c_icon_blue "#44c")
+(def c_green "#393")
+
+(def c_icon_blue "#44b")
 (def c_icon_darkblue "#448")
 
 (def c_label_green "#484")

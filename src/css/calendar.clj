@@ -23,7 +23,8 @@
           :height "100px"
           :border-radius "3px"
           :margin-right "0"
-          :margin-left "4px"}]
+          :margin-left "4px"
+          :background-color "#e0e0e0"}]
       ;
       [:.date
         {
@@ -36,7 +37,7 @@
       [:.status]
       ;
       [:.lbl-status
-        { :margin-left "10px" :color "#555" 
+        { :margin-left "10px" :color "#555"
           :font-weight "normal" :cursor "pointer"}]
       ;
       [:.title
@@ -45,8 +46,13 @@
           :margin-top "6px"
           :padding "2px 4px"
           :border "1px solid #aaa"
-          :border-radius "2px"}]]])
+          :border-radius "2px"}]
 
+      [:.c_publ
+        { :color c_green
+          :font-weight "bold"}]
+      [:.c_none
+        {:color c_grey}]]])
 
       ;
 ;

@@ -60,13 +60,22 @@
 ;
 
 (defn crecs-by-uid [uid]
-  (try-warn (str "recs-by-uid: " uid);
+  (try-warn (str "crecs-by-uid: " uid);
     (mq/with-collection (dbc) CALENDAR_COLL
       (mq/find {:uid uid})
       (mq/sort {:date -1})
       (mq/limit CRECS_FETCH_LIMIT))))
 ;
 
+(defn crecs-all []
+  (try-warn "crecs-all:"
+    (mq/with-collection (dbc) CALENDAR_COLL
+      (mq/find {})
+      (mq/sort {:date -1})
+      (mq/limit CRECS_FETCH_LIMIT))))
+;
+
+;;; ;;; ;;;
 
 (defn add-crec [crec]
   (let [_id (new_id)]
