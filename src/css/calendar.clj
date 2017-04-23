@@ -10,7 +10,17 @@
 
 (def b-calendar
   [:.b-calendar
-    {:margin "1.4rem auto 1.5rem auto;"}
+    {:margin "1.5rem auto 1.5rem auto;"}
+    ;;
+
+    [:.thumb
+      { :float "left"
+        :width "100px"
+        :height "100px"
+        :border-radius "3px"
+        :background-color "#e0e0e0"}]
+    ;;
+
     [:.b-crec
       { :background-color "#f8f8f8"
         :border-radius "3px"
@@ -18,13 +28,8 @@
         :padding "8px"}
       ;
       [:.thumb
-        { :float "left"
-          :width "100px"
-          :height "100px"
-          :border-radius "3px"
-          :margin-right "0"
-          :margin-left "4px"
-          :background-color "#e0e0e0"}]
+        { :margin-right "0"
+          :margin-left "4px"}]
       ;
       [:.date
         {
@@ -52,7 +57,27 @@
         { :color c_green
           :font-weight "bold"}]
       [:.c_none
-        {:color c_grey}]]])
+        {:color c_grey}]]
+
+    ;;; ;;; ;;; ;;;
+
+    [:.b-card
+      {
+        :margin-bottom "16px"
+        :padding "6px 12px"
+        :border "1px solid #dde"
+        :border-radius "3px"
+        :background-color "#f8f8f8"}
+
+      [:.date
+        {
+          :font-size "120%"
+          :color bg_dark
+          :margin "1px 2px 2px 0"}]
+
+      [:.thumb
+        {:margin "0 10px 8px -4px"}]]])
+
 
       ;
 ;

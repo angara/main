@@ -7,24 +7,41 @@
     [mlib.web.snippets :refer [ya-rtb]]
     ;
     [html.frame :refer [render]]
-    [calendar.db :refer [crecs-all]]))
+    [misc.util :refer [rus-date]]
+    [calendar.db :refer [crecs-all crecs-publ]]))
 ;
 
 
 (defn index-page [req]
-
-  (render req
-    {:page-title "Календарь событий"}
-
-    [:div.b-calendar
-      "calendar"]))
+  (let [crecs (crecs-publ)]
+    ;
+    (render req
+      { :page-title "Календарь событий"
+        :topmenu :calendar}
+      ;
+      [:div.b-calendar
+        (for [r crecs
+              :let [dt (rus-date (:date r))
+                    img (:thumb r)
+                    url (:link r)]]
+          [:div.col-sm-3
+            [:div.b-card
+              [:div.date (first dt) " " (second dt)]
+              (when img
+                [:a {:href url}
+                  [:img.thumb {:src img}]])
+              [:a.title {:href url}
+                (hesc (:title r))]
+              [:div.clearfix]]])
+        [:div.clearfix]])))
 ;
 
 (defn all-page [req]
   (let [crecs (crecs-all)]
     ;
     (render req
-      {:page-title "Календарь: все записи"}
+      { :page-title "Календарь: все записи"
+        :topmenu :calendar}
       ;
       [:div.b-calendar
         (for [r crecs

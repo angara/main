@@ -15,7 +15,8 @@
 ; (def bg_h4 "#59c")
 (def bg_h4 "#7cafd8")
 
-(def c_grey "#777")
+(def c_grey  "#777")
+(def c_lgrey "#aaa")
 
 (def c_green "#393")
 

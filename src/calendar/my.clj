@@ -18,7 +18,8 @@
     ;
     (render req
       {
-        :page-title "Календарь: Мои события"
+        :page-title "Календарь: мои события"
+        :topmenu :calendar
         :css ["/incs/datepicker/datepicker.min.css"]
         :js  ["/incs/datepicker/datepicker.min.js"
               "/incs/calendar/my.js"]}

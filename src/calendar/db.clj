@@ -1,6 +1,7 @@
 
 (ns calendar.db
   (:require
+    [clj-time.core :as tc]
     [monger.collection :as mc]
     [monger.query :as mq]
     [mount.core :refer [defstate]]
@@ -73,6 +74,15 @@
       (mq/find {})
       (mq/sort {:date -1})
       (mq/limit CRECS_FETCH_LIMIT))))
+;
+
+(defn crecs-publ []
+  (let [start (tc/minus (tc/now) (tc/hours 20))]
+    (try-warn "crecs-publ:"
+      (mq/with-collection (dbc) CALENDAR_COLL
+        (mq/find {:date {:$gte start}})
+        (mq/sort {:date 1})
+        (mq/limit CRECS_FETCH_LIMIT)))))
 ;
 
 ;;; ;;; ;;;
