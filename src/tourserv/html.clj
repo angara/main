@@ -116,7 +116,7 @@
               [:div.title (hesc (:title t))]
               [:div.descr (hesc (:descr t))]
               (when-let [p (:payload t)]
-                [:div.price [:b "Полезная нагрузка: "] (hesc p)])
+                [:div.payload [:b "Полезная нагрузка: "] (hesc p)])
               (when-let [price (:price t)]
                 [:div.price [:b "Цена: "] (hesc price)])
               (when-let [addr (:addr t)]

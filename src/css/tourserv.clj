@@ -30,13 +30,14 @@
           :text-indent "1.2rem;"}]
 
       [:b {:color c_label_grey}]
-      [:i.fa {:color c_label_lgrey :margin-right "6px"}]
+      [:i.fa {:color c_icon_blue :margin-right "6px"}]
 
-      [:.addr  { :margin "auto 1rem"}]
-      [:.price { :margin "auto 1rem"}]
-      [:.phone { :margin "auto 1rem"}]
-      [:.email { :margin "auto 1rem"}]
-      [:.person { :margin "auto 1rem"}]]
+      [:.payload { :margin "auto 1rem" :color c_icon_darkblue}]
+      [:.price   { :margin "auto 1rem" :color c_icon_darkblue}]
+      [:.phone   { :margin "auto 1rem" :color c_icon_darkblue}]
+      [:.addr    { :margin "auto 1rem" :color c_icon_darkblue}]
+      [:.email   { :margin "auto 1rem" :color c_icon_darkblue}]
+      [:.person  { :margin "auto 1rem" :color c_icon_darkblue}]]
     [:.b-index]])
 
 ;

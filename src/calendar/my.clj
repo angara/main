@@ -18,7 +18,7 @@
     ;
     (render req
       {
-        :page-title "Календарь моих событий"
+        :page-title "Календарь: Мои события"
         :css ["/incs/datepicker/datepicker.min.css"]
         :js  ["/incs/datepicker/datepicker.min.js"
               "/incs/calendar/my.js"]}
@@ -26,7 +26,8 @@
       [:div.b-calendar
         (if recs
           [:div.b-my
-            (for [r recs]
+            (for [r recs
+                  :let [status (-> r :status str)]]
               [:div.b-crec {:data-id (:_id r)}
                 [:a {:href (:link r)}
                   [:img.thumb {:src (:thumb r)}]]
@@ -38,11 +39,10 @@
                       " "
                       [:label.lbl-status
                         [:input.status
-                          (if (not-empty (:status r))
+                          (if (not-empty status)
                             {:type "checkbox" :checked "1"}
                             {:type "checkbox"})]
-                        " Показывать"]
-                      [:span.status (:status r)]]
+                        " Показывать"]]
                     [:div
                       [:input.title {:type "text" :value (:title r)}]]]]
                 [:div.clearfix]])]
@@ -66,8 +66,11 @@
     (if (and crec (not= "removed" (:status crec)))
       ;; TODO: validate params
       (let [date   (-> par :date parse-ddmmyyyy)
+            title  (-> par :title)
             status (-> par :status)
-            title  (-> par :title)]
+            status (when-not (nil? status)
+                      (if status "publ" ""))]
+        ;
         (if-let [upd (cond-> nil
                         date   (assoc :date   date)
                         status (assoc :status status)
