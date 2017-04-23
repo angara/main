@@ -76,9 +76,7 @@
           :margin "1px 2px 2px 0"}]
 
       [:.thumb
-        {:margin "0 10px 8px -4px"}]]])
-
-
+        {:margin "0 10px 8px 0"}]]])
       ;
 ;
 
