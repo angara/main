@@ -127,12 +127,12 @@
 (def TOP_NAVS
   [
     {:id "main"     :href "/"           :menu "Главная"}
-    {:id "calendar" :href "/calendar/"  :menu "Календарь"}
+    {:id "calendar" :href "/calendar"   :menu "Календарь"}
     {:id "info"     :href "/info/"      :menu "Информация"}
     ;; Карты
     {:id "text"     :href "/live/"      :menu "Статьи"}
     {:id "shops"    :href "/shops/"     :menu "Магазины"}
-    {:id "tourserv" :href "/tourserv/"  :menu "Турсервис"}
+    {:id "tourserv" :href "/tourserv"   :menu "Турсервис"}
     {:id "bb"       :href "/bb/"        :menu "Объявления"}
     {:id "meteo"    :href "/meteo/"     :menu "Погода"}
     {:id "photo"    :href "/photo/"     :menu "Фото"}

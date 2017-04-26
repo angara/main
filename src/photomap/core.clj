@@ -26,7 +26,8 @@
 
 
 (defn photo-list [req]
-  (layout req {}
+  (layout req
+    {}
     [:div
       (for [p (db/hist) :let [hash (:hash p)] :when hash]
         [:div
@@ -47,15 +48,14 @@
       [:html
         (head req {:js ["/incs/photomap/gmap.js"]})
         [:body
-          {:style {:width "100vw" :height "100vh"}}
+          {:style "width: 100vw; height: 100vh;"}
           [:div#gmap
             {:style
-              {:background "#ddd" :width "100vw" :height "100vh"}}
-            [:div {:style {:color "#777" :padding "10px 20px"}}
+              "background: #ddd; width: 100vw; height: 100vh;"}
+            [:div {:style "color: #777; padding: 10px 20px;"}
               "Загрузка карты ..."]]
           [:script
-            { :async 1 :defer 1
-              :src (str gapi google-key gopts)}]]])))
+            {:defer 1 :src (str gapi google-key gopts)}]]])))
 ;
 
 (defn photo->marker [pho]

@@ -7,7 +7,6 @@ var gmap = null;
 function place_markers(markers) {
   for(var i=0; i < markers.length; i++) {
     var m = markers[i];
-
     var marker = new google.maps.Marker({
       map: gmap,
       position: m.coord,
@@ -47,7 +46,7 @@ function get_markers(cb) {
   });
 }
 
-function init_gmap () {
+function init_gmap() {
   gmap = new google.maps.Map(document.getElementById('gmap'), {
     center: {lat: 52.3, lng: 104.3},
     zoom: 12,

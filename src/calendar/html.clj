@@ -20,20 +20,21 @@
         :topmenu :calendar}
       ;
       [:div.b-calendar
-        (for [r crecs
-              :let [dt (rus-date (:date r))
-                    img (:thumb r)
-                    url (:link r)]]
-          [:div.col-sm-3
-            [:div.b-card
-              [:div.date (first dt) " " (second dt)]
-              (when img
-                [:a {:href url}
-                  [:img.thumb {:src img}]])
-              [:a.title {:href url}
-                (hesc (:title r))]
-              [:div.clearfix]]])
-        [:div.clearfix]])))
+        [:div.row
+          (for [r crecs
+                :let [dt (rus-date (:date r))
+                      img (:thumb r)
+                      url (:link r)]]
+            [:div.col-sm-4
+              [:div.b-card
+                [:div.date (first dt) " " (second dt)]
+                (when img
+                  [:a {:href url}
+                    [:img.thumb {:src img}]])
+                [:a.title {:href url}
+                  (hesc (:title r))]
+                [:div.clearfix]]])
+          [:div.clearfix]]])))
 ;
 
 (defn all-page [req]

@@ -17,6 +17,9 @@
 (def CRECS_FETCH_LIMIT (int 1000))
 
 
+(def STATUS_PUBL "publ")
+
+
 (def CALENDAR_STRUCT
   [ :_id    "oid"
     :uid    "uid"
@@ -80,7 +83,7 @@
   (let [start (tc/minus (tc/now) (tc/hours 20))]
     (try-warn "crecs-publ:"
       (mq/with-collection (dbc) CALENDAR_COLL
-        (mq/find {:date {:$gte start}})
+        (mq/find {:date {:$gte start} :status STATUS_PUBL})
         (mq/sort {:date 1})
         (mq/limit CRECS_FETCH_LIMIT)))))
 ;

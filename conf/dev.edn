@@ -13,18 +13,19 @@
     :password "anga.ex1.16"
   }
 
-  :bots {
-    :meteo38bot {
-      ;; meteo38_bot
-      :apikey "178313410:AAFh2h-WdKT9ydT7lrW7KZWIDcNrHu2pRA4"
-
-      ;; meteo38bot
-      ; :apikey "129123506:AAEq5PEcUNdcC-EHwBYlr--mNSYjH04A6mk"
-    }
-  }
+;  :bots {
+;    :meteo38bot {
+;      ;; meteo38_bot
+;      :apikey "178313410:AAFh2h-WdKT9ydT7lrW7KZWIDcNrHu2pRA4"
+;
+;      ;; meteo38bot
+;      ; :apikey "129123506:AAEq5PEcUNdcC-EHwBYlr--mNSYjH04A6mk"
+;    }
+;  }
 
   :photomap {
-    :google-key "AIzaSyCQR4ahK5BKgpQlxv5-gCvIpMAVvERV0Bg"
+    :google-key "AIzaSyC_7-NIQTS3Ttdw9JMz6lzfKuVqNQNo0qU"
+    ; :google-key "AIzaSyCQR4ahK5BKgpQlxv5-gCvIpMAVvERV0Bg"
     ;:google-key "AIzaSyCp3t3SQOk4qPJBjSwdx2L2jKsl9HmOB8Qq"
   }
 
