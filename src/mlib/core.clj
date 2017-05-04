@@ -1,5 +1,5 @@
 ;;
-;;  mlib: 0.7.0
+;;  mlib
 ;;
 
 (ns mlib.core

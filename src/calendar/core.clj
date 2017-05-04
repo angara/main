@@ -88,6 +88,7 @@
 ;
 
 (defn allow-add? [uid tinfo]
+  (prn "uid, tinfo:" uid tinfo)
   (when-let [topic (:topic tinfo)]
     (cond
       ;; is admin
@@ -95,7 +96,7 @@
       true
 
       ;; no commercial topics
-      (<= 1000 (:tid topic))
+      (<= 1000 (:tgroup topic))
       false
 
       ;; no old topics
@@ -106,6 +107,10 @@
 
       ;; only by owner owner
       (not= uid (str (:owner topic)))
+      false
+
+      ;; attach requred
+      (not (:attach tinfo))
       false
 
       :else true)))
