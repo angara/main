@@ -4,13 +4,15 @@
     [clojure.string :as s]
     [compojure.core :refer [GET ANY defroutes]]
     [clj-time.core :as tc]
+    [clj-time.format :as tf]
     ;
     [mlib.conf :refer [conf]]
     [mlib.core :refer [to-float to-int]]
     [mlib.http :refer [json-resp text-resp]]
+    [mlib.log :refer [debug]]
     ;
     [mdb.core :refer [id_id]]
-    [meteo.db :refer [db st-ids st-near PUB_FIELDS]]))
+    [meteo.db :refer [db st-ids st-near PUB_FIELDS hourly-data]]))
 ;
 
 
@@ -53,10 +55,17 @@ Hourly aggregations -
     (merge par {:ok 1 :data data})))
 ;
 
+(defn params-sts [params]
+  (->>
+    (-> params :st str (s/split #","))
+    (remove s/blank?)
+    (not-empty)))
+;
+
 ;;; ;;; ;;; ;;;
 
 (defn info [{params :params}]
-  (if-let [sts (-> params :st str (s/split #",") not-empty)]
+  (if-let [sts (params-sts params)]
     (ok-data {}
       (map id_id (st-ids sts PUB_FIELDS)))
     ;;
@@ -80,10 +89,31 @@ Hourly aggregations -
       (json-resp {:err :params}))))
 ;
 
-(defn hourly [{params :params}]
-  (json-resp {:err :nimp}))
+(def FETCH_LIMIT 3000)
+
+(defn parse-time [t]
+  (try
+    (tf/parse (str t))
+    (catch Exception e
+      (debug "parse-time:" t e))))
 ;
 
+(defn hourly [{params :params}]
+  (if-let [sts (params-sts params)]
+    (let [t0 (-> params :t0 parse-time)
+          t1 (-> params :t1 parse-time)]
+      (if (and t0 t1 (tc/before? t0 t1))
+        (ok-data
+          {:t0 t0 :t1 t1 :limit FETCH_LIMIT}
+          (map #(dissoc % :_id)
+            (hourly-data sts t0 t1 FETCH_LIMIT)))
+        ;;
+        (json-resp {:err :time})))
+    ;;
+    (json-resp {:err :params})))
+;
+
+;;; ;;; ;;; ;;;
 
 (defroutes meteo-api-routes
   (GET "/"           _  index)

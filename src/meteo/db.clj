@@ -24,7 +24,6 @@
   (:db mdb))
 ;
 
-
 (def PUB_FIELDS
   [:_id :ts :ll :elev :title :descr :addr :url :last :trends])
 
@@ -114,5 +113,16 @@
       (mc/find-maps (db) ST {:_id {:$in ids} :pub 1} (or fields [])))))
 ;
 
+
+(defn hourly-data [ids t0 t1 limit]
+  (when ids
+    (try
+      (mq/with-collection (db) HOURS
+        (mq/find {:st {:$in ids} :hour {:$gte t0 :$lt t1}})
+        ;(mq/sort (array-map :hour 1))
+        (mq/limit limit))
+      (catch Exception e
+        (warn "hourly-data:" ids t0 t1 e)))))
+;
 
 ;;.
