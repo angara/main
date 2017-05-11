@@ -22,9 +22,15 @@
 
 (defn db []
   (:db mdb))
+;
 
 
-(def ST "st")   ;; stations collection
+(def PUB_FIELDS
+  [:_id :ts :ll :elev :title :descr :addr :url :last :trends])
+
+
+(def ST     "st")      ;; stations collection
+(def HOURS  "hours")   ;; hourly collection
 
 
 ; (defn q-st-fresh []

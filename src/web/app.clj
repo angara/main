@@ -24,6 +24,7 @@
     [calendar.core :refer [calendar-routes]]
     [forum.core :refer [forum-api-routes]]
     [front.core :refer [main-page]]
+    [meteo.api :refer [meteo-api-routes]]
     [meteo.old-ws :as old-ws]
     [misc.icestorm :as icestorm]
     [photomap.core :as photomap]
@@ -39,11 +40,21 @@
 ; ;
 
 
+(defn api-404 [req]
+  { :status  404
+    :headers {"Content-Type" "text/plain"}
+    :body    "API endpoint not found"})
+;
+
 (defn make-routes []
   (routes
-    (GET  "/"         _ main-page)
-    (GET  "/search"   _ (redirect "/yasearch"))
-    (GET  "/yasearch" _ search/yasearch)
+    (GET     "/"              _ main-page)
+    ;
+    (context "/api/meteo"     _ meteo-api-routes)
+    (ANY     "/api/*"         _ api-404)
+    ;
+    (GET     "/search"        _ (redirect "/yasearch"))
+    (GET     "/yasearch"      _ search/yasearch)
 
     (context "/calendar"      _ calendar-routes)
     (context "/forum/api"     _ forum-api-routes)
@@ -84,8 +95,7 @@
   (->
     (make-routes)
     (wrap-user)
-    ;; TODO: fix
-    ;; (wrap-csrf {:skip-uris #{"/usr/login"}})
+    ;; (wrap-csrf {:skip-uris #{"/auth/login"}})   ;; TODO: fix
     (wrap-sess sess-load)
     middleware
     (wrap-slowreq (:slowreq conf))))

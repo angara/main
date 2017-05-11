@@ -2,7 +2,7 @@
 ;;  Angara.Net main
 ;;
 
-(def project {:name "angara.net/main" :version "0.14.0"})
+(def project {:name "angara.net/main" :version "0.15.0"})
 
 (def jar-main 'web.main)
 (def jar-file "main.jar")
@@ -20,7 +20,6 @@
     [org.clojure/tools.namespace "0.2.11" :scope "test"]
     [org.clojure/core.cache "0.6.5"]
 
-    ;; [com.taoensso/timbre "4.8.0"]   ; https://github.com/ptaoussanis/timbre
     [org.clojure/tools.logging "0.3.1"]
     [ch.qos.logback/logback-classic "1.2.3"]
 
@@ -28,22 +27,21 @@
     [clj-http "3.5.0"]
 
     ;; [ring/ring-core "1.5.1"]
-    [ring/ring-core "1.6.0-RC3"]
-    [ring/ring-jetty-adapter "1.6.0-RC3"]
+    [ring/ring-core "1.6.0"]
+    [ring/ring-jetty-adapter "1.6.0"]
     [ring/ring-json "0.4.0"]
-    [ring/ring-headers "0.2.0"]
+    [ring/ring-headers "0.3.0"]
 
     [cheshire "5.7.1"]
-    [compojure "1.5.2"]
+    [compojure "1.6.0"]
 
-    ; [rum "0.10.8"]
     [hiccup "1.0.5"]
     [garden "1.3.2"]
     [mount "0.1.11"]
 
     [com.novemberain/monger "3.1.0"]
 
-    [org.postgresql/postgresql "42.0.0"]
+    [org.postgresql/postgresql "42.1.1"]
 
     ;; https://funcool.github.io/clojure.jdbc/latest/
     [funcool/clojure.jdbc "0.9.0"]
@@ -53,8 +51,6 @@
     [honeysql "0.8.2"]  ; https://github.com/jkk/honeysql
 
     [com.draines/postal "2.0.2"]
-
-    ;; [clj-yaml "0.4.0" :scope "test"]  ;; services migration
 
     ;; https://github.com/martinklepsch/boot-garden
     [org.martinklepsch/boot-garden "1.3.2-0" :scope "test"]
