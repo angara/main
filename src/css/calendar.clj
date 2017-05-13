@@ -13,6 +13,8 @@
     {:margin "1.5rem auto 1.5rem auto;"}
     ;;
 
+    ; [:.row {:margin-bottom "10px"}]
+
     [:.thumb
       { :float "left"
         :width "100px"
@@ -63,7 +65,9 @@
 
     [:.b-card
       {
-        :margin-bottom "16px"
+        :min-height "150px"
+        :margin-top "14px"
+        :margin-bottom "14px"
         :padding "6px 12px"
         :border "1px solid #dde"
         :border-radius "3px"
@@ -76,8 +80,10 @@
           :margin "1px 2px 2px 0"}]
 
       [:.thumb
-        {:margin "0 10px 8px 0"}]]])
+        {:margin "0 10px 8px 0"}]
       ;
+      [:&:hover
+        {:background-color "#ffffee"}]]])
 ;
 
 ;;.

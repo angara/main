@@ -181,7 +181,7 @@
     (merge
       (brd1 :top c_topbar_brd)
       { :margin-top (px 8)
-        :padding "1px 0 4px 0"})
+        :padding "1px 0 0 0"})
 
     [:.footer-bg
       { :padding "1.3ex 2.4ex 1.4ex 2.4ex"
