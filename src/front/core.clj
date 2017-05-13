@@ -2,11 +2,11 @@
   (:require
     [mlib.log :refer [warn]]
     [mlib.conf :refer [conf]]
-    [html.frame :refer [render]]))
+    [html.frame :refer [render-layout]]))
 ;
 
 (defn main-page [req]
-  (render
+  (render-layout
     req
     {:topmenu :main
       :page-title "Angara.Net main page"}

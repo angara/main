@@ -6,7 +6,7 @@
     [mlib.core :refer [hesc]]
     [mlib.web.snippets :refer [ya-rtb]]
     ;
-    [html.frame :refer [render]]
+    [html.frame :refer [render-layout]]
     [tourserv.const :refer [TYPES TYPE_MAP TOWNS TOWN_MAP]]
     [tourserv.db :refer [tourserv-by-type]]))
 ;
@@ -31,7 +31,7 @@
   (let [type (TYPE_MAP "apart")
         aparts (group-by :town (tourserv-by-type (:id type)))]
     ;
-      (render req
+      (render-layout req
         { :title (str "Турсервис - " (:title type))
           :page-title (:title type)
           :topmenu :tourserv}
@@ -65,7 +65,7 @@
           twn_id (:id town)
           tsrv (tourserv-by-type (:id type) twn_id)]
 
-      (render req
+      (render-layout req
         { :title (str "Турсервис / " (:title type) " / " (:title town))
           :page-title (str (:title type) ": " (:title town))
           :topmenu :tourserv}
@@ -104,7 +104,7 @@
   (when-let [type (TYPE_MAP (:type params))]
     (let [tsrv (tourserv-by-type (:id type))]
 
-      (render req
+      (render-layout req
         { :title (str "Турсервис / " (:title type))
           :page-title (:title type)
           :topmenu :tourserv}
@@ -135,7 +135,7 @@
 
 
 (defn index-page [req]
-  (render req
+  (render-layout req
     { :title "Турсервис"
       ; :page-title "Турсервис"
       :topmenu :tourserv}

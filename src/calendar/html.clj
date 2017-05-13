@@ -3,12 +3,15 @@
   (:require
     [clojure.string :refer [lower-case]]
     [clj-time.core :as tc]
+    [hiccup.core :refer [html]]
+    ;
     [mlib.log :refer [debug info warn]]
     [mlib.core :refer [hesc]]
+    [mlib.http :refer [html-resp]]
     [mlib.time :refer [ddmmyyyy]]
     [mlib.web.snippets :refer [ya-rtb]]
     ;
-    [html.frame :refer [render]]
+    [html.frame :refer [render-layout]]
     [misc.util :refer [rus-date]]
     [calendar.db :refer [crecs-all crecs-publ]]))
 ;
@@ -24,7 +27,7 @@
 (defn index-page [req]
   (let [crecs (crecs-publ)]
     ;
-    (render req
+    (render-layout req
       { :page-title "Календарь событий"
         :topmenu :calendar}
       ;
@@ -53,7 +56,7 @@
 (defn all-page [req]
   (let [crecs (crecs-all)]
     ;
-    (render req
+    (render-layout req
       { :page-title "Календарь: все записи"
         :topmenu :calendar}
       ;
@@ -66,6 +69,23 @@
             " - "
             [:a {:href (:link r)}
               (hesc (:title r))]])])))
+;
+
+(defn front-block [req]
+  (let [crecs (take 5 (crecs-publ))]
+    (->
+      [:div#calendar_front.b-calendar_front
+        (for [r crecs
+              :let [dt (rus-date (:date r))
+                    title (:title r)
+                    img (:thumb r)
+                    url (:link r)]]
+          [:div.crec
+            [:a {:href url}
+              [:span.date (first dt) " " (second dt)]
+              [:span.title (hesc title)]]])]
+      (html)
+      (html-resp))))
 ;
 
 ;;.

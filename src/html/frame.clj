@@ -225,7 +225,13 @@
 ;
 
 
-(defn render [req params & content]
+(defn html5-resp [content]
+  {:status 200
+   :headers {"Content-Type" "text/html;charset=utf-8"}
+   :body (html5 content)})
+;
+
+(defn render-layout [req params & content]
   {:status 200
    :headers {"Content-Type" "text/html;charset=utf-8"}
    :body (apply layout req params content)})

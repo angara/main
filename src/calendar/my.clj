@@ -7,7 +7,7 @@
     [mlib.time :refer [ddmmyyyy parse-ddmmyyyy]]
     ;
     [mdb.core :refer [oid]]
-    [html.frame :refer [render]]
+    [html.frame :refer [render-layout]]
     [calendar.db :refer [crecs-by-uid crec-by-id-uid crec-update]]))
 ;
 
@@ -16,7 +16,7 @@
   (let [uid (-> req :user :id)
         recs (crecs-by-uid uid)]
     ;
-    (render req
+    (render-layout req
       {
         :page-title "Календарь: мои события"
         :topmenu :calendar
@@ -58,7 +58,6 @@
             [:br][:br]])])))
 ;
 
-
 (defn my-update [req]
   (let [par (:params req)
         id  (:id par)
@@ -85,6 +84,5 @@
       ;
       (json-resp {:err :not_found :msg "Запись не найдена."}))))
 ;
-
 
 ;;.

@@ -12,7 +12,7 @@
     [html.frame :refer [wrap-user-required]]
     [web.middleware :refer [wrap-throttle]]
     [calendar.db :refer [add-crec]]
-    [calendar.html :refer [index-page all-page]]
+    [calendar.html :refer [index-page all-page front-block]]
     [calendar.my :refer [my-page my-update]]
     [forum.db :refer
       [get-topic get-messages attach-params]]))
@@ -146,16 +146,17 @@
 ;
 
 (defroutes calendar-routes
-  (GET  "/"           [] index-page)
+  (GET  "/"             [] index-page)
 
-  (GET  "/all"        [] all-page)
+  (GET  "/front-block"  [] front-block)
+  (GET  "/all"          [] all-page)
   ;
-  (GET  "/my"         [] (wrap-user-required my-page))
-  (POST "/my"         [] (wrap-user-required my-update))
+  (GET  "/my"           [] (wrap-user-required my-page))
+  (POST "/my"           [] (wrap-user-required my-update))
 
   ;
-  (GET  "/add-topic"  [] topic-check)
-  (POST "/add-topic"  []
+  (GET  "/add-topic"    [] topic-check)
+  (POST "/add-topic"    []
           (wrap-throttle topic-add {:time 1000 :limit 2})))
 ;
 
