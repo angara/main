@@ -4,6 +4,7 @@
     [clojure.string :refer [lower-case]]
     [clj-time.core :as tc]
     [hiccup.core :refer [html]]
+    [ring.util.response :refer [header]]
     ;
     [mlib.log :refer [debug info warn]]
     [mlib.core :refer [hesc]]
@@ -74,7 +75,7 @@
 (defn front-block [req]
   (let [crecs (take 5 (crecs-publ))]
     (->
-      [:div#calendar_front.b-calendar_front
+      [:div.b-calendar-block
         (for [r crecs
               :let [dt (rus-date (:date r))
                     title (:title r)
@@ -82,10 +83,16 @@
                     url (:link r)]]
           [:div.crec
             [:a {:href url}
-              [:span.date (first dt) " " (second dt)]
-              [:span.title (hesc title)]]])]
+              [:span.date (first dt) " " (second dt)]]
+            " "
+            [:a {:href url}
+              [:span.title (hesc title)]]])
+        [:div.more
+          [:a {:href "/calendar"} ". . . &raquo;&raquo;"]]]
+      ;; div
       (html)
-      (html-resp))))
+      (html-resp)
+      (header "Access-Control-Allow-Origin" "*"))))
 ;
 
 ;;.

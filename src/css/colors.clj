@@ -27,5 +27,7 @@
 (def c_label_grey "#555")
 (def c_label_lgrey "#888")
 
+(def bg_hover_light "#ffffee")
+
 
 ;;.
