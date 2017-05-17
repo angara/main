@@ -4,7 +4,7 @@
     [hiccup.page :refer [html5]]
     [mlib.conf :refer [conf]]
     [mlib.http :refer [make-url]]
-    [mlib.web.snippets :refer [yandex-metrika mailru-top]]
+    [mlib.web.snippets :refer [yandex-metrika mailru-top ya-rtb]]
     [html.util :refer [glyphicon css-link script]]))
 ;
 
@@ -188,7 +188,7 @@
 
 (defn layout
   [ req
-    {:keys [page-title page-nav topmenu] :as params}
+    {:keys [page-title page-nav topmenu rtb-top rtb-bottom] :as params}
     &
     content]
   ;
@@ -209,8 +209,13 @@
           [:div.content
             [:div.container
               page-nav
+              ;
+              (when rtb-top
+                [:div.rtb-top (ya-rtb rtb-top true)])
+              ;
               (when page-title
                 [:h1.page-title page-title])
+              ;
               content
               [:div.clearfix]
               [:div.b-botnav
@@ -219,6 +224,10 @@
                   (list
                     " | "
                     [:a {:href (:href n)} (:menu n)]))]]]
+          ;
+          (when rtb-bottom
+            [:div.rtb-bottom
+              (ya-rtb rtb-bottom true)])
           ;
           (footer req)]])))
     ; /html5

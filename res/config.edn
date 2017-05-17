@@ -17,7 +17,7 @@
   :calendar {
     :admins
       #{
-        "1" 
+        "1"
         "6441"
       }
   }
@@ -57,6 +57,9 @@
   :yandex-metrika     "12139321"
   :mailru-top         "474619"
   :analytics          "UA-486770-1"
+
+  :rtb-top    "R-A-1908-10"
+  :rtb-bottom "R-A-1908-8"
 
   :slowreq {
     :ms 1000

@@ -18,6 +18,9 @@
 ;
 
 
+(def FRONT_BLOCK_LIMIT 8)
+
+
 (defn get-month [cr]
   (try
     (-> cr :date tc/month)
@@ -73,7 +76,7 @@
 ;
 
 (defn front-block [req]
-  (let [crecs (take 5 (crecs-publ))]
+  (let [crecs (take FRONT_BLOCK_LIMIT (crecs-publ))]
     (->
       [:div.b-calendar-block
         (for [r crecs

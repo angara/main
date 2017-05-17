@@ -3,6 +3,7 @@
 (ns tourserv.html
   (:require
     [mlib.log :refer [debug info warn]]
+    [mlib.conf :refer [conf]]
     [mlib.core :refer [hesc]]
     [mlib.web.snippets :refer [ya-rtb]]
     ;
@@ -20,10 +21,10 @@
     (when srv_id (str "#" srv_id))))
 ;
 
-(defn ads []
-  ;; tourserv-bot
-  (ya-rtb "R-A-1908-3" true))
-;
+; (defn ads []
+;   ;; tourserv-bot
+;   (ya-rtb "R-A-1908-3" true))
+; ;
 
 (def APARTS_TOP_NUM 4)
 
@@ -34,7 +35,9 @@
       (render-layout req
         { :title (str "Турсервис - " (:title type))
           :page-title (:title type)
-          :topmenu :tourserv}
+          :topmenu :tourserv
+          :rtb-top (:rtb-top conf)
+          :rtb-bottom (:rtb-bottom conf)}
         ;
         [:div.b-tourserv
           (for [t TOWNS
@@ -68,7 +71,9 @@
       (render-layout req
         { :title (str "Турсервис / " (:title type) " / " (:title town))
           :page-title (str (:title type) ": " (:title town))
-          :topmenu :tourserv}
+          :topmenu :tourserv
+          :rtb-top (:rtb-top conf)
+          :rtb-bottom (:rtb-bottom conf)}
         ;
         [:div.b-tourserv
           [:ol.breadcrumb
@@ -95,8 +100,8 @@
                 [:div.person [:i.fa.fa-user-circle.fa-fw] (hesc p)])
               [:hr]])
 
-          [:div.clearfix]
-          (ads)]))))
+          [:div.clearfix]]))))
+          ;; (ads)]))))
 ;
 
 
@@ -107,7 +112,9 @@
       (render-layout req
         { :title (str "Турсервис / " (:title type))
           :page-title (:title type)
-          :topmenu :tourserv}
+          :topmenu :tourserv
+          :rtb-top (:rtb-top conf)
+          :rtb-bottom (:rtb-bottom conf)}
         ;
         [:div.b-tourserv
 
@@ -129,8 +136,8 @@
                 [:div.person [:i.fa.fa-user-circle.fa-fw] (hesc p)])
               [:hr]])
 
-          [:div.clearfix]
-          (ads)]))))
+          [:div.clearfix]]))))
+          ;; (ads)]))))
 ;
 
 
@@ -138,7 +145,9 @@
   (render-layout req
     { :title "Турсервис"
       ; :page-title "Турсервис"
-      :topmenu :tourserv}
+      :topmenu :tourserv
+      :rtb-top (:rtb-top conf)
+      :rtb-bottom (:rtb-bottom conf)}
     ;
     [:div.b-tourserv
       [:div.col-md-6.col-md-offset-1.b-index
@@ -180,8 +189,8 @@
         [:div.clearfix]
         [:hr]]
         ;
-      [:div.clearfix]
-      (ads)]))
+      [:div.clearfix]]))
+      ;; (ads)]))
 ;
 
 

@@ -212,6 +212,9 @@
   botnav
   footer
 
+  [:.rtb-top {:margin-top "4px"}]
+  [:.rtb-bottom {:margin-top "8px"}]
+
   b-calendar
   b-tourserv)
 ;
