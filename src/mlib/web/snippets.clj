@@ -136,7 +136,7 @@ if(w.opera == '[object Opera]'){d.addEventListener('DOMContentLoaded',f,false);}
 
 (defn ya-rtb [blk horizontal?]
   (str "
-<div id='yandex_rtb_" blk "'></div>
+<div id='yandex_rtb_" blk "' class='yandex-adaptive'></div>
 <script type='text/javascript'>
   (function(w, d, n, s, t){
     w[n] = w[n] || [];

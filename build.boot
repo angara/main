@@ -27,8 +27,8 @@
     [clj-http "3.5.0"]
 
     ;; [ring/ring-core "1.5.1"]
-    [ring/ring-core "1.6.0"]
-    [ring/ring-jetty-adapter "1.6.0"]
+    [ring/ring-core "1.6.1"]
+    [ring/ring-jetty-adapter "1.6.1"]
     [ring/ring-json "0.4.0"]
     [ring/ring-headers "0.3.0"]
 

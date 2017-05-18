@@ -19,8 +19,8 @@
     [mlib.web.middleware :refer [middleware]]
 
     [mdb.user :refer [user-by-id sess-load FLDS_REQ_USER]]
-    [html.frame :refer [not-found]]
-    [html.search :as search]
+    [html.frame :refer [not-found render-layout]]
+    [html.search :refer [ya-site-results]]
     [calendar.core :refer [calendar-routes]]
     [forum.core :refer [forum-api-routes]]
     [front.core :refer [main-page]]
@@ -46,6 +46,14 @@
     :body    "API endpoint not found"})
 ;
 
+(defn ya-search [req]
+  (render-layout req
+    { :title "Яндекс Поиск"
+      :page-title "Поиск по сайту"
+      :rtb-bottom (-> conf :rtb-bottom)}
+    (ya-site-results)))
+;
+
 (defn make-routes []
   (routes
     (GET     "/"              _ main-page)
@@ -53,8 +61,9 @@
     (context "/api/meteo"     _ meteo-api-routes)
     (ANY     "/api/*"         _ api-404)
     ;
-    (GET     "/search"        _ (redirect "/yasearch"))
-    (GET     "/yasearch"      _ search/yasearch)
+    (GET     "/search"        _ (redirect "/yasearch/"))
+    ;; (GET     "/yasearch"      _ search/yasearch)
+    (GET     "/yasearch/"     _ ya-search)
 
     (context "/calendar"      _ calendar-routes)
     (context "/forum/api"     _ forum-api-routes)

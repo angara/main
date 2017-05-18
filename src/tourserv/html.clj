@@ -21,11 +21,6 @@
     (when srv_id (str "#" srv_id))))
 ;
 
-; (defn ads []
-;   ;; tourserv-bot
-;   (ya-rtb "R-A-1908-3" true))
-; ;
-
 (def APARTS_TOP_NUM 4)
 
 (defn serv-apart [req]

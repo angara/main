@@ -104,33 +104,13 @@
         :border-bottom (str "1px solid " c_topbar_brd)}
 
       [:.logo
-        { :margin "3px 4px 3px 4px"}]
+        { :margin "4px 4px 3px 5px"}]
 
       [:.b-search
-        { :padding "4px 10px"
-          :font-size "17px"
-          :position 'relative}
-        [:.search
-          { :border-radius "3px"
-            :border "1px solid #ccc"
-            :font-size "17px"
-            :color "#02a"
-            :width "100%"
-            :padding "2px 40px 2px 8px"}]
-        [:.btn-search
-          {:font-size "17px"
-           :padding "2px 9px"
-           :background-color "#f8f8f8"
-           :border-left "1px solid #ddd"
-           :border-top-right-radius "2px"
-           :border-bottom-right-radius "2px"
-           :float 'right
-           :position 'absolute
-           :top "5px"
-           :right "11px"}]]
+        {:margin "12px 0"}]
 
       [:.b-signin
-        { :margin "15px 2px 4px 8px"
+        { :margin "15px 2px 15px 8px"
           :text-align 'right}]
 
       [:.b-user
@@ -150,10 +130,15 @@
         ;     :background "#f4f4f4"}]
 
 
+      (at-media {:max-width (px 568)}
+        [:.logo {:margin-left (px 4)}]
+        [:.b-search {:margin "4px 0"}]
+        [:.b-signin {:margin "2px 4px 12px 8px"}]
+        [:.b-user   {:margin "2px 4px 12px 8px"}])
+
       (at-media {:max-width (px 320)}
-        [:.container {:padding-left 0 :padding-right 0}]
-        [:.b-signin  {:margin-right (px 10)}]
-        [:.b-user    {:margin-right (px 10)}])]
+        [:.logo {:margin-left (px -10)}])]
+
     ;;;
 
     [:.b-topnav
@@ -212,8 +197,17 @@
   botnav
   footer
 
+  [:.yandex-adaptive
+    {:width "728px" :height "120px" :margin "0 auto"}]
+  (at-media {:max-width (px 568)}
+    [:.yandex-adaptive
+      {:width "500px" :height "120px"}])
+  (at-media {:max-width (px 320)}
+    [:.yandex-adaptive
+      {:width "300px" :height "120px"}])
+
   [:.rtb-top {:margin-top "4px"}]
-  [:.rtb-bottom {:margin-top "8px"}]
+  [:.rtb-bottom {:margin-top "10px"}]
 
   b-calendar
   b-tourserv)

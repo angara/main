@@ -5,7 +5,8 @@
     [mlib.conf :refer [conf]]
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [yandex-metrika mailru-top ya-rtb]]
-    [html.util :refer [glyphicon css-link script]]))
+    [html.util :refer [glyphicon css-link script]]
+    [html.search :refer [ya-site-form]]))
 ;
 
 
@@ -68,59 +69,40 @@
 
 ;;; ;;; ;;; ;;; ;;;
 
-(defn user-block [req]
-  (let [user (:user req)]
-    (if user
-      (let [nm (str (:first_name user) " " (:last_name user))]
-        [:div.b-user
-          [:a {:href "/me/" :title (str (:username user) ": " nm)}
-            [:b (:username user)] [:br] nm]])
-      ;; no logged in
-      (when (not= false user)
-        [:div.b-signin
-          [:a.btn.btn-default {:href (login-url (:uri req))}
-            "Войти" (glyphicon "log-in marl-8")]]))))
+(defn user-block [user uri]
+  (if user
+    (let [nm (str (:first_name user) " " (:last_name user))]
+      [:div.b-user
+        [:a {:href "/me/" :title (str (:username user) ": " nm)}
+          [:b (:username user)] [:br] nm]])
+    ;; no logged in
+    (when (not= false user)
+      [:div.b-signin
+        [:a.btn.btn-default {:href (login-url uri)}
+          "Войти" (glyphicon "log-in marl-8")]])))
 ;
 
 (defn topbar [req]
-  [:div.b-topbar
-    [:div.container
-      ;
-      [:a {:href "//angara.net/"}
-        [:img#toplogo.logo
-          {:src (inc-pfx "img/angara_310.png") :alt "Angara.Net"}]]
-
-; [:li [:a {:href "/usr/fav/" :title "Избранное"}
-;     [:span.glyphicon.glyphicon-star] ]]
-; [:li [:a {:href "#" :title "События"}
-;     [:span.glyphicon.glyphicon-calendar] ]]
-; [:li [:a {:href "/meteo/" :title "Погода"}
-;     [:span.glyphicon.glyphicon-cloud] ]]
-; [:li [:a {:href "#" :title "Фото"}
-;     [:span.glyphicon.glyphicon-picture] ]]
-; [:li [:a {:href "/search/" :title "Поиск"}
-;     [:span.glyphicon.glyphicon-search] ]]
-
-; [:li.dropdown
-;     [:a.dropdown-toggle {
-;             :href "#" :data-toggle "dropdown" :role "button"
-;         }
-;         "Поиск" [:span.caret]
-;     ]
-;     [:ul.dropdown-menu {:role "menu"}
-;         [:li [:a {:href "#"} "По тэгу"]
-;             [:input.form-control]
-;             [:button.btn.btn-primary.btn-sm "По тэгам"]
-;         ]
-;         [:li.divider]
-;         ; [:li.dropdown-header "nav header"]
-;         [:li [:a {:href "#"} "Яндекс"]]
-;         [:li [:a {:href "#"} "Google"]]
-;     ]
-; ]
-      [:div.col-sm-3.pull-right
-        (user-block req)]]
-    [:div.clearfix]])
+  (let [user (:user req)]
+    [:div.b-topbar
+      [:div.container
+        [:div.row
+          [:div.col-md-4
+            [:a {:href "//angara.net/"}
+              [:img.logo
+                {:src (inc-pfx "img/angara_310.png") :alt "Angara.Net"}]]]
+          ;
+          (when (not= false user)
+            [:div.col-md-5
+              [:div.b-search 
+                (let [qp (:query-params req)
+                      text (and (get qp "searchid") (get qp "text"))]
+                  (ya-site-form text))]])
+          ;
+          [:div.col-md-3.pull-right
+            (user-block user (:uri req))]
+          ;
+          [:div.clearfix]]]]))
 ;
 
 
@@ -223,11 +205,11 @@
                 (for [n (next TOP_NAVS)]
                   (list
                     " | "
-                    [:a {:href (:href n)} (:menu n)]))]]]
-          ;
-          (when rtb-bottom
-            [:div.rtb-bottom
-              (ya-rtb rtb-bottom true)])
+                    [:a {:href (:href n)} (:menu n)]))]
+              ;
+              (when rtb-bottom
+                [:div.rtb-bottom
+                  (ya-rtb rtb-bottom true)])]]
           ;
           (footer req)]])))
     ; /html5
