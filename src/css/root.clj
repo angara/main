@@ -104,7 +104,7 @@
         :border-bottom (str "1px solid " c_topbar_brd)}
 
       [:.logo
-        { :margin "4px 4px 3px 5px"}]
+        { :margin "4px 4px 3px 4px"}]
 
       [:.b-search
         {:margin "12px 0"}]
@@ -115,8 +115,7 @@
 
       [:.b-user
         { :text-align 'right
-          ; :padding "8px 4px 8px 0"
-          :margin "10px 2px 4px 8px"
+          :margin "11px 2px 12px 8px"
           :overflow 'hidden
           :white-space 'nowrap}]
 
@@ -129,15 +128,13 @@
         ;     :border-radius "10px"
         ;     :background "#f4f4f4"}]
 
-
-      (at-media {:max-width (px 568)}
-        [:.logo {:margin-left (px 4)}]
+      (at-media {:max-width (px 768)}
         [:.b-search {:margin "4px 0"}]
-        [:.b-signin {:margin "2px 4px 12px 8px"}]
-        [:.b-user   {:margin "2px 4px 12px 8px"}])
+        [:.b-signin {:margin "2px 0 12px 8px"}]
+        [:.b-user   {:margin "2px 0 12px 8px"}])
 
-      (at-media {:max-width (px 320)}
-        [:.logo {:margin-left (px -10)}])]
+      (at-media {:max-width (px 360)}
+        [:.logo {:margin-left "-10px"}])]
 
     ;;;
 
@@ -198,16 +195,16 @@
   footer
 
   [:.yandex-adaptive
-    {:width "728px" :height "120px" :margin "0 auto"}]
-  (at-media {:max-width (px 568)}
+    {:width "940px" :height "120px" :margin "0 auto"}]
+  (at-media {:max-width (px 768)}
     [:.yandex-adaptive
-      {:width "500px" :height "120px"}])
-  (at-media {:max-width (px 320)}
+      {:width "600px" :height "120px"}])
+  (at-media {:max-width (px 576)}
     [:.yandex-adaptive
-      {:width "300px" :height "120px"}])
+      {:width "290px" :height "250px"}])
 
   [:.rtb-top {:margin-top "4px"}]
-  [:.rtb-bottom {:margin-top "10px"}]
+  [:.rtb-bottom {:margin-top "10px" :margin-bottom "4px"}]
 
   b-calendar
   b-tourserv)

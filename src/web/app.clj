@@ -50,6 +50,7 @@
   (render-layout req
     { :title "Яндекс Поиск"
       :page-title "Поиск по сайту"
+      :rtb-top    (-> conf :rtb-top)
       :rtb-bottom (-> conf :rtb-bottom)}
     (ya-site-results)))
 ;
