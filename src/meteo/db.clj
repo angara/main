@@ -36,21 +36,13 @@
 ;   { :pub 1
 ;     :ts {:$gte (tc/minus (tc/now) (tc/minutes 80))}})
 
+;; https://docs.mongodb.com/manual/reference/command/geoNear/
 ;;
 ;; db.st.ensureIndex({ll:"2dsphere"})
 ;; db.st.find({ll:
 ;;    {$near:{$geometry:{type:"Point",coordinates:[104.2486, 52.228]}}}
 ;; })
-;
-; https://docs.mongodb.com/manual/reference/command/geoNear/#dbcmd.geoNear
-;
-; db.runCommand({
-;   geoNear: "st",
-;   spherical: true,
-;   near: {type:"Point", coordinates:[104.2486, 52.228]}
-;   query: {pub:1}
-;   limit: 100
-; })
+
 
 ; https://docs.mongodb.com/manual/tutorial/calculate-distances-using-spherical-geometry-with-2d-geospatial-indexes/
 
@@ -89,7 +81,7 @@
 
 (defn st-by-id [id & [fields]]
   (try-warn "st-by-id:"
-    (mc/find-map-by-id (db) ST id (or fields []))))
+    (mc/find-map-by-id (db) ST id (or fields PUB_FIELDS))))
 ;
 
 
@@ -99,7 +91,7 @@
   (try-warn "st-by-id:"
     (mq/with-collection (db) ST
       (mq/find q)
-      (mq/fields (or fields []))
+      (mq/fields (or fields PUB_FIELDS))
       (mq/sort (array-map :title 1)))))
       ;(mq/limit 1000))
 ;
@@ -110,7 +102,9 @@
   [ids & [fields]]
   (when ids
     (try-warn "st-by-id:"
-      (mc/find-maps (db) ST {:_id {:$in ids} :pub 1} (or fields [])))))
+      (mc/find-maps (db) ST
+        {:_id {:$in ids} :pub 1}
+        (or fields PUB_FIELDS)))))
 ;
 
 

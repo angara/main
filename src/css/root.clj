@@ -8,6 +8,7 @@
     [garden.stylesheet :refer [at-media]]
     ;
     [css.calendar :refer [b-calendar]]
+    [css.meteo :refer [b-meteo]]
     [css.tourserv :refer [b-tourserv]]))
 ;
 
@@ -155,7 +156,7 @@
 ;;; ;;; ;;; ;;;
 
 (def botnav
-  [:.b-botnav {:text-align 'center :margin "8px"}])
+  [:.b-botnav {:text-align 'center :margin "16px auto 8px auto"}])
 ;
 
 (def footer
@@ -207,6 +208,7 @@
   [:.rtb-bottom {:margin-top "10px" :margin-bottom "4px"}]
 
   b-calendar
+  b-meteo
   b-tourserv)
 ;
 

@@ -25,6 +25,7 @@
     [forum.core :refer [forum-api-routes]]
     [front.core :refer [main-page]]
     [meteo.api :refer [meteo-api-routes]]
+    [meteo.core :refer [meteo-routes]]
     [meteo.old-ws :as old-ws]
     [misc.icestorm :as icestorm]
     [photomap.core :as photomap]
@@ -61,6 +62,10 @@
     ;
     (context "/api/meteo"     _ meteo-api-routes)
     (ANY     "/api/*"         _ api-404)
+    ;
+    (context "/meteo"         _ meteo-routes)
+    ;
+    (context "/meteo1"        _ meteo-routes)   ;; TODO: remove
     ;
     (GET     "/search"        _ (redirect "/yasearch/"))
     ;; (GET     "/yasearch"      _ search/yasearch)
