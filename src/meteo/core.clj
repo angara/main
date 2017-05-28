@@ -36,6 +36,25 @@
     (catch Exception ignore)))
 ;
 
+;;; ;;; ;;; ;;;
+
+(def HPA_MMHG 1.3332239)
+
+(defn wind-nesw [b]
+  (try
+    (get
+      ["С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"]
+      (Math/floor (mod (/ (+ b 22) 45) 8)))
+    (catch Exception ignore)))
+;
+
+(defn format-w [w g b])
+;
+
+(defn format-h [h])
+
+(defn format-p [p])
+
 
 (defn format-t [t avg]
   (try

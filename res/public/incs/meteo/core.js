@@ -7,8 +7,8 @@ $(function() {
   var ST_COOKIE = 'meteo_st';
 
   function save_st_cookie(s) {
-    console.log("st_c:", s);
-    document.cookie = ST_COOKIE+"="+encodeURIComponent(s);
+    document.cookie = ST_COOKIE+"="+encodeURIComponent(s)+";"+
+      " path=/; expires=Fri, 01 Jan 2100 00:00:00 GMT;"
   };
 
   function st_list() {
@@ -21,7 +21,6 @@ $(function() {
 
   $("#btn_st_add").click(function(evt){
     var st = $("#st_list").val();
-    console.log("st");
     if( st ) {
       var c = st_list();
       c.push(st);
