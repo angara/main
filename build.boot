@@ -2,7 +2,7 @@
 ;;  Angara.Net main
 ;;
 
-(def project {:name "angara.net/main" :version "0.15.0"})
+(def project {:name "angara.net/main" :version "0.16.0"})
 
 (def jar-main 'web.main)
 (def jar-file "main.jar")
@@ -24,7 +24,7 @@
     [ch.qos.logback/logback-classic "1.2.3"]
 
     [clj-time "0.13.0"]
-    [clj-http "3.5.0"]
+    [clj-http "3.6.0"]
 
     ;; [ring/ring-core "1.5.1"]
     [ring/ring-core "1.6.1"]
@@ -103,7 +103,7 @@
 
 (deftask css-dev []
   (comp
-    (watch)
+    ;(watch)
     (garden :pretty-print true)
     (target :dir #{"tmp/res/"})))
 ;
