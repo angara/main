@@ -6,11 +6,6 @@ $(function() {
   var METEO_URL = "/meteo1";
   var ST_COOKIE = 'meteo_st';
 
-  // function
-  console.log("c:", document.cookie);
-
-  document.cookie = "meteo_st="+encodeURIComponent("uiii,uibb,npsd");
-
   function save_st_cookie(s) {
     console.log("st_c:", s);
     document.cookie = ST_COOKIE+"="+encodeURIComponent(s);
