@@ -62,7 +62,7 @@
 
 (defn format-h [h]
   (when h
-    (str "Влажность: <b>" (Math/round (float h)) "</b>%")))
+    (str "Влажность: <b>" (Math/round (float h)) "</b> %")))
 ;
 
 (defn format-p [p]
@@ -158,12 +158,13 @@
                     (list
                       [:div.t
                         (format-t (:t last) (-> trends :t :avg))]
-                      [:div.w
-                        (format-w (:w last) (:g last) (:b last))]
-                      [:div.p
-                        (format-p (:p last))]
-                      [:div.h
-                        (format-h (:h last))]
+                      [:div.wph
+                        [:div.w
+                          (format-w (:w last) (:g last) (:b last))]
+                        [:div.p
+                          (format-p (:p last))]
+                        [:div.h
+                          (format-h (:h last))]]
                       ;; wt, wl
                       [:div.clearfix])
                     ;;

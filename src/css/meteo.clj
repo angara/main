@@ -32,7 +32,9 @@
           :font-size "110%"
           :letter-spacing "0.8px"
           :color "#fff"
-          :overflow "hidden"}]
+          :overflow-x "hidden"
+          :white-space "nowrap"
+          :position "relative"}]
 
       [:.nodata
         { :margin "20px"
@@ -44,7 +46,7 @@
           :font-size "20px"
           :white-space "nowrap"
           :float "right"
-          :margin "0 5px 0 0"}
+          :margin "0 5px 0 5px"}
         [:i
           { :font-style "inherit"
             :margin-left "2px"
@@ -59,6 +61,10 @@
             :margin-left "1px"}]]
             ;:font-size "15px"}]]
       ;
+      [:.wph
+        { :margin "4px 8px 4px 8px"
+          :color "#555"}
+        [:b {:color "#44b"}]]
 
       [:.st-descr]
 
