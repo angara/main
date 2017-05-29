@@ -44,17 +44,31 @@
   (try
     (get
       ["С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"]
-      (Math/floor (mod (/ (+ b 22) 45) 8)))
+      (int (Math/floor (mod (/ (+ b 22) 45) 8))))
     (catch Exception ignore)))
 ;
 
-(defn format-w [w g b])
+(defn format-w [w g b]
+  (when w
+    (let [res (str "Ветер: " "<b>" (Math/round (float w)) "</b>")
+          res (if g
+                (str res "<b>-" (Math/round (float g)) "</b>" " м/с")
+                (str res " м/с"))
+          dir (wind-nesw b)]
+      (if dir
+        (str res ", " "<b>" dir "</b>")
+        res))))
 ;
 
-(defn format-h [h])
+(defn format-h [h]
+  (when h
+    (str "Влажность: <b>" (Math/round (float h)) "</b>%")))
+;
 
-(defn format-p [p])
-
+(defn format-p [p]
+  (when p
+    (str "Давление: <b>" (Math/round (/ p HPA_MMHG)) "</b> мм.рт.ст")))
+;
 
 (defn format-t [t avg]
   (try
@@ -144,6 +158,13 @@
                     (list
                       [:div.t
                         (format-t (:t last) (-> trends :t :avg))]
+                      [:div.w
+                        (format-w (:w last) (:g last) (:b last))]
+                      [:div.p
+                        (format-p (:p last))]
+                      [:div.h
+                        (format-h (:h last))]
+                      ;; wt, wl
                       [:div.clearfix])
                     ;;
                     [:div.nodata "Нет данных."])]]))]
