@@ -46,7 +46,7 @@
           :font-size "20px"
           :white-space "nowrap"
           :float "right"
-          :margin "0 5px 0 5px"}
+          :margin "4px 5px 4px 5px"}
         [:i
           { :font-style "inherit"
             :margin-left "2px"
@@ -69,9 +69,13 @@
       [:.st-descr]
 
       [:&:hover
-        {:box-shadow "0 0 8px rgba(0,80,200,0.8)"}]]])
+        {:box-shadow "0 0 8px rgba(0,80,200,0.8)"}]]
 
     ;; /b-card
+
+    [:.selector
+      {:margin-top "6px" :margin-bottom "6px"}]])
+
 
   ;; /b-meteo
 ;.

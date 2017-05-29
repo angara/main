@@ -145,15 +145,16 @@
                 :let [st (get sts id)]
                 :when st]
             (let [title (:title st)
-                  ;descr (:descr st (:addr st))
+                  descr (:descr st (:addr st))
                   last    (fresh (:last st))
                   trends  (fresh (:trends st))]
               ;
               [:div.col-sm-4
                 [:div.b-card
                   {:data-st (:_id st)}
-                  [:div.title (hesc title)]
-                  ; [:div.st-descr (hesc descr)]
+                  [:div.title
+                    {:title descr}
+                    (hesc title)]
                   (if last
                     (list
                       [:div.t
@@ -169,7 +170,7 @@
                       [:div.clearfix])
                     ;;
                     [:div.nodata "Нет данных."])]]))]
-        [:div.col-sm-8.col-sm-offset-2
+        [:div.col-sm-6.col-sm-offset-3.selector
           [:div.form-inline
             [:div.form-group
               [:select#st_list.form-control
