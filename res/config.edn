@@ -22,6 +22,12 @@
       }
   }
 
+  ;; meteo
+  :meteo {
+    :st_default
+      ["asbtv" "npsd" "uiii" "lin_list" "olha" "irgp" "irk2" "zbereg" "nicola"]
+  }
+
   ;; common
   :urls
   {

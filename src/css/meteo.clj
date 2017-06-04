@@ -15,23 +15,20 @@
     {:margin-top "8px"}
 
     [:.b-card
-      { :border-radius "3px"
-        ; :box-shadow
-        ;   (str  "0 0 1px rgba(255,255,255,0.9),"
-        ;         "1px 1px 6px rgba(0,0,0,0.4)")
-
+      { :position "relative"
+        :border-radius "3px"
         :border (str "1px solid " ST_COLOR)
         :min-height "120px"
         :margin-bottom "16px"}
-
 
       [:.title
         { :background-color ST_COLOR
           :padding "1px 9px"
           :font-weight "bold"
-          :font-size "110%"
+          :font-size "1.6rem"
           :letter-spacing "0.8px"
           :color "#fff"
+          :cursor "pointer"
           :overflow-x "hidden"
           :white-space "nowrap"
           :position "relative"}]
@@ -43,7 +40,7 @@
 
       [:.t
         { :color "#333"
-          :font-size "20px"
+          :font-size "26px"
           :white-space "nowrap"
           :float "right"
           :margin "4px 5px 4px 5px"}
@@ -62,20 +59,55 @@
             ;:font-size "15px"}]]
       ;
       [:.wph
-        { :margin "4px 8px 4px 8px"
+        { :margin "4px 8px 4px 10px"
           :color "#555"}
         [:b {:color "#44b"}]]
 
       [:.st-descr]
 
       [:&:hover
-        {:box-shadow "0 0 8px rgba(0,80,200,0.8)"}]]
+        {:box-shadow "0 0 8px rgba(0,80,200,0.8)"}]
+
+      [:.i-menu
+        { :top "1px"
+          :right "8px"
+          :font-size "1.6rem"
+          :position "absolute"
+          :z-index 99}
+        [:.i-toggle
+          { :color "#f4f4a4"
+            :cursor "pointer"}]
+        [:ul
+          {
+            :transition "height 1s"
+            :list-style "none"
+            :margin-top "3px"
+            :margin-right "-3px"
+            :padding "1px 1px"
+            :background-color "#fff"
+            :border "1px solid #777"
+            :border-radius "1px"
+            :box-shadow "1px 1px 6px rgba(0,0,0,0.6)"}
+          [:li
+            {:cursor "pointer"
+              :padding "1px 8px 1px 2px"
+              :margin "2px 2px"
+              :border-radius "2px"}
+            [:i
+              {:color "#139"}]
+            [:&:hover
+              { :background-color bg_menu_sel
+                :color c_menu_sel}]]]]]
 
     ;; /b-card
 
     [:.selector
-      {:margin-top "6px" :margin-bottom "6px"}]])
-
+      {:margin-top "6px" :margin-bottom "6px"}
+      [:select
+        {:margin "6px 2px"}]
+      [:button
+        {:margin "6px 2px"}]]])
+    ;
 
   ;; /b-meteo
 ;.

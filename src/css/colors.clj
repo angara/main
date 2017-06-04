@@ -30,4 +30,7 @@
 (def bg_hover_light "#ffffee")
 
 
+(def bg_menu_sel "#28f")
+(def c_menu_sel  "#fff")
+
 ;;.

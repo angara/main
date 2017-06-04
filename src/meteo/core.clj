@@ -5,7 +5,7 @@
     [clj-time.core :as tc]
     [compojure.core :refer [defroutes GET POST]]
     ;
-    ; [mlib.conf :refer [conf]]
+    [mlib.conf :refer [conf]]
     [mlib.core :refer [hesc]]
     ; [mlib.http :refer [json-resp]]))
     ;
@@ -18,9 +18,7 @@
 (def ST_PARAM  :st)
 (def ST_COOKIE "meteo_st")
 
-(def ST_DEFAULT
-  ["asbtv" "npsd" "uiii" "lin_list" "olha" "irgp" "irk2" "zbereg" "nicola"])
-;
+(def ST_MAX_NUM 100)
 
 (def ST_DEAD_INTERVAL (tc/days 10))
 
@@ -99,10 +97,11 @@
 ;
 
 (defn st-param [req]
-  (or
-    (comma-split (-> req :params ST_PARAM))
-    (comma-split (-> req :cookies (get ST_COOKIE) :value))
-    ST_DEFAULT))
+  (take ST_MAX_NUM
+    (or
+      (comma-split (-> req :params ST_PARAM))
+      (comma-split (-> req :cookies (get ST_COOKIE) :value))
+      (-> conf :meteo :st_default))))
 ;
 
 
@@ -170,18 +169,18 @@
                       [:div.clearfix])
                     ;;
                     [:div.nodata "Нет данных."])]]))]
-        [:div.col-sm-6.col-sm-offset-3.selector
-          [:div.form-inline
-            [:div.form-group
-              [:select#st_list.form-control
-                (for [st st-names]
-                  [:option {:value (:_id st)} (hesc (:title st))])]
-              " &nbsp; "
-              [:button#btn_st_add.btn.btn-success {:type "button"}
-                [:b "Добавить"]]]]]])))
-
-
-
+        ;
+        (when (< (count ids) ST_MAX_NUM)
+          [:div.col-sm-6.col-sm-offset-3.selector
+            [:div.form-inline
+              [:div.form-group
+                [:select#st_list.form-control
+                  (for [st st-names]
+                    [:option {:value (:_id st)} (hesc (:title st))])]
+                " &nbsp; "
+                [:button#btn_st_add.btn.btn-success {:type "button"}
+                  [:b "Добавить"]]]]])])))
+        ;
 ;
 
 (defroutes meteo-routes

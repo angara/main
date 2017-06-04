@@ -103,7 +103,6 @@
 
 (deftask css-dev []
   (comp
-    ;(watch)
     (garden :pretty-print true)
     (target :dir #{"tmp/res/"})))
 ;
