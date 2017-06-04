@@ -43,7 +43,7 @@
           :font-size "26px"
           :white-space "nowrap"
           :float "right"
-          :margin "4px 5px 4px 5px"}
+          :margin "3px 5px 4px 5px"}
         [:i
           { :font-style "inherit"
             :margin-left "2px"
@@ -65,8 +65,8 @@
 
       [:.st-descr]
 
-      [:&:hover
-        {:box-shadow "0 0 8px rgba(0,80,200,0.8)"}]
+      ; [:&:hover
+      ;   {:box-shadow "0 0 8px rgba(0,80,200,0.8)"}]
 
       [:.i-menu
         { :top "1px"
@@ -87,7 +87,7 @@
             :background-color "#fff"
             :border "1px solid #777"
             :border-radius "1px"
-            :box-shadow "1px 1px 6px rgba(0,0,0,0.6)"}
+            :box-shadow "1px 1px 6px rgba(0,0,0,0.5)"}
           [:li
             {:cursor "pointer"
               :padding "1px 8px 1px 2px"

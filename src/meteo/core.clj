@@ -1,5 +1,7 @@
 
 (ns meteo.core
+  (:import
+    [java.util Locale])
   (:require
     [clojure.string :as s]
     [clj-time.core :as tc]
@@ -38,6 +40,15 @@
 
 (def HPA_MMHG 1.3332239)
 
+
+(defn nf1 [x]
+  (String/format Locale/ROOT "%.1f" (to-array [(float x)])))
+;
+
+(defn nf2 [x]
+  (String/format Locale/ROOT "%.2f" (to-array [(float x)])))
+;
+
 (defn wind-nesw [b]
   (try
     (get
@@ -52,6 +63,7 @@
           res (if g
                 (str res "<b>-" (Math/round (float g)) "</b>" " м/с")
                 (str res " м/с"))
+          res (str "<nobr>" res "</nobr>")
           dir (wind-nesw b)]
       (if dir
         (str res ", " "<b>" dir "</b>")
@@ -60,12 +72,14 @@
 
 (defn format-h [h]
   (when h
-    (str "Влажность: <b>" (Math/round (float h)) "</b> %")))
+    (str "Влажность: <nobr><b>" (Math/round (float h)) "</b> %</nobr>")))
 ;
 
 (defn format-p [p]
   (when p
-    (str "Давление: <b>" (Math/round (/ p HPA_MMHG)) "</b> мм.рт.ст")))
+    (str "Давление: <nobr><b>"
+      (Math/round (/ p HPA_MMHG))
+      "</b> мм.рт.ст</nobr>")))
 ;
 
 (defn format-t [t avg]
@@ -85,6 +99,16 @@
         "&deg;"
         [:span {:class (str "arr " trc)} arr]))
       ;
+    (catch Exception ignore)))
+;
+
+(defn format-wt [wt wl]
+  (try
+    (when wt
+      (str "Температура воды: <nobr><b>"
+            (Math/round (float wt)) "</b>&deg;</nobr>"
+        (when wl
+          (str ", <nobr>уровень <b>" (nf2 wl) "</b> м</nobr>"))))
     (catch Exception ignore)))
 ;
 
@@ -138,6 +162,9 @@
         :js ["/incs/meteo/core.js"]}
       ;
       [:div.b-meteo
+        [:script
+          "window.hourly_t0='" "';"
+          "window.hourly_t1='" "';"]
         ;
         [:div.row
           (for [id ids
@@ -164,8 +191,9 @@
                         [:div.p
                           (format-p (:p last))]
                         [:div.h
-                          (format-h (:h last))]]
-                      ;; wt, wl
+                          (format-h (:h last))]
+                        [:div.wt
+                          (format-wt (:wt last) (:wl last))]]
                       [:div.clearfix])
                     ;;
                     [:div.nodata "Нет данных."])]]))]

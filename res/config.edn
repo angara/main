@@ -25,7 +25,10 @@
   ;; meteo
   :meteo {
     :st_default
-      ["asbtv" "npsd" "uiii" "lin_list" "olha" "irgp" "irk2" "zbereg" "nicola"]
+    [
+      "uiii" "irgp" "asbtv" "npsd"
+      "olha" "irk2" "zbereg"
+      "lin_baik" "lin_list" "nicola" "ulirba" "mamai"]
   }
 
   ;; common

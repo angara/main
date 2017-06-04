@@ -4,6 +4,8 @@
 
 $(function() {
   var METEO_URL = "/meteo1";
+  var METEO_HOURLY = "//api.angara.net/meteo/st/hourly?st=";
+  
   var ST_COOKIE = 'meteo_st';
 
   function save_st_cookie(s) {
@@ -109,6 +111,16 @@ $(function() {
     );
   });
 
+  /// /// /// ///  svg  /// /// /// ///
+
+  function get_hourly() {
+
+    console.log("h:", "");
+
+  }
+
 });
+
+
 
 //.
