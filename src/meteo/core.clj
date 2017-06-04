@@ -159,7 +159,8 @@
                     {:pub 1 :ts {:$gte dead-time}}
                     [:_id :title :descr :addr :ll])
         now_tz (tc/to-time-zone (tc/now) (tc/time-zone-for-id (:tz conf)))
-        t1  (tc/plus (tc/floor now_tz tc/day) (tc/days 1))
+        ;;t1  (tc/plus (tc/floor now_tz tc/day) (tc/days 1))
+        t1  (tc/floor now_tz tc/hour)
         t0  (tc/minus t1 HOURS_INTERVAL)]
     ;;
 
@@ -168,7 +169,6 @@
         :topmenu :meteo
         :js ["/incs/meteo/core.js"]}
       ;
-      (prn "t:" t0 t1)
       [:div.b-meteo
         [:script
           "window.hourly_t0=new Date(" (to-long t0) ");"

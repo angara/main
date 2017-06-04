@@ -5,7 +5,7 @@
 $(function() {
   var METEO_URL = "/meteo1";
   var METEO_HOURLY = "//api.angara.net/meteo/st/hourly?st=";
-  
+
   var ST_COOKIE = 'meteo_st';
 
   function save_st_cookie(s) {
@@ -114,10 +114,24 @@ $(function() {
   /// /// /// ///  svg  /// /// /// ///
 
   function get_hourly() {
+    if(window.hourly_t0 && window.hourly_t1) {
+      var st = st_list();
+      $.getJSON(
+        METEO_HOURLY+st.join(',')
+          +"&t0="+window.hourly_t0.toISOString()
+          +"&t1="+window.hourly_t1.toISOString()
+        ,
+        function(resp) {
+          console.log("hd:", resp);
+          if(resp.ok) {
 
-    console.log("h:", "");
+          }
+        }
+      );
+    }
+  };
 
-  }
+  get_hourly();
 
 });
 
