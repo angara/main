@@ -5,6 +5,8 @@
   (:require
     [clojure.string :as s]
     [clj-time.core :as tc]
+    [clj-time.coerce :refer [to-long]]
+    ;
     [compojure.core :refer [defroutes GET POST]]
     ;
     [mlib.conf :refer [conf]]
@@ -23,6 +25,8 @@
 (def ST_MAX_NUM 100)
 
 (def ST_DEAD_INTERVAL (tc/days 10))
+
+(def HOURS_INTERVAL (tc/hours 72))
 
 (def FRESH_INTERVAL (tc/minutes 60))
 
@@ -153,7 +157,10 @@
         dead-time (tc/minus (tc/now) ST_DEAD_INTERVAL)
         st-names (st-find
                     {:pub 1 :ts {:$gte dead-time}}
-                    [:_id :title :descr :addr :ll])]
+                    [:_id :title :descr :addr :ll])
+        now_tz (tc/to-time-zone (tc/now) (tc/time-zone-for-id (:tz conf)))
+        t1  (tc/plus (tc/floor now_tz tc/day) (tc/days 1))
+        t0  (tc/minus t1 HOURS_INTERVAL)]
     ;;
 
     (render-layout req
@@ -161,10 +168,11 @@
         :topmenu :meteo
         :js ["/incs/meteo/core.js"]}
       ;
+      (prn "t:" t0 t1)
       [:div.b-meteo
         [:script
-          "window.hourly_t0='" "';"
-          "window.hourly_t1='" "';"]
+          "window.hourly_t0=new Date(" (to-long t0) ");"
+          "window.hourly_t1=new Date(" (to-long t1) ");"]
         ;
         [:div.row
           (for [id ids
