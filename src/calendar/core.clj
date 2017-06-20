@@ -88,7 +88,6 @@
 ;
 
 (defn allow-add? [uid tinfo]
-  (prn "uid, tinfo:" uid tinfo)
   (when-let [topic (:topic tinfo)]
     (cond
       ;; is admin

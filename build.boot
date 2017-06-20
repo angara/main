@@ -20,11 +20,11 @@
     [org.clojure/tools.namespace "0.2.11" :scope "test"]
     [org.clojure/core.cache "0.6.5"]
 
-    [org.clojure/tools.logging "0.3.1"]
+    [org.clojure/tools.logging "0.4.0"]
     [ch.qos.logback/logback-classic "1.2.3"]
 
     [clj-time "0.13.0"]
-    [clj-http "3.6.0"]
+    [clj-http "3.6.1"]
 
     ;; [ring/ring-core "1.5.1"]
     [ring/ring-core "1.6.1"]
