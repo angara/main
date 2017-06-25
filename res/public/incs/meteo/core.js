@@ -73,7 +73,7 @@ $(function() {
     mn.append(
       $("<ul>")
         .append(
-          $("<li><i class='fa fa-fw fa-caret-up'/> В начало</li>").click(
+          $("<li><i class='fa fa-fw fa-angle-double-up'/> В начало</li>").click(
             function(evt) {
               remove_menu($card);
               save_st_list( card_to_begin(i, st_list()), true );
@@ -81,13 +81,30 @@ $(function() {
           )
         )
         .append(
-          $("<li><i class='fa fa-fw fa-caret-down'/> В конец</li>").click(
+          $("<li><i class='fa fa-fw fa-angle-up'/> Вверх</li>").click(
+            function(evt) {
+              remove_menu($card);
+              save_st_list( card_to_begin(i, st_list()), true );
+            }
+          )
+        )
+        .append(
+          $("<li><i class='fa fa-fw fa-angle-down'/> Вниз</li>").click(
             function(evt) {
               remove_menu($card);
               save_st_list( card_to_end(i, st_list()), true );
             }
           )
         )
+        .append(
+          $("<li><i class='fa fa-fw fa-angle-double-down'/> В конец</li>").click(
+            function(evt) {
+              remove_menu($card);
+              save_st_list( card_to_end(i, st_list()), true );
+            }
+          )
+        )
+        .append("<hr style='margin: 5px 3px'/>")
         .append(
           $("<li><i class='fa fa-fw fa-remove'/> Удалить</li>").click(
             function(evt) {

@@ -183,7 +183,7 @@
                   last    (fresh (:last st))
                   trends  (fresh (:trends st))]
               ;
-              [:div.col-sm-4
+              [:div.col-md-6
                 [:div.b-card
                   {:data-st (:_id st)}
                   [:div.title

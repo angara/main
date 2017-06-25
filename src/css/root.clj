@@ -152,16 +152,14 @@
       ;   [:li.active [:a {:background-color "#eaeaea"}]]
       ;   [:li.active [:a:hover {:color "#6bf"}]]]
       [:.menu
-        { :margin "2px 0"
+        { :margin "2px 2px"
           :padding "0"}
-          ;:white-space "wrap"}
         [:li
-          {;:display "inline"
-            :display "block"
+          { :display "block"
             :float "left"
-            :margin-bottom "10px"}
+            :margin-bottom "8px"}
           [:a
-            { :padding "5px 2px"
+            { :padding "4px 2px"
               :transition "0.4s ease"
               :color "#47c"
               :position "relative"
@@ -176,7 +174,7 @@
 
         [:li
           [:a:hover
-            { :color "#6bf"
+            { :color "#4af"
               :border-bottom-color "#e00"}]]]]])
 
 ;
