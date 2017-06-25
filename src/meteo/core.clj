@@ -215,8 +215,13 @@
                     [:option {:value (:_id st)} (hesc (:title st))])]
                 " &nbsp; "
                 [:button#btn_st_add.btn.btn-success {:type "button"}
-                  [:b "Добавить"]]]]])])))
+                  [:b "Добавить"]]]]])
         ;
+        [:div.clearfix]
+        [:div.text-center {:style "margin: 20px"}
+          [:small {:style "color:#777"}
+            "Данные, приведенные на этой странице, не являются официальными"
+            " и не могут быть использованы в качестве документальных."]]])))
 ;
 
 (defroutes meteo-routes
