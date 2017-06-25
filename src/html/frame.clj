@@ -94,7 +94,7 @@
           ;
           (when (not= false user)
             [:div.col-md-5
-              [:div.b-search 
+              [:div.b-search
                 (let [qp (:query-params req)
                       text (and (get qp "searchid") (get qp "text"))]
                   (ya-site-form text))]])
@@ -125,7 +125,7 @@
   (let [act (and active (name active))]
     [:div.b-topnav
       [:div.container
-        [:ul.nav.nav-pills
+        [:ul.menu
           (for [n TOP_NAVS]
             [:li {:class (when (= act (:id n)) "active")}
               [:a {:href (:href n)} (:menu n)]])]]]))

@@ -143,14 +143,42 @@
       { :font-size "1.6rem"
         :letter-spacing "0.1rem"
         :padding-bottom "4px"
-        :border-bottom (str "1px solid " c_topbar_brd)
+        ;; :border-bottom (str "1px solid " c_topbar_brd)
         ; :border-bottom "1px solid #def"
         :margin-bottom "10px"}
       ;
-      [:.nav
-        [:li [:a {:padding "5px 10px" :color "#47c"}]]
-        [:li.active [:a {:background-color "#eaeaea"}]]
-        [:li.active [:a:hover {:color "#6bf"}]]]]])
+      ; [:.nav
+      ;   [:li [:a {:padding "5px 10px" :color "#47c"}]]
+      ;   [:li.active [:a {:background-color "#eaeaea"}]]
+      ;   [:li.active [:a:hover {:color "#6bf"}]]]
+      [:.menu
+        { :margin "2px 0"
+          :padding "0"}
+          ;:white-space "wrap"}
+        [:li
+          {;:display "inline"
+            :display "block"
+            :float "left"
+            :margin-bottom "10px"}
+          [:a
+            { :padding "5px 2px"
+              :transition "0.4s ease"
+              :color "#47c"
+              :position "relative"
+              :text-decoration "none"
+              :margin-right "12px"
+              :border-bottom "3px solid transparent"}]]
+
+
+        [:li.active
+          [:a
+            { :border-bottom-color "#28f"}]]
+
+        [:li
+          [:a:hover
+            { :color "#6bf"
+              :border-bottom-color "#e00"}]]]]])
+
 ;
 
 ;;; ;;; ;;; ;;;
