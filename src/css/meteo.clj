@@ -77,7 +77,7 @@
       ;   {:box-shadow "0 0 8px rgba(0,80,200,0.8)"}]
 
       [:.i-menu
-        { :top "17px"
+        { :top "18px"
           :right "8px"
           :font-size "1.6rem"
           :position "absolute"

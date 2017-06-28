@@ -133,15 +133,11 @@ $(function() {
   $("div.b-card[data-st]").each( function(i, el){
     var $card = $(el);
     $card.find(".title")
-      .click(
-        function() {
-          $(".b-card .i-menu").remove();
-        }
-      )
       .append(
         $("<span class='cog'><i class='fa fa-fw fa-caret-down'></i></span>")
           .click(
             function(evt) {
+              evt.preventDefault();
               if(! $card.find(".i-menu").length ) {
                 $(".b-card .i-menu").remove();
                 $card.append( make_menu(i, $card) );
