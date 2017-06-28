@@ -14,6 +14,7 @@ $(function() {
   };
 
   function save_st_list(arr, reload) {
+    console.log("save:", arr);
     save_st_cookie(arr.join(","));
     if(reload) {
       window.location.href = METEO_URL; // +"?st="+st_comma;
@@ -40,18 +41,27 @@ $(function() {
 
   /// /// /// ///
 
-  function card_to_begin(i, arr) {
-    // console.log("beg:", arr);
-    return [].concat( [arr[i]], arr.slice(0,i), arr.slice(i+1) );
-  }
+  function move_card_to(i, pos, arr)
+  {
+    if( pos >= arr.length ) { pos = arr.length-1; }
+    if( pos < 0 ) { pos = 0; }
 
-  function card_to_end(i, arr) {
-    // console.log("end:", arr);
-    return [].concat( arr.slice(0,i), arr.slice(i+1), [arr[i]] );
+    if( pos < i ) {
+      return [].concat(
+        arr.slice(0, pos), [arr[i]], arr.slice(pos, i), arr.slice(i+1)
+      );
+    }
+    else if( pos > i ) {
+      return [].concat(
+        arr.slice(0, i), arr.slice(i+1, pos+1), [arr[i]], arr.slice(pos+1)
+      );
+    }
+    else {
+      return arr;
+    }
   }
 
   function card_remove(i, arr) {
-    // console.log("rem:", arr);
     return [].concat( arr.slice(0,i), arr.slice(i+1) );
   }
 
@@ -64,35 +74,37 @@ $(function() {
 
   function make_menu(i, $card) {
     var mn = $("<div class='i-menu'>");
-    mn.append(
-      $("<div class='text-right'><i class='fa fa-caret-up i-toggle'/></div>")
-        .click(function(evt) {
-          $(evt.target).closest(".i-menu").remove();
-        })
-    );
+    // mn.append(
+    //   $("<div class='text-right'><i class='fa fa-caret-up i-toggle'/></div>")
+    //     .click(function(evt) {
+    //       $(evt.target).closest(".i-menu").remove();
+    //     })
+    // );
     mn.append(
       $("<ul>")
         .append(
           $("<li><i class='fa fa-fw fa-angle-double-up'/> В начало</li>").click(
             function(evt) {
               remove_menu($card);
-              save_st_list( card_to_begin(i, st_list()), true );
+              save_st_list( move_card_to(i, 0, st_list()), true );
             }
           )
         )
         .append(
           $("<li><i class='fa fa-fw fa-angle-up'/> Вверх</li>").click(
             function(evt) {
+              console.log("up");
               remove_menu($card);
-              save_st_list( card_to_begin(i, st_list()), true );
+              save_st_list( move_card_to(i, i-1, st_list()), true );
             }
           )
         )
         .append(
           $("<li><i class='fa fa-fw fa-angle-down'/> Вниз</li>").click(
             function(evt) {
+              console.log("down");
               remove_menu($card);
-              save_st_list( card_to_end(i, st_list()), true );
+              save_st_list( move_card_to(i, i+1, st_list()), true );
             }
           )
         )
@@ -100,7 +112,7 @@ $(function() {
           $("<li><i class='fa fa-fw fa-angle-double-down'/> В конец</li>").click(
             function(evt) {
               remove_menu($card);
-              save_st_list( card_to_end(i, st_list()), true );
+              save_st_list( move_card_to(i, 9999, st_list()), true );
             }
           )
         )
@@ -120,12 +132,26 @@ $(function() {
 
   $("div.b-card[data-st]").each( function(i, el){
     var $card = $(el);
-    $card.find(".title").click(
-      function(evt) {
-        $(".b-card .i-menu").remove();
-        $card.append( make_menu(i, $card) );
-      }
-    );
+    $card.find(".title")
+      .click(
+        function() {
+          $(".b-card .i-menu").remove();
+        }
+      )
+      .append(
+        $("<span class='cog'><i class='fa fa-fw fa-caret-down'></i></span>")
+          .click(
+            function(evt) {
+              if(! $card.find(".i-menu").length ) {
+                $(".b-card .i-menu").remove();
+                $card.append( make_menu(i, $card) );
+              }
+              else {
+                $(".b-card .i-menu").remove();
+              }
+            }
+          )
+      );
   });
 
   /// /// /// ///  svg  /// /// /// ///

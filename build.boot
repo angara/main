@@ -48,7 +48,7 @@
     ;; https://github.com/tomekw/hikari-cp
     [hikari-cp "1.7.5"]
 
-    [honeysql "0.8.2"]  ; https://github.com/jkk/honeysql
+    [honeysql "0.9.0"]  ; https://github.com/jkk/honeysql
 
     [com.draines/postal "2.0.2"]
 

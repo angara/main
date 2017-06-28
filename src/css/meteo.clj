@@ -31,7 +31,15 @@
           :cursor "pointer"
           :overflow-x "hidden"
           :white-space "nowrap"
-          :position "relative"}]
+          :position "relative"}
+        [:.cog
+          { :top "2px"
+            :right "2px"
+            :font-size "1.6rem"
+            :position "absolute"
+            :z-index 90
+            :color "#f4f4a4"
+            :cursor "pointer"}]]
 
       [:.nodata
         { :margin "20px"
@@ -69,14 +77,14 @@
       ;   {:box-shadow "0 0 8px rgba(0,80,200,0.8)"}]
 
       [:.i-menu
-        { :top "1px"
+        { :top "17px"
           :right "8px"
           :font-size "1.6rem"
           :position "absolute"
           :z-index 99}
-        [:.i-toggle
-          { :color "#f4f4a4"
-            :cursor "pointer"}]
+        ; [:.i-toggle
+        ;   { :color "#f4f4a4"
+        ;     :cursor "pointer"}]
         [:ul
           {
             :transition "height 1s"
