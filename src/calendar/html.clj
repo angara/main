@@ -18,7 +18,7 @@
 ;
 
 
-(def FRONT_BLOCK_LIMIT 8)
+(def FRONT_BLOCK_LIMIT 5)
 
 
 (defn get-month [cr]

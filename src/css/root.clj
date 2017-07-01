@@ -7,6 +7,7 @@
     [garden.selectors :refer [>]]
     [garden.stylesheet :refer [at-media]]
     ;
+    [css.controls :refer [controls]]
     [css.calendar :refer [b-calendar]]
     [css.meteo :refer [b-meteo]]
     [css.tourserv :refer [b-tourserv]]))
@@ -116,9 +117,11 @@
 
       [:.b-user
         { :text-align 'right
-          :margin "11px 2px 12px 8px"
-          :overflow 'hidden
-          :white-space 'nowrap}]
+          :margin "11px 2px 12px 8px"}
+        [:.name
+          { :overflow 'hidden
+            :white-space 'nowrap}]]
+        ;
 
 
         ; [:.upic
@@ -143,8 +146,6 @@
       { :font-size "1.6rem"
         :letter-spacing "0.1rem"
         :padding-bottom "4px"
-        ;; :border-bottom (str "1px solid " c_topbar_brd)
-        ; :border-bottom "1px solid #def"
         :margin-bottom "10px"}
       ;
       ; [:.nav
@@ -170,11 +171,12 @@
 
         [:li.active
           [:a
-            { :border-bottom-color "#28f"}]]
+            { :border-bottom-color "#28f"
+              :color "#002"}]]
 
         [:li
           [:a:hover
-            { :color "#4af"
+            { :color "#49e"
               :border-bottom-color "#e00"}]]]]])
 
 ;
@@ -214,6 +216,7 @@
 (defstyles main
   commons
   margins
+  controls
 
   content
 

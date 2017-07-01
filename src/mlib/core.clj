@@ -121,6 +121,8 @@
   (if (< (count s) n) s (.substring s (- (count s) n))))
 ;
 
+(def to-json json/generate-string)
+
 (defn hesc
   "Replace special characters by HTML character entities."
   [text]

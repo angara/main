@@ -69,12 +69,32 @@
 
 ;;; ;;; ;;; ;;; ;;;
 
+(def user_popmenu_items
+  (str
+    "["
+      "[\"/me/\", \"Профиль\"],"
+      "[\"/mail/\", \"Сообщения\"],"
+      "[\"\", \"-\"],"
+      "[do_logout, \"Выйти\"]"
+    "]"))
+;
+
 (defn user-block [user uri]
   (if user
     (let [nm (str (:first_name user) " " (:last_name user))]
-      [:div.b-user
-        [:a {:href "/me/" :title (str (:username user) ": " nm)}
-          [:b (:username user)] [:br] nm]])
+      (list
+        [:div#topbar_user.b-user.c-popmenu
+          [:div.c-popmenu-toggle
+            {:style "float:right; margin-top: 10px;"}
+            [:i.fa.fa-fw.fa-caret-down]]
+          [:div.name
+            [:a {:href "/me/" :title (str (:username user) ": " nm)}
+              [:b (:username user)] [:br] nm]]]
+        [:script
+          "$(function(){"
+            "$('#topbar_user')"
+              ".data('popmenu'," user_popmenu_items ");"
+          "});"]))
     ;; no logged in
     (when (not= false user)
       [:div.b-signin

@@ -150,6 +150,17 @@ $(function() {
       );
   });
 
+
+  $(document).on(
+    "click.meteo.core keydown.meteo.core",
+    function(evt){
+      if(evt.isDefaultPrevented()) { return; }
+      if(evt.which == 27 || evt.which == 1) {
+        $(".b-card .i-menu").remove();
+      }
+    }
+  );
+
   /// /// /// ///  svg  /// /// /// ///
 
   function get_hourly() {
