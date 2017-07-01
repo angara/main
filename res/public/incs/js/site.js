@@ -75,13 +75,18 @@ $(function(){
   $(".c-popmenu").each( function(i, el){
     $(el).find(".c-popmenu-toggle").click(popmenu_toggle);
   });
-  $(document).on(
-    "click.popmenu keydown.popmenu",
+  $(document).on("keydown.popmenu",
     function(evt){
       if(evt.isDefaultPrevented()){ return; }
-      if(evt.which == 27 || evt.which == 1) {
+      if(evt.which == 27) {
         $(".c-popmenu-pane").remove();
       }
+    }
+  );
+  $(document).on("click.popmenu touchstart.popmenu",
+    function(evt){
+      if(evt.isDefaultPrevented()){ return; }
+      $(".c-popmenu-pane").remove();
     }
   );
 

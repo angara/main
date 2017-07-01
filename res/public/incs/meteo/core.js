@@ -151,13 +151,18 @@ $(function() {
   });
 
 
-  $(document).on(
-    "click.meteo.core keydown.meteo.core",
+  $(document).on("keydown.meteo.core",
     function(evt){
       if(evt.isDefaultPrevented()) { return; }
-      if(evt.which == 27 || evt.which == 1) {
+      if(evt.which == 27) {
         $(".b-card .i-menu").remove();
       }
+    }
+  );
+  $(document).on("click.meteo.core touchstart.meteo.core",
+    function(evt){
+      if(evt.isDefaultPrevented()) { return; }
+      $(".b-card .i-menu").remove();
     }
   );
 

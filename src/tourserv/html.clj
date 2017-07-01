@@ -145,7 +145,7 @@
       :rtb-bottom (:rtb-bottom conf)}
     ;
     [:div.b-tourserv
-      [:div.col-md-6.col-md-offset-1.b-index
+      [:div.col-md-7.b-index
         (for [t TYPES]
           [:div.tsrv
             [:a {:href (str "/tourserv/" (:id t))}
