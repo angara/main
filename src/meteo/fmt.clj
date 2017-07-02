@@ -1,19 +1,49 @@
 
 (ns meteo.fmt
   (:import
-    [java.util Locale]))
+    [java.util Locale])
+  (:require
+    [clojure.string :as s]))
 ;
 
 
 (def HPA_MMHG 1.3332239)
 
-(defn nf1 [x]
+
+(defn strip-zeros [s]
+  (if-let [z (re-matches #".+?(0+)" s)]
+    (subs s 0 (-
+                (.length s)
+                (.length (second z))))
+    s))
+;
+
+(defn strip-dot [v]
+  (if (s/ends-with? v ".")
+    (subs v 0 (-> v .length dec))
+    v))
+;
+
+(defn nfix1 [x]
   (String/format Locale/ROOT "%.1f" (to-array [(float x)])))
 ;
 
-(defn nf2 [x]
+(defn nfix2 [x]
   (String/format Locale/ROOT "%.2f" (to-array [(float x)])))
 ;
+
+(defn nf1 [x]
+  (try
+    (-> x nfix1 strip-zeros strip-dot)
+    (catch Exception ignore)))
+;
+
+(defn nf2 [x]
+  (try
+    (-> x nfix2 strip-zeros strip-dot)
+    (catch Exception ignore)))
+;
+
 
 (defn wind-nesw [b]
   (try
@@ -25,9 +55,11 @@
 
 (defn format-w [w g b]
   (when w
-    (let [res (str "Ветер: " "<b>" (Math/round (float w)) "</b>")
-          res (if g
-                (str res "<b>-" (Math/round (float g)) "</b>" " м/с")
+    (let [w (nf1 w)
+          g (nf1 g)
+          res (str "Ветер: " "<b>" w "</b>")
+          res (if (and g (not= g w))
+                (str res "<b>-" g "</b>" " м/с")
                 (str res " м/с"))
           res (str "<nobr>" res "</nobr>")
           dir (wind-nesw b)]

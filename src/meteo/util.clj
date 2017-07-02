@@ -10,7 +10,7 @@
 
 (def ST_PARAM  :st)
 (def ST_COOKIE "meteo_st")
-(def ST_MAX_NUM 100)
+(def ST_MAX_NUM 50)
 
 (def FRESH_INTERVAL (tc/minutes 60))
 

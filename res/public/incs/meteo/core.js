@@ -74,12 +74,6 @@ $(function() {
 
   function make_menu(i, $card) {
     var mn = $("<div class='i-menu'>");
-    // mn.append(
-    //   $("<div class='text-right'><i class='fa fa-caret-up i-toggle'/></div>")
-    //     .click(function(evt) {
-    //       $(evt.target).closest(".i-menu").remove();
-    //     })
-    // );
     mn.append(
       $("<ul>")
         .append(
@@ -177,8 +171,8 @@ $(function() {
           +"&t1="+window.hourly_t1.toISOString()
         ,
         function(resp) {
-          console.log("hd:", resp);
           if(resp.ok) {
+            console.log("hd:", resp);
 
           }
         }
