@@ -123,7 +123,6 @@
             :white-space 'nowrap}]]
         ;
 
-
         ; [:.upic
         ;   { :display 'block
         ;     :float 'right
@@ -148,16 +147,13 @@
         :padding-bottom "4px"
         :margin-bottom "10px"}
       ;
-      ; [:.nav
-      ;   [:li [:a {:padding "5px 10px" :color "#47c"}]]
-      ;   [:li.active [:a {:background-color "#eaeaea"}]]
-      ;   [:li.active [:a:hover {:color "#6bf"}]]]
       [:.menu
         { :margin "2px 2px"
           :padding "0"}
         [:li
           { :display "block"
             :float "left"
+            :white-space "nowrap"
             :margin-bottom "8px"}
           [:a
             { :padding "4px 2px"
@@ -165,8 +161,15 @@
               :color "#47c"
               :position "relative"
               :text-decoration "none"
+              :white-space "nowrap"
               :margin-right "12px"
-              :border-bottom "3px solid transparent"}]]
+              :border-bottom "3px solid transparent"}]
+          [:.t
+            { :font-size "1.4rem"
+              :margin-left "-7px"}
+            [:.pos {:color "#a20"}]
+            [:.zer {:color "#555"}]
+            [:.neg {:color "#04d"}]]]
 
 
         [:li.active

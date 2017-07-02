@@ -83,7 +83,7 @@ $(function(){
       }
     }
   );
-  $(document).on("click.popmenu", // touchstart.popmenu",
+  $(document).on("click.popmenu",
     function(evt){
       if(evt.isDefaultPrevented()){ return; }
       $(".c-popmenu-pane").remove();

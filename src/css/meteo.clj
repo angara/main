@@ -64,7 +64,6 @@
             :top "-2px"
             :width "1ex"
             :margin-left "1px"}]]
-            ;:font-size "15px"}]]
       ;
       [:.wph
         { :margin "4px 8px 4px 10px"

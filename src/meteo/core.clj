@@ -1,7 +1,5 @@
 
 (ns meteo.core
-  (:import
-    [java.util Locale])
   (:require
     [clojure.string :as s]
     [clj-time.core :as tc]
@@ -13,124 +11,16 @@
     [mlib.core :refer [hesc]]
     ; [mlib.http :refer [json-resp]]))
     ;
-    [meteo.db :refer [db st-ids st-find]]
+    [meteo.db :refer [st-ids st-find]]
+    [meteo.fmt :refer [format-t format-h format-p format-w format-wt]]
+    [meteo.util :refer [st-param ST_MAX_NUM fresh]]
     ;
     [html.frame :refer [render-layout]]))
 ;
 
 
-(def ST_PARAM  :st)
-(def ST_COOKIE "meteo_st")
-
-(def ST_MAX_NUM 100)
-
 (def ST_DEAD_INTERVAL (tc/days 10))
-
 (def HOURS_INTERVAL (tc/hours 72))
-
-(def FRESH_INTERVAL (tc/minutes 60))
-
-(defn fresh [data]
-  (try
-    (and
-      (tc/after?
-        (:ts data)
-        (tc/minus (tc/now) FRESH_INTERVAL))
-      data)
-    (catch Exception ignore)))
-;
-
-;;; ;;; ;;; ;;;
-
-(def HPA_MMHG 1.3332239)
-
-
-(defn nf1 [x]
-  (String/format Locale/ROOT "%.1f" (to-array [(float x)])))
-;
-
-(defn nf2 [x]
-  (String/format Locale/ROOT "%.2f" (to-array [(float x)])))
-;
-
-(defn wind-nesw [b]
-  (try
-    (get
-      ["С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"]
-      (int (Math/floor (mod (/ (+ b 22) 45) 8))))
-    (catch Exception ignore)))
-;
-
-(defn format-w [w g b]
-  (when w
-    (let [res (str "Ветер: " "<b>" (Math/round (float w)) "</b>")
-          res (if g
-                (str res "<b>-" (Math/round (float g)) "</b>" " м/с")
-                (str res " м/с"))
-          res (str "<nobr>" res "</nobr>")
-          dir (wind-nesw b)]
-      (if dir
-        (str res ", " "<b>" dir "</b>")
-        res))))
-;
-
-(defn format-h [h]
-  (when h
-    (str "Влажность: <nobr><b>" (Math/round (float h)) "</b> %</nobr>")))
-;
-
-(defn format-p [p]
-  (when p
-    (str "Давление: <nobr><b>"
-      (Math/round (/ p HPA_MMHG))
-      "</b> мм.рт.ст</nobr>")))
-;
-
-(defn format-t [t avg]
-  (try
-    (let [t (Math/round (float t))
-          [cls sign]  (cond
-                        (< 0 t) ["pos" "+"]
-                        (> 0 t) ["neg" "-"]
-                        :else   ["zer" ""])
-          [trc arr]   (when avg
-                        (cond
-                          (> t (+ avg 1)) ["pos" "&uarr;"]
-                          (< t (- avg 1)) ["neg" "&darr;"]
-                          :else           [""    "&nbsp;"]))]
-      (list
-        [:span {:class cls} sign [:i (Math/abs t)]]
-        "&deg;"
-        [:span {:class (str "arr " trc)} arr]))
-      ;
-    (catch Exception ignore)))
-;
-
-(defn format-wt [wt wl]
-  (try
-    (when wt
-      (str "Температура воды: <nobr><b>"
-            (Math/round (float wt)) "</b>&deg;</nobr>"
-        (when wl
-          (str ", <nobr>уровень <b>" (nf2 wl) "</b> м</nobr>"))))
-    (catch Exception ignore)))
-;
-
-
-(defn comma-split [s]
-  (->>
-    (s/split (s/lower-case (str s)) #"\,")
-    (remove s/blank?)
-    (not-empty)))
-;
-
-(defn st-param [req]
-  (take ST_MAX_NUM
-    (or
-      (comma-split (-> req :params ST_PARAM))
-      (comma-split (-> req :cookies (get ST_COOKIE) :value))
-      (-> conf :meteo :st_default))))
-;
 
 
 (defn graph-page [req]
@@ -159,7 +49,6 @@
                     {:pub 1 :ts {:$gte dead-time}}
                     [:_id :title :descr :addr :ll])
         now_tz (tc/to-time-zone (tc/now) (tc/time-zone-for-id (:tz conf)))
-        ;;t1  (tc/plus (tc/floor now_tz tc/day) (tc/days 1))
         t1  (tc/floor now_tz tc/hour)
         t0  (tc/minus t1 HOURS_INTERVAL)]
     ;;

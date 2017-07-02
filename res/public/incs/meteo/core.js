@@ -159,7 +159,7 @@ $(function() {
       }
     }
   );
-  $(document).on("click.meteo.core", // touchstart.meteo.core",
+  $(document).on("click.meteo.core",
     function(evt){
       if(evt.isDefaultPrevented()) { return; }
       $(".b-card .i-menu").remove();

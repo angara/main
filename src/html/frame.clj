@@ -6,7 +6,8 @@
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [yandex-metrika mailru-top ya-rtb]]
     [html.util :refer [glyphicon css-link script]]
-    [html.search :refer [ya-site-form]]))
+    [html.search :refer [ya-site-form]]
+    [meteo.curr :refer [curr-temp]]))
 ;
 
 
@@ -136,19 +137,22 @@
     {:id "shops"    :href "/shops/"     :menu "Магазины"}
     {:id "tourserv" :href "/tourserv"   :menu "Турсервис"}
     {:id "bb"       :href "/bb/"        :menu "Объявления"}
-    {:id "meteo"    :href "/meteo/"     :menu "Погода"}
     {:id "photo"    :href "/photo/"     :menu "Фото"}
-    {:id "forum"    :href "/forum/"     :menu "Форум"}])
+    {:id "forum"    :href "/forum/"     :menu "Форум"}
+    {:id "meteo"    :href "/meteo/"     :menu "Погода"  :ext curr-temp}])
+
 ;
 
-(defn topnav [active]
+(defn topnav [req active]
   (let [act (and active (name active))]
     [:div.b-topnav
       [:div.container
         [:ul.menu
-          (for [n TOP_NAVS]
+          (for [n TOP_NAVS :let [ext-fn (:ext n)]]
             [:li {:class (when (= act (:id n)) "active")}
-              [:a {:href (:href n)} (:menu n)]])]]]))
+              [:a {:href (:href n)} (:menu n)]
+              (when ext-fn
+                (ext-fn req))])]]]))
 ;
 
 (defn footer [req]
@@ -206,7 +210,7 @@
             [:script "window.uid='" uid "';"])
           ;
           (topbar req)
-          (topnav topmenu)
+          (topnav req topmenu)
           ;
           [:div.content
             [:div.container
