@@ -72,9 +72,10 @@
 
       [:.st-descr]
 
-      ; [:&:hover
-      ;   {:box-shadow "0 0 8px rgba(0,80,200,0.8)"}]
-
+      ;
+      [:.graph
+        {:background-color "#bbb"}]
+      ;
       [:.i-menu
         { :top "18px"
           :right "8px"

@@ -9,11 +9,13 @@
     [mlib.conf :refer [conf]]
     [mlib.core :refer [to-float to-int]]
     [mlib.http :refer [json-resp text-resp]]
-    [mlib.log :refer [debug]]
+    [mlib.log :refer [debug warn]]
     ;
     [mdb.core :refer [id_id]]
     [meteo.db :refer [db st-ids st-near PUB_FIELDS hourly-data]]))
 ;
+
+(def ST_MAX_NUM 50)
 
 
 (defn index [req]
@@ -57,7 +59,7 @@ Hourly aggregations -
 
 (defn params-sts [params]
   (->>
-    (-> params :st str (s/split #","))
+    (-> params :st str (s/split #"," ST_MAX_NUM))
     (remove s/blank?)
     (not-empty)))
 ;
@@ -77,14 +79,16 @@ Hourly aggregations -
         lng (to-float (get params :lng lng))
         lat (to-float (get params :lat lat))
         ofs (to-int (:offset params) 0)
-        lim (to-int (:limit params) 10)]
+        lim (min ST_MAX_NUM (to-int (:limit params) 10))]
     ;
     (if (and lng lat)
       (->> (st-near [lng lat] (q-alive))
         (map #(id_id (select-keys % (conj PUB_FIELDS :dist))))
         (drop ofs)
         (take lim)
-        (ok-data {:lat lat :lng lng :offset ofs :limit lim}))
+        (ok-data {:lat lat :lng lng
+                  :offset ofs :limit lim
+                  :st_max ST_MAX_NUM}))
       ;;
       (json-resp {:err :params}))))
 ;
@@ -98,15 +102,43 @@ Hourly aggregations -
       (debug "parse-time:" t e))))
 ;
 
+(defn hourly-series [sts t0 t1 n]
+  (let [res (transient {})]
+    (doseq [d (hourly-data sts t0 t1 FETCH_LIMIT)]
+      (try
+        (let [st (:st d)
+              hr (:hour d)
+              arr (or
+                    (get res st)
+                    (let [arr (to-array (repeat n nil))]
+                      (assoc! res st arr)
+                      arr))
+              idx (tc/in-hours (tc/interval t0 hr))]
+          (aset arr idx (dissoc d :_id :hour)))
+        (catch Exception e
+          (warn "hourly-series:" sts t0 t1 (.getMessage e)))))
+    ;
+    (reduce-kv
+      (fn [m k v]
+        (assoc m k (seq v)))
+      {}
+      (persistent! res))))
+;
+
 (defn hourly [{params :params}]
   (if-let [sts (params-sts params)]
     (let [t0 (-> params :t0 parse-time)
           t1 (-> params :t1 parse-time)]
       (if (and t0 t1 (tc/before? t0 t1))
-        (ok-data
-          {:t0 t0 :t1 t1 :limit FETCH_LIMIT}
-          (map #(dissoc % :_id)
-            (hourly-data sts t0 t1 FETCH_LIMIT)))
+        (let [n (tc/in-hours (tc/interval t0 t1))]
+          (if (<= n FETCH_LIMIT)
+            (json-resp
+              { :ok 1
+                :t0 t0 :t1 t1 :n n
+                :limit FETCH_LIMIT
+                :series (hourly-series sts t0 t1 n)})
+            ;;
+            (json-resp {:err :interval})))
         ;;
         (json-resp {:err :time})))
     ;;

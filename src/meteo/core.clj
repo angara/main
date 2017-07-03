@@ -56,7 +56,8 @@
     (render-layout req
       { :title "Погода в Иркутске"
         :topmenu :meteo
-        :js ["/incs/meteo/core.js"]}
+        :js [ "//api.angara.net/incs/highcharts/5.0.12/highcharts.js"
+              "/incs/meteo/core.js"]}
       ;
       [:div.b-meteo
         [:script
@@ -93,7 +94,10 @@
                           (format-wt (:wt last) (:wl last))]]
                       [:div.clearfix])
                     ;;
-                    [:div.nodata "Нет данных."])]]))]
+                    [:div.nodata "Нет данных."])
+                  [:div.graph
+                    {:id (str "graph_" id)}
+                    "highcharts"]]]))]
         ;
         (when (< (count ids) ST_MAX_NUM)
           [:div.col-sm-6.col-sm-offset-3.selector
