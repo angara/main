@@ -59,7 +59,7 @@
         :topmenu :meteo
         :css [ "//api.angara.net/incs/highcharts/5.0.12/highcharts.css"]
         :js  [ "//api.angara.net/incs/highcharts/5.0.12/highcharts.js"
-               "/incs/meteo/core.js"]}
+               "/incs/meteo/core.js?ver=1"]}
       ;
       [:div.b-meteo
         [:script

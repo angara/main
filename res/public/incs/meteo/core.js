@@ -7,7 +7,7 @@ $(function() {
   var METEO_HOURLY = "//api.angara.net/meteo/st/hourly?st=";
 
   // !!! ///
-  METEO_HOURLY = "/api/meteo/st/hourly?st=";
+  // METEO_HOURLY = "/api/meteo/st/hourly?st=";
 
   var ST_COOKIE = 'meteo_st';
   var HPA_MMHG = 1.3332239;
@@ -170,8 +170,6 @@ $(function() {
   function draw_graph (id, data) {
     var t_series = [], p_series = [], h_series = [], w_series = [];
 
-    console.log("id:", id, data);
-
     for(var i in data) {
       var d = data[i];
       // t:
@@ -299,7 +297,9 @@ $(function() {
               var st = $(el).data("st");
               var data = resp.series[st];
               var graph_id = $(el).find(".graph").attr("id");
-              console.log("gr:", graph_id);
+
+              console.log("st,id,data:", st, graph_id, data);
+              
               if(graph_id && data) {
                 draw_graph(graph_id, data);
               }
