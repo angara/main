@@ -6,8 +6,6 @@ $(function() {
   var METEO_URL = "/meteo1";
   var METEO_HOURLY = "//api.angara.net/meteo/st/hourly?st=";
 
-  METEO_HOURLY = "/api/meteo/st/hourly?st=";
-
   var ST_COOKIE = 'meteo_st';
 
   function save_st_cookie(s) {
@@ -126,6 +124,8 @@ $(function() {
   }
 
 
+  var HPA_MMHG = 1.3332239;
+
   $("div.b-card[data-st]").each( function(i, el){
     var $card = $(el);
     $card.find(".title")
@@ -162,7 +162,147 @@ $(function() {
     }
   );
 
-  /// /// /// ///  svg  /// /// /// ///
+  /// /// /// ///  graphs  /// /// /// ///
+
+  function draw_graph (st, data) {
+    var t_series = [];
+    var p_series = [];
+
+    for(var i in data) {
+      var d = data[i];
+      console.log("d:", d);
+      if(d) {
+        if(d.t) { t_series.push(Math.round(d.t.avg)); }
+        else { t_series.push(null); }
+        //
+        if(d.p) {
+          p_series.push(Math.round(d.p.avg / HPA_MMHG));
+        }
+        else { p_series.push(null); }
+      }
+      else {
+        t_series.push(null);
+        p_series.push(null);
+      }
+    }
+
+    Highcharts.chart('graph_'+st, {
+        // chart: { zoomType: 'xy' },
+        title: { text: "" },
+        // subtitle: {
+        //     text: 'Source: WorldClimate.com'
+        // },
+        credits: { enabled: false },
+        xAxis: [{
+            // categories: [
+            //     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            //     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            //   ],
+            crosshair: true
+        }],
+        //
+        yAxis: [
+        {
+            labels: {
+                format: '{value}°',
+                style: {
+                    // color: Highcharts.getOptions().colors[2]
+                    color: "#aa0044"
+                }
+            },
+            title: {
+                text: 'Температура, °C',
+                style: {
+                  //  color: Highcharts.getOptions().colors[2]
+                  color: "#22cc22"
+                }
+            }
+        },
+        {
+            gridLineWidth: 0,
+            title: {
+                text: 'Давление, мм.рт.ст',
+                style: {
+                  color: "#2244ff"
+                }
+            },
+            labels: {
+                format: '{value}',
+                // style: {
+                //     color: Highcharts.getOptions().colors[0]
+                // }
+            },
+            opposite: true
+        }],
+        tooltip: {
+            shared: true
+        },
+        legend: {
+          enabled: false
+            // layout: 'vertical',
+            // align: 'left',
+            // x: 80,
+            // verticalAlign: 'top',
+            // y: 20,
+            // floating: true,
+            // backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        },
+        series: [
+        {
+            name: 't',
+            type: 'column',
+            yAxis: 0,
+            data: t_series,
+            tooltip: {
+              valueSuffix: ' °C'
+            }
+
+        },
+        {
+            name: 'p',
+            type: 'spline',
+            yAxis: 1,
+            data: p_series,
+            marker: {
+                enabled: false
+            },
+            dashStyle: 'shortdot',
+            tooltip: {
+              valueSuffix: ' мм.рт.ст'
+            }
+        }]
+    });
+    // highcharts
+
+  }
+
+
+  // Highcharts.chart('chart', {
+  //   chart: {
+  //       type: 'bar'
+  //   },
+  //   title: {
+  //       text: 'Fruit Consumption'
+  //   },
+  //   xAxis: {
+  //       categories: ['Apples', 'Bananas', 'Oranges']
+  //   },
+  //   yAxis: {
+  //       title: {
+  //           text: 'Fruit eaten'
+  //       }
+  //   },
+  //   series: [{
+  //       name: 'Jane',
+  //       data: [1, 0, 4]
+  //   }, {
+  //       name: 'John',
+  //       data: [5, 7, 3]
+  //   }]
+  // });
+
+
+  // // // //
 
   function get_hourly() {
     if(window.hourly_t0 && window.hourly_t1) {
@@ -174,8 +314,9 @@ $(function() {
         ,
         function(resp) {
           if(resp.ok) {
-            console.log("hd:", resp);
-
+            for(var st in resp.series) {
+              draw_graph(st, resp.series[st]);
+            }
           }
         }
       );
@@ -185,7 +326,6 @@ $(function() {
   get_hourly();
 
 });
-
 
 
 //.

@@ -46,7 +46,7 @@
     ;; https://funcool.github.io/clojure.jdbc/latest/
     [funcool/clojure.jdbc "0.9.0"]
     ;; https://github.com/tomekw/hikari-cp
-    [hikari-cp "1.7.5"]
+    [hikari-cp "1.7.6"]
 
     [honeysql "0.9.0"]  ; https://github.com/jkk/honeysql
 

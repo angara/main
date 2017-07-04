@@ -114,13 +114,12 @@ Hourly aggregations -
                       (assoc! res st arr)
                       arr))
               idx (tc/in-hours (tc/interval t0 hr))]
-          (aset arr idx (dissoc d :_id :hour)))
+          (aset arr idx (dissoc d :_id :st :hour)))
         (catch Exception e
           (warn "hourly-series:" sts t0 t1 (.getMessage e)))))
     ;
     (reduce-kv
-      (fn [m k v]
-        (assoc m k (seq v)))
+      #(assoc %1 %2 (seq %3))
       {}
       (persistent! res))))
 ;

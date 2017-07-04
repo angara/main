@@ -74,7 +74,15 @@
 
       ;
       [:.graph
-        {:background-color "#bbb"}]
+        { :background-color "#eee"
+          :height "210px"
+          :border-radius "2px"
+          :margin "6px"}
+        [:.loading
+          { :color "#888"
+            :padding "8px 12px"
+            :font-size "90%"}]]
+
       ;
       [:.i-menu
         { :top "18px"

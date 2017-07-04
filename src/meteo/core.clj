@@ -20,7 +20,7 @@
 
 
 (def ST_DEAD_INTERVAL (tc/days 10))
-(def HOURS_INTERVAL (tc/hours 72))
+(def HOURS_INTERVAL (tc/hours 60))
 
 
 (defn graph-page [req]
@@ -56,8 +56,9 @@
     (render-layout req
       { :title "Погода в Иркутске"
         :topmenu :meteo
-        :js [ "//api.angara.net/incs/highcharts/5.0.12/highcharts.js"
-              "/incs/meteo/core.js"]}
+        :css [ "//api.angara.net/incs/highcharts/5.0.12/highcharts.css"]
+        :js  [ "//api.angara.net/incs/highcharts/5.0.12/highcharts.js"
+               "/incs/meteo/core.js"]}
       ;
       [:div.b-meteo
         [:script
@@ -95,9 +96,10 @@
                       [:div.clearfix])
                     ;;
                     [:div.nodata "Нет данных."])
+                  [:div.clearfix]
                   [:div.graph
                     {:id (str "graph_" id)}
-                    "highcharts"]]]))]
+                    [:div.loading "Загрузка графика ..."]]]]))]
         ;
         (when (< (count ids) ST_MAX_NUM)
           [:div.col-sm-6.col-sm-offset-3.selector
@@ -109,7 +111,7 @@
                 " &nbsp; "
                 [:button#btn_st_add.btn.btn-success {:type "button"}
                   [:b "Добавить"]]]]])
-        ;
+        ;;
         [:div.clearfix]
         [:div.text-center {:style "margin: 20px"}
           [:small {:style "color:#777"}
