@@ -16,7 +16,8 @@
 ;
 
 (def ST_MAX_NUM 50)
-
+(def HOURLY_FETCH_LIMIT 50000)  ;; 24*30*50 = 36000
+(def HOURS_MAX 3000)            ;; 24*30*3 = 2160
 
 (defn index [req]
   (let [build (:build conf)
@@ -93,7 +94,6 @@ Hourly aggregations -
       (json-resp {:err :params}))))
 ;
 
-(def FETCH_LIMIT 3000)
 
 (defn parse-time [t]
   (try
@@ -104,7 +104,7 @@ Hourly aggregations -
 
 (defn hourly-series [sts t0 t1 n]
   (let [res (transient {})]
-    (doseq [d (hourly-data sts t0 t1 FETCH_LIMIT)]
+    (doseq [d (hourly-data sts t0 t1 HOURLY_FETCH_LIMIT)]
       (try
         (let [st (:st d)
               hr (:hour d)
@@ -130,11 +130,11 @@ Hourly aggregations -
           t1 (-> params :t1 parse-time)]
       (if (and t0 t1 (tc/before? t0 t1))
         (let [n (tc/in-hours (tc/interval t0 t1))]
-          (if (<= n FETCH_LIMIT)
+          (if (<= n HOURS_MAX)
             (json-resp
               { :ok 1
                 :t0 t0 :t1 t1 :n n
-                :limit FETCH_LIMIT
+                :limits {:fetch HOURLY_FETCH_LIMIT :hours HOURS_MAX}
                 :series (hourly-series sts t0 t1 n)})
             ;;
             (json-resp {:err :interval})))

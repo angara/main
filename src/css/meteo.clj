@@ -80,7 +80,7 @@
           :margin "6px"}
         [:.loading
           { :color "#888"
-            :padding "8px 12px"
+            :padding "9px 12px"
             :font-size "90%"}]]
 
       ;

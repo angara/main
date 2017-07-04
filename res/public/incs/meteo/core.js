@@ -6,6 +6,10 @@ $(function() {
   var METEO_URL = "/meteo1";
   var METEO_HOURLY = "//api.angara.net/meteo/st/hourly?st=";
 
+  // !!! ///
+  METEO_HOURLY = "/api/meteo/st/hourly?st=";
+
+
   var ST_COOKIE = 'meteo_st';
 
   function save_st_cookie(s) {
@@ -14,7 +18,6 @@ $(function() {
   };
 
   function save_st_list(arr, reload) {
-    console.log("save:", arr);
     save_st_cookie(arr.join(","));
     if(reload) {
       window.location.href = METEO_URL; // +"?st="+st_comma;
@@ -168,9 +171,10 @@ $(function() {
     var t_series = [];
     var p_series = [];
 
+    console.log("st:", st, data);
+
     for(var i in data) {
       var d = data[i];
-      console.log("d:", d);
       if(d) {
         if(d.t) { t_series.push(Math.round(d.t.avg)); }
         else { t_series.push(null); }
@@ -203,6 +207,7 @@ $(function() {
         //
         yAxis: [
         {
+            // crosshair: true,
             labels: {
                 format: '{value}°',
                 style: {
@@ -210,24 +215,28 @@ $(function() {
                     color: "#aa0044"
                 }
             },
+
             title: {
-                text: 'Температура, °C',
-                style: {
-                  //  color: Highcharts.getOptions().colors[2]
-                  color: "#22cc22"
-                }
+              enabled: false
+                // text: 'Температура, °C',
+                // style: {
+                //   //  color: Highcharts.getOptions().colors[2]
+                //   color: "#22cc22"
+                // }
             }
         },
         {
             gridLineWidth: 0,
+            // crosshair: true,
             title: {
-                text: 'Давление, мм.рт.ст',
-                style: {
-                  color: "#2244ff"
-                }
+              enabled: false
+                // text: 'Давление, мм.рт.ст',
+                // style: {
+                //   color: "#2244ff"
+                // }
             },
             labels: {
-                format: '{value}',
+                format: '{value} мм',
                 // style: {
                 //     color: Highcharts.getOptions().colors[0]
                 // }
