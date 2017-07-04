@@ -50,7 +50,8 @@
                     [:_id :title :descr :addr :ll])
         now_tz (tc/to-time-zone (tc/now) (tc/time-zone-for-id (:tz conf)))
         t1  (tc/floor now_tz tc/hour)
-        t0  (tc/minus t1 HOURS_INTERVAL)]
+        t0  (tc/minus t1 HOURS_INTERVAL)
+        idx (volatile! 0)]
     ;;
 
     (render-layout req
@@ -98,7 +99,7 @@
                     [:div.nodata "Нет данных."])
                   [:div.clearfix]
                   [:div.graph
-                    {:id (str "graph_" id)}
+                    {:id (str "graph_" (vswap! idx inc) "_" id)}
                     [:div.loading "Загрузка графика ..."]]]]))]
         ;
         (when (< (count ids) ST_MAX_NUM)

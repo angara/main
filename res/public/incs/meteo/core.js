@@ -9,8 +9,9 @@ $(function() {
   // !!! ///
   METEO_HOURLY = "/api/meteo/st/hourly?st=";
 
-
   var ST_COOKIE = 'meteo_st';
+  var HPA_MMHG = 1.3332239;
+
 
   function save_st_cookie(s) {
     document.cookie = ST_COOKIE+"="+encodeURIComponent(s)+";"+
@@ -70,7 +71,6 @@ $(function() {
 
   /// /// /// ///
 
-
   function remove_menu($card) {
     $card.find(".i-menu").remove();
   }
@@ -127,7 +127,6 @@ $(function() {
   }
 
 
-  var HPA_MMHG = 1.3332239;
 
   $("div.b-card[data-st]").each( function(i, el){
     var $card = $(el);
@@ -165,32 +164,31 @@ $(function() {
     }
   );
 
+
   /// /// /// ///  graphs  /// /// /// ///
 
-  function draw_graph (st, data) {
-    var t_series = [];
-    var p_series = [];
+  function draw_graph (id, data) {
+    var t_series = [], p_series = [], h_series = [], w_series = [];
 
-    console.log("st:", st, data);
+    console.log("id:", id, data);
 
     for(var i in data) {
       var d = data[i];
-      if(d) {
-        if(d.t) { t_series.push(Math.round(d.t.avg)); }
-        else { t_series.push(null); }
-        //
-        if(d.p) {
-          p_series.push(Math.round(d.p.avg / HPA_MMHG));
-        }
-        else { p_series.push(null); }
-      }
-      else {
-        t_series.push(null);
-        p_series.push(null);
-      }
+      // t:
+      if(d && d.t) { t_series.push(Math.round(d.t.avg)); }
+      else { t_series.push(null); }
+      // p:
+      if(d && d.p) { p_series.push(Math.round(d.p.avg / HPA_MMHG)); }
+      else { p_series.push(null); }
+      // h:
+      if(d && d.h) { h_series.push(Math.round(d.h.avg)); }
+      else { h_series.push(null); }
+      // w:
+      if(d && d.w) { w_series.push(Math.round(d.w.avg)); }
+      else { w_series.push(null); }
     }
 
-    Highcharts.chart('graph_'+st, {
+    Highcharts.chart(id, {
         // chart: { zoomType: 'xy' },
         title: { text: "" },
         // subtitle: {
@@ -265,7 +263,6 @@ $(function() {
             tooltip: {
               valueSuffix: ' °C'
             }
-
         },
         {
             name: 'p',
@@ -286,31 +283,6 @@ $(function() {
   }
 
 
-  // Highcharts.chart('chart', {
-  //   chart: {
-  //       type: 'bar'
-  //   },
-  //   title: {
-  //       text: 'Fruit Consumption'
-  //   },
-  //   xAxis: {
-  //       categories: ['Apples', 'Bananas', 'Oranges']
-  //   },
-  //   yAxis: {
-  //       title: {
-  //           text: 'Fruit eaten'
-  //       }
-  //   },
-  //   series: [{
-  //       name: 'Jane',
-  //       data: [1, 0, 4]
-  //   }, {
-  //       name: 'John',
-  //       data: [5, 7, 3]
-  //   }]
-  // });
-
-
   // // // //
 
   function get_hourly() {
@@ -323,10 +295,16 @@ $(function() {
         ,
         function(resp) {
           if(resp.ok) {
-            for(var st in resp.series) {
-              draw_graph(st, resp.series[st]);
-            }
-          }
+            $(".b-card[data-st]").each(function(i, el){
+              var st = $(el).data("st");
+              var data = resp.series[st];
+              var graph_id = $(el).find(".graph").attr("id");
+              console.log("gr:", graph_id);
+              if(graph_id && data) {
+                draw_graph(graph_id, data);
+              }
+            });
+          } // no else
         }
       );
     }
