@@ -60,7 +60,7 @@
         :topmenu :meteo
         :css [ "//api.angara.net/incs/highcharts/5.0.12/highcharts.css"]
         :js  [ "//api.angara.net/incs/highcharts/5.0.12/highcharts.js"
-               "/incs/meteo/core.js?ver=1"]}
+               "/incs/meteo/core.js"]}
       ;
       [:div.b-meteo
         [:script
@@ -77,32 +77,36 @@
                   last    (fresh (:last st))
                   trends  (fresh (:trends st))]
               ;
-              [:div.col-md-6
-                [:div.b-card
-                  {:data-st (:_id st)}
-                  [:div.title
-                    {:title descr}
-                    (hesc title)]
-                  (if last
-                    (list
-                      [:div.t
-                        (format-t (:t last) (-> trends :t :avg))]
-                      [:div.wph
-                        [:div.w
-                          (format-w (:w last) (:g last) (:b last))]
-                        [:div.p
-                          (format-p (:p last))]
-                        [:div.h
-                          (format-h (:h last))]
-                        [:div.wt
-                          (format-wt (:wt last) (:wl last))]]
-                      [:div.clearfix])
-                    ;;
-                    [:div.nodata "Нет данных."])
-                  [:div.clearfix]
-                  [:div.graph
-                    {:id (str "graph_" (vswap! idx inc) "_" id)}
-                    [:div.loading "Загрузка графика ..."]]]]))]
+              (list
+                (when (= 0 (mod @idx 2))
+                  [:div.clearfix])
+                ;
+                [:div.col-md-6
+                  [:div.b-card
+                    {:data-st (:_id st)}
+                    [:div.title
+                      {:title descr}
+                      (hesc title)]
+                    (if last
+                      (list
+                        [:div.t
+                          (format-t (:t last) (-> trends :t :avg))]
+                        [:div.wph
+                          [:div.w
+                            (format-w (:w last) (:g last) (:b last))]
+                          [:div.p
+                            (format-p (:p last))]
+                          [:div.h
+                            (format-h (:h last))]
+                          [:div.wt
+                            (format-wt (:wt last) (:wl last))]]
+                        [:div.clearfix])
+                      ;;
+                      [:div.nodata "Нет данных."])
+                    [:div.clearfix]
+                    [:div.graph
+                      {:id (str "graph_" (vswap! idx inc) "_" id)}
+                      [:div.loading "Загрузка графика ..."]]]])))]
         ;
         (when (< (count ids) ST_MAX_NUM)
           [:div.col-sm-6.col-sm-offset-3.selector

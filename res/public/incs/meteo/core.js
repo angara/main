@@ -185,8 +185,21 @@ $(function() {
 
     Highcharts.chart(id, {
       title: { text: "" },
+      legend: { enabled: false },
+      //
+      plotOptions: {
+        series: {
+          className: 'main-color',
+          negativeColor: true,
+          pointStart: t0.getTime(),
+          pointInterval: 3600 * 1000 // one hour
+        }
+      },
+      //
       tooltip: {
-        xDateFormat: "%e, %H:%M"
+        xDateFormat: "%e %B %Y - %H:%M",
+        //xDateFormat: '%Y-%m-%d',
+        shared: true
       },
       //
       xAxis: [{
@@ -240,18 +253,6 @@ $(function() {
         }
       ],
       //
-      tooltip: {
-          shared: true
-      },
-      legend: {
-        enabled: false
-      },
-      plotOptions: {
-         series: {
-             className: 'main-color',
-             negativeColor: true
-         }
-      },
       series: [
         {
             name: 'Температура',
@@ -267,9 +268,7 @@ $(function() {
             //   linearGradient: [0, 0, 0, 300],
             //   stops: ["#000000", "#4488ff"]
             // },
-            tooltip: { valueSuffix: ' °C' },
-            pointStart: t0.getTime(),
-            pointInterval: 3600 * 1000 // one hour
+            tooltip: { valueSuffix: ' °C' }
         },
         {
             name: 'Давление',
@@ -280,27 +279,21 @@ $(function() {
             //     enabled: false
             // },
             dashStyle: 'shortdot',
-            tooltip: { valueSuffix: ' мм.рс' },
-            pointStart: t0.getTime(),
-            pointInterval: 3600 * 1000 // one hour
+            tooltip: { valueSuffix: ' мм.рс' }
         },
         {
           name: "Влажность",
           type: 'spline',
           data: h_series,
           yAxis: 2,
-          tooltip: { valueSuffix: ' %' },
-          pointStart: t0.getTime(),
-          pointInterval: 3600 * 1000 // one hour
+          tooltip: { valueSuffix: ' %' }
         },
         {
           name: "Сила ветра",
           type: 'spline',
           data: w_series,
           yAxis: 3,
-          tooltip: { valueSuffix: ' м/с' },
-          pointStart: t0.getTime(),
-          pointInterval: 3600 * 1000 // one hour
+          tooltip: { valueSuffix: ' м/с' }
         }
       ],
       credits: { enabled: false }
@@ -338,8 +331,13 @@ $(function() {
 
   Highcharts.setOptions({
   	lang: {
-      shortMonths:
-        ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек']
+      shortMonths: [
+        'Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'
+      ],
+      months: [
+        "января", "февраля", "марта", "апреля", "мая", "июня",
+        "июля", "августа", "сентября", "октября", "ноября", "декабря"
+      ]
   	}
   });
 
