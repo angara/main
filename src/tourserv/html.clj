@@ -92,7 +92,13 @@
               (when-let [p (:phone t)]
                 [:div.phone [:i.fa.fa-phone-square.fa-fw] (hesc p)])
               (when-let [p (:person t)]
-                [:div.person [:i.fa.fa-user-circle.fa-fw] (hesc p)])
+                [:div.person
+                  (if-let [link (:link t)]
+                    [:a {:href link}
+                      [:i.fa.fa-user-circle.fa-fw] (hesc p)]
+                    [:span
+                      [:i.fa.fa-user-circle.fa-fw] (hesc p)])])
+                ; person
               [:hr]])
 
           [:div.clearfix]]))))
@@ -128,7 +134,14 @@
               (when-let [p (:phone t)]
                 [:div.phone [:i.fa.fa-phone-square.fa-fw] (hesc p)])
               (when-let [p (:person t)]
-                [:div.person [:i.fa.fa-user-circle.fa-fw] (hesc p)])
+                [:div.person
+                  (if-let [link (:link t)]
+                    [:a {:href link}
+                      [:i.fa.fa-user-circle.fa-fw] (hesc p)]
+                    [:span
+                      [:i.fa.fa-user-circle.fa-fw] (hesc p)])])
+              ; person
+
               [:hr]])
 
           [:div.clearfix]]))))
