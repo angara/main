@@ -185,83 +185,122 @@ $(function() {
 
     Highcharts.chart(id, {
       title: { text: "" },
+      tooltip: {
+        xDateFormat: "%e, %H:%M"
+      },
+      //
       xAxis: [{
         type: "datetime",
         crosshair: true
       }],
       //
       yAxis: [
-      {
-          // crosshair: true,
+        {
+          // t, idx:0
+          crosshair: true,
           labels: {
               format: '{value}°',
               style: {
-                  // color: Highcharts.getOptions().colors[2]
                   color: "#aa0044"
               }
           },
-          title: {
-            enabled: false
-              // text: 'Температура, °C',
-              // style: {
-              //   //  color: Highcharts.getOptions().colors[2]
-              //   color: "#22cc22"
-              // }
-          }
-      },
-      {
-          gridLineWidth: 0,
-          // crosshair: true,
-          title: {
-            enabled: false
-              // text: 'Давление, мм.рт.ст',
-              // style: {
-              //   color: "#2244ff"
-              // }
-          },
-          labels: {
-              format: '{value} мм',
-              // style: {
-              //     color: Highcharts.getOptions().colors[0]
-              // }
-          },
-          opposite: true
-      }],
+          title: { enabled: false }
+        },
+        {
+            gridLineWidth: 0,
+            // crosshair: true,
+            title: {
+              enabled: false
+                // text: 'Давление, мм.рт.ст',
+                // style: {
+                //   color: "#2244ff"
+                // }
+            },
+            labels: {
+                format: '{value} мм',
+                // style: {
+                //     color: Highcharts.getOptions().colors[0]
+                // }
+            },
+            min: 700,
+            max: 730,
+            opposite: true
+        },
+        {
+          // h
+          visible: false,
+          min: 0,
+          max: 100
+        },
+        {
+          // w
+          visible: false,
+          min: 0,
+          max: 20
+        }
+      ],
+      //
       tooltip: {
           shared: true
       },
       legend: {
         enabled: false
-          // layout: 'vertical',
-          // align: 'left',
-          // x: 80,
-          // verticalAlign: 'top',
-          // y: 20,
-          // floating: true,
-          // backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+      },
+      plotOptions: {
+         series: {
+             className: 'main-color',
+             negativeColor: true
+         }
       },
       series: [
         {
-            name: 't',
-            type: 'spline',
+            name: 'Температура',
+            type: 'area',
             yAxis: 0,
             data: t_series,
+            //
+            color: '#FF0000',
+            negativeColor: '#0088FF',
+            // lineColor: '#303030',
+            // lineWidth: 1,
+            // fillColor: {
+            //   linearGradient: [0, 0, 0, 300],
+            //   stops: ["#000000", "#4488ff"]
+            // },
             tooltip: { valueSuffix: ' °C' },
             pointStart: t0.getTime(),
             pointInterval: 3600 * 1000 // one hour
         },
         {
-            name: 'p',
+            name: 'Давление',
             type: 'spline',
             yAxis: 1,
             data: p_series,
-            marker: {
-                enabled: false
-            },
+            // marker: {
+            //     enabled: false
+            // },
             dashStyle: 'shortdot',
-            tooltip: { valueSuffix: ' мм.рт.ст' },
+            tooltip: { valueSuffix: ' мм.рс' },
             pointStart: t0.getTime(),
             pointInterval: 3600 * 1000 // one hour
+        },
+        {
+          name: "Влажность",
+          type: 'spline',
+          data: h_series,
+          yAxis: 2,
+          tooltip: { valueSuffix: ' %' },
+          pointStart: t0.getTime(),
+          pointInterval: 3600 * 1000 // one hour
+        },
+        {
+          name: "Сила ветра",
+          type: 'spline',
+          data: w_series,
+          yAxis: 3,
+          tooltip: { valueSuffix: ' м/с' },
+          pointStart: t0.getTime(),
+          pointInterval: 3600 * 1000 // one hour
         }
       ],
       credits: { enabled: false }
@@ -296,6 +335,13 @@ $(function() {
       );
     }
   };
+
+  Highcharts.setOptions({
+  	lang: {
+      shortMonths:
+        ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек']
+  	}
+  });
 
   get_hourly();
 

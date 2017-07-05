@@ -77,7 +77,7 @@
         { :background-color "#eee"
           :height "210px"
           :border-radius "2px"
-          :margin "6px"}
+          :margin "8px 0 0 0"}
         [:.loading
           { :color "#888"
             :padding "9px 12px"
