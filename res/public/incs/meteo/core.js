@@ -6,8 +6,7 @@ $(function() {
   var METEO_URL = "/meteo1";
   var METEO_HOURLY = "//api.angara.net/meteo/st/hourly?st=";
 
-  // !!! ///
-  // METEO_HOURLY = "/api/meteo/st/hourly?st=";
+  // !!! // METEO_HOURLY = "/api/meteo/st/hourly?st=";
 
   var ST_COOKIE = 'meteo_st';
   var HPA_MMHG = 1.3332239;
@@ -90,7 +89,6 @@ $(function() {
         .append(
           $("<li><i class='fa fa-fw fa-angle-up'/> Вверх</li>").click(
             function(evt) {
-              console.log("up");
               remove_menu($card);
               save_st_list( move_card_to(i, i-1, st_list()), true );
             }
@@ -99,7 +97,6 @@ $(function() {
         .append(
           $("<li><i class='fa fa-fw fa-angle-down'/> Вниз</li>").click(
             function(evt) {
-              console.log("down");
               remove_menu($card);
               save_st_list( move_card_to(i, i+1, st_list()), true );
             }
@@ -167,7 +164,7 @@ $(function() {
 
   /// /// /// ///  graphs  /// /// /// ///
 
-  function draw_graph (id, data) {
+  function draw_graph (id, t0, data) {
     var t_series = [], p_series = [], h_series = [], w_series = [];
 
     for(var i in data) {
@@ -187,80 +184,71 @@ $(function() {
     }
 
     Highcharts.chart(id, {
-        // chart: { zoomType: 'xy' },
-        title: { text: "" },
-        // subtitle: {
-        //     text: 'Source: WorldClimate.com'
-        // },
-        credits: { enabled: false },
-        xAxis: [{
-            // categories: [
-            //     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-            //     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-            //   ],
-            crosshair: true
-        }],
-        //
-        yAxis: [
-        {
-            // crosshair: true,
-            labels: {
-                format: '{value}°',
-                style: {
-                    // color: Highcharts.getOptions().colors[2]
-                    color: "#aa0044"
-                }
-            },
-
-            title: {
-              enabled: false
-                // text: 'Температура, °C',
-                // style: {
-                //   //  color: Highcharts.getOptions().colors[2]
-                //   color: "#22cc22"
-                // }
-            }
-        },
-        {
-            gridLineWidth: 0,
-            // crosshair: true,
-            title: {
-              enabled: false
-                // text: 'Давление, мм.рт.ст',
-                // style: {
-                //   color: "#2244ff"
-                // }
-            },
-            labels: {
-                format: '{value} мм',
-                // style: {
-                //     color: Highcharts.getOptions().colors[0]
-                // }
-            },
-            opposite: true
-        }],
-        tooltip: {
-            shared: true
-        },
-        legend: {
-          enabled: false
-            // layout: 'vertical',
-            // align: 'left',
-            // x: 80,
-            // verticalAlign: 'top',
-            // y: 20,
-            // floating: true,
-            // backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
-        },
-        series: [
+      title: { text: "" },
+      xAxis: [{
+        type: "datetime",
+        crosshair: true
+      }],
+      //
+      yAxis: [
+      {
+          // crosshair: true,
+          labels: {
+              format: '{value}°',
+              style: {
+                  // color: Highcharts.getOptions().colors[2]
+                  color: "#aa0044"
+              }
+          },
+          title: {
+            enabled: false
+              // text: 'Температура, °C',
+              // style: {
+              //   //  color: Highcharts.getOptions().colors[2]
+              //   color: "#22cc22"
+              // }
+          }
+      },
+      {
+          gridLineWidth: 0,
+          // crosshair: true,
+          title: {
+            enabled: false
+              // text: 'Давление, мм.рт.ст',
+              // style: {
+              //   color: "#2244ff"
+              // }
+          },
+          labels: {
+              format: '{value} мм',
+              // style: {
+              //     color: Highcharts.getOptions().colors[0]
+              // }
+          },
+          opposite: true
+      }],
+      tooltip: {
+          shared: true
+      },
+      legend: {
+        enabled: false
+          // layout: 'vertical',
+          // align: 'left',
+          // x: 80,
+          // verticalAlign: 'top',
+          // y: 20,
+          // floating: true,
+          // backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+      },
+      series: [
         {
             name: 't',
-            type: 'column',
+            type: 'spline',
             yAxis: 0,
             data: t_series,
-            tooltip: {
-              valueSuffix: ' °C'
-            }
+            tooltip: { valueSuffix: ' °C' },
+            pointStart: t0.getTime(),
+            pointInterval: 3600 * 1000 // one hour
         },
         {
             name: 'p',
@@ -271,10 +259,12 @@ $(function() {
                 enabled: false
             },
             dashStyle: 'shortdot',
-            tooltip: {
-              valueSuffix: ' мм.рт.ст'
-            }
-        }]
+            tooltip: { valueSuffix: ' мм.рт.ст' },
+            pointStart: t0.getTime(),
+            pointInterval: 3600 * 1000 // one hour
+        }
+      ],
+      credits: { enabled: false }
     });
     // highcharts
 
@@ -297,11 +287,8 @@ $(function() {
               var st = $(el).data("st");
               var data = resp.series[st];
               var graph_id = $(el).find(".graph").attr("id");
-
-              console.log("st,id,data:", st, graph_id, data);
-              
               if(graph_id && data) {
-                draw_graph(graph_id, data);
+                draw_graph(graph_id, window.hourly_t0_utc, data);
               }
             });
           } // no else

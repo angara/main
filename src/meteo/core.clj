@@ -51,6 +51,7 @@
         now_tz (tc/to-time-zone (tc/now) (tc/time-zone-for-id (:tz conf)))
         t1  (tc/floor now_tz tc/hour)
         t0  (tc/minus t1 HOURS_INTERVAL)
+        t0-utc (tc/from-time-zone t0 tc/utc)
         idx (volatile! 0)]
     ;;
 
@@ -64,7 +65,8 @@
       [:div.b-meteo
         [:script
           "window.hourly_t0=new Date(" (to-long t0) ");"
-          "window.hourly_t1=new Date(" (to-long t1) ");"]
+          "window.hourly_t1=new Date(" (to-long t1) ");"
+          "window.hourly_t0_utc=new Date(" (to-long t0-utc) ");"]
         ;
         [:div.row
           (for [id ids

@@ -8,9 +8,8 @@
     </encoder>
   </appender>
 
-  <logger name="clojure-example-logback-integration" level="DEBUG"/>
-
   <logger name="mlib" level="DEBUG" />
+  <logger name="meteo" level="DEBUG" />
 
   <root level="INFO">
     <appender-ref ref="MAIN"/>

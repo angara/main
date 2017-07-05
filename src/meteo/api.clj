@@ -103,15 +103,15 @@ Hourly aggregations -
 ;
 
 (defn hourly-series [sts t0 t1 n]
-  (let [res (transient {})]
+  (let [res (volatile! {})]
     (doseq [d (hourly-data sts t0 t1 HOURLY_FETCH_LIMIT)]
       (try
         (let [st (:st d)
               hr (:hour d)
               arr (or
-                    (get res st)
+                    (get @res st)
                     (let [arr (to-array (repeat n nil))]
-                      (assoc! res st arr)
+                      (vswap! res assoc st arr)
                       arr))
               idx (tc/in-hours (tc/interval t0 hr))]
           (aset arr idx (dissoc d :_id :st :hour)))
@@ -119,9 +119,7 @@ Hourly aggregations -
           (warn "hourly-series:" sts t0 t1 (.getMessage e)))))
     ;
     (reduce-kv
-      #(assoc %1 %2 (seq %3))
-      {}
-      (persistent! res))))
+      #(assoc %1 %2 (seq %3))  {}  @res)))
 ;
 
 (defn hourly [{params :params}]
