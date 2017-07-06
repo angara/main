@@ -197,8 +197,8 @@ $(function() {
       },
       //
       tooltip: {
-        xDateFormat: "%e %B %Y - %H:%M",
-        //xDateFormat: '%Y-%m-%d',
+        // headerFormat: "{value}",
+        xDateFormat: "<b>%e %B %Y -- %H:%M</b><br/>",
         shared: true
       },
       //
