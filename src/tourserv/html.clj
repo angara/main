@@ -118,11 +118,13 @@
           :rtb-bottom (:rtb-bottom conf)}
         ;
         [:div.b-tourserv
-
-          (for [t tsrv]
+          (for [t tsrv :let [flags (set (:flags t))]]
             [:div.b-tserv.col-md-6
               [:div.title (hesc (:title t))]
-              [:div.descr (hesc (:descr t))]
+              [:div.descr
+                (if (get flags "rawhtml")
+                  (:descr t)
+                  (hesc (:descr t)))]
               (when-let [p (:payload t)]
                 [:div.payload [:b "Полезная нагрузка: "] (hesc p)])
               (when-let [price (:price t)]
