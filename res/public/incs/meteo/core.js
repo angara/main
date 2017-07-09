@@ -6,8 +6,6 @@ $(function() {
   var METEO_URL = "/meteo1";
   var METEO_HOURLY = "//api.angara.net/meteo/st/hourly?st=";
 
-  // !!! // METEO_HOURLY = "/api/meteo/st/hourly?st=";
-
   var ST_COOKIE = 'meteo_st';
   var HPA_MMHG = 1.3332239;
 

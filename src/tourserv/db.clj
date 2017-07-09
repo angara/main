@@ -28,6 +28,9 @@
     :payload "number of seats in auto"
     :price   "from - to (rub)"
     ;
+    ;; set of flags
+    :flags  ["rawhtml"]    ; rawhtml - omit hesc
+    ;
     :email ""
     :phone ""
     :person "person name"

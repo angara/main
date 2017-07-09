@@ -8,10 +8,10 @@
     [compojure.core :refer [defroutes GET POST]]
     ;
     [mlib.conf :refer [conf]]
-    [mlib.core :refer [hesc]]
+    [mlib.core :refer [hesc to-int]]
     ; [mlib.http :refer [json-resp]]))
     ;
-    [meteo.db :refer [st-ids st-find]]
+    [meteo.db :refer [st-ids st-find st-by-id]]
     [meteo.fmt :refer [format-t format-h format-p format-w format-wt]]
     [meteo.util :refer [st-param ST_MAX_NUM fresh]]
     ;
@@ -23,17 +23,23 @@
 (def HOURS_INTERVAL (tc/hours 60))
 
 
-(defn graph-page [req]
+(defn st-page [{{st-id :st} :params :as req}]
+  (when-let [st (st-by-id
+                  (str st-id)
+                  [:_id :title :descr :addr :ll :elev :last :pub])]
+    (prn "st:" st)
 
-  ;; user-prefs
-  ;; graphr-prefs
+    (when (-> st :pub to-int (= 1))
 
-  (render-layout req
-    { :title "Погода в Иркутске - Графики"
-      :topmenu :meteo}
-    [:div.jumbotron
-      [:h2.text-center "В разработке"]
-      [:p "Графики"]]))
+      (render-layout req
+        { :title (str "Погода - " (:title st))
+          :topmenu :meteo}
+        [:div.jumbotron
+          [:h2.text-center (:title st)]
+          [:h2.text-center (:addr st)]
+          [:h2.text-center (:descr st)]
+          [:h3.text-center (:ts (:last st))]]))))
+    ;;
 ;
 
 (defn index-page [req]
@@ -56,7 +62,7 @@
     ;;
 
     (render-layout req
-      { :title "Погода в Иркутске"
+      { :title "Погода в Иркутске и Прибайкалье в реальном времени"
         :topmenu :meteo
         :css [ "//api.angara.net/incs/highcharts/5.0.12/highcharts.css"]
         :js  [ "//api.angara.net/incs/highcharts/5.0.12/highcharts.js"
@@ -128,8 +134,8 @@
 
 (defroutes meteo-routes
 
-  (GET "/"      [] index-page)
-  (GET "/graph" [] graph-page))
+  (GET "/"       [] index-page)
+  (GET "/st/:st" [] st-page))
 
 ;
 
