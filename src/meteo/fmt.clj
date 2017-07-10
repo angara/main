@@ -53,11 +53,11 @@
     (catch Exception ignore)))
 ;
 
-(defn format-w [w g b]
+(defn format-w [pref w g b]
   (when w
     (let [w (nf1 w)
           g (nf1 g)
-          res (str "Ветер: " "<b>" w "</b>")
+          res (str pref "<b>" w "</b>")
           res (if (and g (not= g w))
                 (str res "<b>-" g "</b>" " м/с")
                 (str res " м/с"))
@@ -68,19 +68,17 @@
         res))))
 ;
 
-(defn format-h [h]
+(defn format-h [pref h]
   (when h
-    (str "Влажность: <nobr><b>" (Math/round (float h)) "</b> %</nobr>")))
+    (str pref "<nobr><b>" (Math/round (float h)) "</b> %</nobr>")))
 ;
 
-(defn format-p [p]
+(defn format-p [pref p]
   (when p
-    (str "Давление: <nobr><b>"
-      (Math/round (/ p HPA_MMHG))
-      "</b> мм.рт.ст</nobr>")))
+    (str pref "<nobr><b>" (Math/round (/ p HPA_MMHG)) "</b> мм.рт.ст</nobr>")))
 ;
 
-(defn format-t [t avg]
+(defn format-t [pref t avg]
   (try
     (let [t (Math/round (float t))
           [cls sign]  (cond
@@ -93,18 +91,18 @@
                           (< t (- avg 1)) ["neg" "&darr;"]
                           :else           [""    "&nbsp;"]))]
       (list
-        [:span {:class cls} sign [:i (Math/abs t)]]
+        pref
+        [:span {:class cls} sign [:b (Math/abs t)]]
         "&deg;"
         [:span {:class (str "arr " trc)} arr]))
       ;
     (catch Exception ignore)))
 ;
 
-(defn format-wt [wt wl]
+(defn format-wt [pref wt wl]
   (try
     (when wt
-      (str "Температура воды: <nobr><b>"
-            (Math/round (float wt)) "</b>&deg;</nobr>"
+      (str pref "<nobr><b>" (Math/round (float wt)) "</b>&deg;</nobr>"
         (when wl
           (str ", <nobr>уровень <b>" (nf2 wl) "</b> м</nobr>"))))
     (catch Exception ignore)))

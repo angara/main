@@ -53,7 +53,8 @@
     [:body
       { :font-family
           "\"Open Sans\",\"Helvetica Neue\",Helvetica,Verdana,Arial,sans-serif"
-        :font-size "14px"}]
+        :font-size "14px"
+        :line-height "1.3"}]
 
     [:a
       {:text-decoration 'none :color "#18d"}]
@@ -167,6 +168,7 @@
           [:.t
             { :font-size "1.4rem"
               :margin-left "-7px"}
+            [:b {:font-weight "normal"}]
             [:.pos {:color "#a20"}]
             [:.zer {:color "#555"}]
             [:.neg {:color "#04d"}]]]

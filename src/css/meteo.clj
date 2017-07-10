@@ -153,17 +153,27 @@
       [:.addr
         {:font-size "2rem"
          :text-align "center"}]
-      [:.t
-        {:font-size "1.8rem"}
-        [:i
-          { :font-style "normal"
-            :margin-left "2px"
-            :margin-right "1px"}]]
-      [:.wph
-        {:font-size "1.8rem"}
+      [:.lbl
+        { :text-align "right"
+          :width "15ex"
+          :margin-right "4px"
+          :display "inline-block"}]
+      [:.lbl20
+        { :width "20ex"}]
+      [:.twph
+        { :font-size "1.7rem"
+          :margin "14px 10px"}
+        [:.t
+          [:b
+            { :margin-left "2px"
+              :margin-right "1px"}]]
+        [
+          [:.w :.h :.p :.wt]
+          [:b { :color "#459"}]]
+
         [:.arr
           { :position "relative"
-            :top "-2px"
+            :top "-1px"
             :width "1ex"
             :margin-left "1px"}]]
       [ (> :.dead :div)

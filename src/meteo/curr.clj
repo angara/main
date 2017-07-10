@@ -35,7 +35,7 @@
   (when-let [st (or
                   (some get-fresh (take 10 (st-param req)))
                   (some get-fresh (-> conf :meteo :st_default)))]
-    (when-let [t (format-t
+    (when-let [t (format-t ""
                     (-> st :last :t)
                     (-> st :trends (fresh) :t :avg))]
       [:span.t t])))

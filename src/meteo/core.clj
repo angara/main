@@ -41,38 +41,42 @@
           { :title (str "Погода - " (:title st))
             :topmenu :meteo}
           [:div.b-meteo.row
-            [:div.col-md-9
-              [:div
-                (if dead
-                  {:class "b-st dead"}
-                  {:class "b-st"})
+            [:div
+              (if dead
+                {:class "b-st dead"}
+                {:class "b-st"})
+              [:div.col-md-12
                 [:div.title (-> st :title hesc)]
                 (when-let [d (:descr st)]
                   [:div.descr (hesc d)])
                 (when-let [a (:addr  st)]
                   [:div.addr  (hesc a)])
                 (when dead
-                  [:div.dead-msg "Данные устарели!"])
-                (when-let [t (:t last)]
+                  [:div.dead-msg "Данные устарели!"])]
+              [:div.clearfix]
+              [:div.col-md-7.col-md-offset-2
+                [:div.twph
                   [:div.t
-                    "Температура: "
-                    [:b
-                      (format-t t (-> trends :t :avg))]
-                    "C"])
-                [:div.wph
+                    (format-t "<span class='lbl'>Температура:</span> "
+                      (:t last) (-> trends :t :avg))]
                   [:div.w
-                    (format-w (:w last) (:g last) (:b last))]
+                    (format-w "<span class='lbl'>Ветер:</span> "
+                      (:w last) (:g last) (:b last))]
                   [:div.p
-                    (format-p (:p last))]
+                    (format-p "<span class='lbl'>Давление:</span> "
+                      (:p last))]
                   [:div.h
-                    (format-h (:h last))]
+                    (format-h "<span class='lbl'>Влажность:</span> "
+                      (:h last))]
                   [:div.wt
-                    (format-wt (:wt last) (:wl last))]]]]
-              ;; b-st
-            [:div.col-md-3
-              "right pane"]
-            [:div.col-md-12
-              "graph"]])))))
+                    (format-wt "<span class='lbl20'>Температура воды:</span> "
+                      (:wt last) (:wl last))]]]
+              [:div.col-md-3]
+                ;"right pane"]
+              [:div.clearfix]]
+            ;; b-st
+            [:div.col-md-12]])))))
+              ;"graph"]])))))
     ;;
 ;
 
@@ -129,16 +133,18 @@
                     (if last
                       (list
                         [:div.t
-                          (format-t (:t last) (-> trends :t :avg))]
+                          (format-t "" (:t last) (-> trends :t :avg))]
                         [:div.wph
                           [:div.w
-                            (format-w (:w last) (:g last) (:b last))]
+                            (format-w "Ветер: "
+                              (:w last) (:g last) (:b last))]
                           [:div.p
-                            (format-p (:p last))]
+                            (format-p "Давление: " (:p last))]
                           [:div.h
-                            (format-h (:h last))]
+                            (format-h "Влажность: " (:h last))]
                           [:div.wt
-                            (format-wt (:wt last) (:wl last))]]
+                            (format-wt "Температура воды: "
+                              (:wt last) (:wl last))]]
                         [:div.clearfix])
                       ;;
                       [:div.nodata "Нет данных."])
