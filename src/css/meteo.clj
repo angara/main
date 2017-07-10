@@ -1,8 +1,10 @@
 
 (ns css.meteo
+  (:refer-clojure :exclude [>])
   (:require
     [garden.units :refer [px pt em ex]]
     [garden.stylesheet :refer [at-media]]
+    [garden.selectors :refer [>]]
     ;
     [css.colors :refer :all]))
 ;
@@ -10,9 +12,21 @@
 
 (def ST_COLOR "#28D")
 
+(def c-pos "#a20")
+(def c-neg "#04d")
+(def c-zer "#555")
+
+
+
 (def b-meteo
   [:.b-meteo
     {:margin-top "8px"}
+
+    ;; commons
+    [:.pos {:color c-pos}]
+    [:.zer {:color c-zer}]
+    [:.neg {:color c-neg}]
+    ;; /commons
 
     [:.b-card
       { :position "relative"
@@ -39,7 +53,10 @@
             :position "absolute"
             :z-index 90
             :color "#f4f4a4"
-            :cursor "pointer"}]]
+            :cursor "pointer"}]
+        [:a :a:visited {:color "#fff"}]
+        [:a:hover      {:color "#fcfcaa"}]]
+      ;; /title
 
       [:.nodata
         { :margin "20px"
@@ -56,9 +73,9 @@
           { :font-style "inherit"
             :margin-left "2px"
             :margin-right "1px"}]
-        [:.pos {:color "#a20"}]
-        [:.zer {:color "#555"}]
-        [:.neg {:color "#04d"}]
+        ; [:.pos {:color c-pos}]
+        ; [:.zer {:color c-zer}]
+        ; [:.neg {:color c-neg}]
         [:.arr
           { :position "relative"
             :top "-2px"
@@ -122,8 +139,36 @@
       [:select
         {:margin "6px 2px"}]
       [:button
-        {:margin "6px 2px"}]]])
+        {:margin "6px 2px"}]]
     ;
+
+    ;;
+    [:.b-st
+      [:.title
+        {:font-size "3rem"
+         :text-align "center"}]
+      [:.descr
+        {:font-size "2rem"
+         :text-align "center"}]
+      [:.addr
+        {:font-size "2rem"
+         :text-align "center"}]
+      [:.t
+        {:font-size "1.8rem"}
+        [:i
+          { :font-style "normal"
+            :margin-left "2px"
+            :margin-right "1px"}]]
+      [:.wph
+        {:font-size "1.8rem"}
+        [:.arr
+          { :position "relative"
+            :top "-2px"
+            :width "1ex"
+            :margin-left "1px"}]]
+      [ (> :.dead :div)
+        {:color "#777"}]
+      [:.dead-msg]]])
 
   ;; /b-meteo
 ;.

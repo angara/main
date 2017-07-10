@@ -22,29 +22,61 @@
 (def ST_DEAD_INTERVAL (tc/days 10))
 (def HOURS_INTERVAL (tc/hours 60))
 
+(def ST_BASE_URL "/meteo/st/")
+
+(defn st-url [st]
+  (str ST_BASE_URL (:_id st)))
+;
 
 (defn st-page [{{st-id :st} :params :as req}]
   (when-let [st (st-by-id
                   (str st-id)
-                  [:_id :title :descr :addr :ll :elev :last :pub])]
-    (prn "st:" st)
-
+                  [:_id :title :descr :addr :ll :elev :last :trends :pub])]
+    ;
     (when (-> st :pub to-int (= 1))
-
-      (render-layout req
-        { :title (str "Погода - " (:title st))
-          :topmenu :meteo}
-        [:div.jumbotron
-          [:h2.text-center (:title st)]
-          [:h2.text-center (:addr st)]
-          [:h2.text-center (:descr st)]
-          [:h3.text-center (:ts (:last st))]]))))
+      (let [last (:last st)
+            trends (-> st :trends fresh)
+            dead (not (fresh last))]
+        (render-layout req
+          { :title (str "Погода - " (:title st))
+            :topmenu :meteo}
+          [:div.b-meteo.row
+            [:div.col-md-9
+              [:div
+                (if dead
+                  {:class "b-st dead"}
+                  {:class "b-st"})
+                [:div.title (-> st :title hesc)]
+                (when-let [d (:descr st)]
+                  [:div.descr (hesc d)])
+                (when-let [a (:addr  st)]
+                  [:div.addr  (hesc a)])
+                (when dead
+                  [:div.dead-msg "Данные устарели!"])
+                (when-let [t (:t last)]
+                  [:div.t
+                    "Температура: "
+                    [:b
+                      (format-t t (-> trends :t :avg))]
+                    "C"])
+                [:div.wph
+                  [:div.w
+                    (format-w (:w last) (:g last) (:b last))]
+                  [:div.p
+                    (format-p (:p last))]
+                  [:div.h
+                    (format-h (:h last))]
+                  [:div.wt
+                    (format-wt (:wt last) (:wl last))]]]]
+              ;; b-st
+            [:div.col-md-3
+              "right pane"]
+            [:div.col-md-12
+              "graph"]])))))
     ;;
 ;
 
 (defn index-page [req]
-
-  ;; TODO: user-prefs
   (let [ids (st-param req)
         sts (into {}
               (map
@@ -55,7 +87,7 @@
                     {:pub 1 :ts {:$gte dead-time}}
                     [:_id :title :descr :addr :ll])
         now_tz (tc/to-time-zone (tc/now) (tc/time-zone-for-id (:tz conf)))
-        t1  (tc/floor now_tz tc/hour)
+        t1  (tc/plus (tc/floor now_tz tc/hour) (tc/hours 1))
         t0  (tc/minus t1 HOURS_INTERVAL)
         t0-utc (tc/from-time-zone t0 tc/utc)
         idx (volatile! 0)]
@@ -78,8 +110,8 @@
           (for [id ids
                 :let [st (get sts id)]
                 :when st]
-            (let [title (:title st)
-                  descr (:descr st (:addr st))
+            (let [title   (:title st)
+                  descr   (:descr st (:addr st))
                   last    (fresh (:last st))
                   trends  (fresh (:trends st))]
               ;
@@ -92,7 +124,8 @@
                     {:data-st (:_id st)}
                     [:div.title
                       {:title descr}
-                      (hesc title)]
+                      [:a {:href (st-url st)}
+                        (hesc title)]]
                     (if last
                       (list
                         [:div.t

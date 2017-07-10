@@ -52,8 +52,8 @@
   [
     [:body
       { :font-family
-          "\"Open Sans\",\"Helvetica Neue\",Helvetica,Arial,sans-serif"
-        :font-size (px 15)}]
+          "\"Open Sans\",\"Helvetica Neue\",Helvetica,Verdana,Arial,sans-serif"
+        :font-size "14px"}]
 
     [:a
       {:text-decoration 'none :color "#18d"}]
