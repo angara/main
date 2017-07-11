@@ -165,11 +165,12 @@
           :margin "14px 10px"}
         [:.t
           [:b
-            { :margin-left "2px"
+            { :margin-left "1px"
               :margin-right "1px"}]]
-        [
-          [:.w :.h :.p :.wt]
-          [:b { :color "#459"}]]
+        [:.w  [:b { :color "#459"}]]
+        [:.h  [:b { :color "#459"}]]
+        [:.p  [:b { :color "#459"}]]
+        [:.wt [:b { :color "#459"}]]
 
         [:.arr
           { :position "relative"
