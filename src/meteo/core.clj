@@ -9,12 +9,14 @@
     ;
     [mlib.conf :refer [conf]]
     [mlib.core :refer [hesc to-int]]
+    [mlib.time :refer [ddmmyyyy hhmm]]
     ; [mlib.http :refer [json-resp]]))
     ;
-    [meteo.db :refer [st-ids st-find st-by-id]]
+    [meteo.db :refer [st-ids st-find st-by-id hourly-ts0]]
     [meteo.fmt :refer [format-t format-h format-p format-w format-wt]]
     [meteo.util :refer [st-param ST_MAX_NUM fresh]]
     ;
+    [misc.util :refer [RUS_MONTHS_FC]]
     [html.frame :refer [render-layout]]))
 ;
 
@@ -34,13 +36,28 @@
                   [:_id :title :descr :addr :ll :elev :last :trends :pub])]
     ;
     (when (-> st :pub to-int (= 1))
-      (let [last (:last st)
+      (let [last   (:last st)
             trends (-> st :trends fresh)
-            dead (not (fresh last))]
+            dead   (not (fresh last))
+            now    (tc/now)
+            month  (tc/month now)
+            year   (tc/year now)
+            year0  (when-let [ts0 (hourly-ts0 (:_id st))]
+                      (tc/year ts0))]
+        ;
         (render-layout req
           { :title (str "Погода - " (:title st))
-            :topmenu :meteo}
+            :topmenu :meteo
+            :css [ "//api.angara.net/incs/highcharts/5.0.14/highcharts.css"]
+            :js  [ "//api.angara.net/incs/highcharts/5.0.14/highcharts.js"
+                   "/incs/meteo/st_graph.js"]}
+          ;;
           [:div.b-meteo.row
+            [:script
+              "window.st_id='" (:_id st) "';"
+              "window.st_month=" month ";"
+              "window.st_year="  year  ";"]
+            ;
             [:div
               (if dead
                 {:class "b-st dead"}
@@ -51,6 +68,9 @@
                   [:div.descr (hesc d)])
                 (when-let [a (:addr  st)]
                   [:div.addr  (hesc a)])
+                (let [t (:ts last)]
+                  [:div.date
+                    (ddmmyyyy t) " - " (hhmm t)])
                 (when dead
                   [:div.dead-msg "Данные устарели!"])]
               [:div.clearfix]
@@ -73,10 +93,30 @@
                       (:wt last) (:wl last))]]]
               [:div.col-md-3]
                 ;"right pane"]
-              [:div.clearfix]]
+              [:div.clearfix]
+              ;; /st
+              [:div.col-md-12
+                [:div.months.row
+                  [:div.col-sm-2
+                    [:select#year.form-control
+                      (for [y (range year0 year)]
+                        [:option {:value y} y])
+                      [:option {:value year :selected true} year]]]
+                  [:div.clearfix]
+                  [:div.col-sm-12
+                    (for [[i mon] (map-indexed
+                                    (fn [i m] [(inc i) m])
+                                    RUS_MONTHS_FC)]
+                      [:button.btn.btn-default
+                        { :class (when (= i month) "btn-curr")
+                          :data-month i}
+                        mon])]
+                  ;;
+                  [:div.clearfix]]
+                ;; /year:months
+                [:div#st_graph.st-graph
+                  [:div.loading "Загрузка графика ..."]]]]])))))
             ;; b-st
-            [:div.col-md-12]])))))
-              ;"graph"]])))))
     ;;
 ;
 
@@ -100,8 +140,8 @@
     (render-layout req
       { :title "Погода в Иркутске и Прибайкалье в реальном времени"
         :topmenu :meteo
-        :css [ "//api.angara.net/incs/highcharts/5.0.12/highcharts.css"]
-        :js  [ "//api.angara.net/incs/highcharts/5.0.12/highcharts.js"
+        :css [ "//api.angara.net/incs/highcharts/5.0.14/highcharts.css"]
+        :js  [ "//api.angara.net/incs/highcharts/5.0.14/highcharts.js"
                "/incs/meteo/core.js"]}
       ;
       [:div.b-meteo

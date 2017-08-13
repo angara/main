@@ -2,7 +2,7 @@
 ;;  Angara.Net main
 ;;
 
-(def project {:name "angara.net/main" :version "1.1.0"})
+(def project {:name "angara.net/main" :version "1.2.0"})
 
 (def jar-main 'web.main)
 (def jar-file "main.jar")
@@ -23,12 +23,11 @@
     [org.clojure/tools.logging "0.4.0"]
     [ch.qos.logback/logback-classic "1.2.3"]
 
-    [clj-time "0.13.0"]
+    [clj-time "0.14.0"]
     [clj-http "3.6.1"]
 
-    ;; [ring/ring-core "1.5.1"]
-    [ring/ring-core "1.6.1"]
-    [ring/ring-jetty-adapter "1.6.1"]
+    [ring/ring-core "1.6.2"]
+    [ring/ring-jetty-adapter "1.6.2"]
     [ring/ring-json "0.4.0"]
     [ring/ring-headers "0.3.0"]
 
@@ -41,7 +40,7 @@
 
     [com.novemberain/monger "3.1.0"]
 
-    [org.postgresql/postgresql "42.1.1"]
+    [org.postgresql/postgresql "42.1.4"]
 
     ;; https://funcool.github.io/clojure.jdbc/latest/
     [funcool/clojure.jdbc "0.9.0"]
