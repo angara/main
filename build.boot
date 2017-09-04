@@ -24,14 +24,14 @@
     [ch.qos.logback/logback-classic "1.2.3"]
 
     [clj-time "0.14.0"]
-    [clj-http "3.6.1"]
+    [clj-http "3.7.0"]
 
     [ring/ring-core "1.6.2"]
     [ring/ring-jetty-adapter "1.6.2"]
     [ring/ring-json "0.4.0"]
     [ring/ring-headers "0.3.0"]
 
-    [cheshire "5.7.1"]
+    [cheshire "5.8.0"]
     [compojure "1.6.0"]
 
     [hiccup "1.0.5"]
@@ -47,7 +47,7 @@
     ;; https://github.com/tomekw/hikari-cp
     [hikari-cp "1.7.6"]
 
-    [honeysql "0.9.0"]  ; https://github.com/jkk/honeysql
+    [honeysql "0.9.1"]  ; https://github.com/jkk/honeysql
 
     [com.draines/postal "2.0.2"]
 

@@ -90,6 +90,7 @@
       :border-radius "3px"
       :border (str "1px solid " ST_COLOR)
       :min-height "120px"
+      :padding-bottom "1px"
       :margin-bottom "16px"}
     ;
     [:.title

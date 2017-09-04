@@ -51,8 +51,7 @@
 (def commons
   [
     [:body
-      { :font-family
-          "\"Open Sans\",\"Helvetica Neue\",Helvetica,Verdana,Arial,sans-serif"
+      { :font-family "\"Open Sans\",\"Helvetica Neue\",Helvetica,Arial,Verdana,sans-serif"
         :font-size "14px"
         :line-height "1.3"}]
 
