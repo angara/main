@@ -26,6 +26,7 @@
 
 (def ST_DEAD_INTERVAL (tc/days 10))
 (def HOURS_INTERVAL (tc/hours 60))
+(def TZ_OFFSET_MILLIS (* 8 3600 1000))
 
 (def ST_BASE_URL "/meteo/st/")
 
@@ -73,7 +74,8 @@
                 [:script
                   "window.st_id='" (:_id st) "';"
                   "window.st_month=" month ";"
-                  "window.st_year="  year  ";"]
+                  "window.st_year="  year  ";"
+                  "window.tz_offset_millis=" TZ_OFFSET_MILLIS ";"]
                 ;
                 [:div
                   (if dead

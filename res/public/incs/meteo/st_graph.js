@@ -6,6 +6,7 @@ $(function() {
   var METEO_HOURLY = "//api.angara.net/meteo/st/hourly?st=";
   var HPA_MMHG = 1.3332239;
 
+
   var DIV_ID = "st_graph";
 
   function get_month_hourly(year, month, cb)
@@ -21,13 +22,6 @@ $(function() {
       function(resp) {
         if(resp.ok) {
           cb(t0, resp.series[st]);
-          // $(".b-card[data-st]").each(function(i, el){
-          //   var st = $(el).data("st");
-          //   var data = resp.series[st];
-          //   var graph_id = $(el).find(".graph").attr("id");
-          //   if(graph_id && data) {
-          //     draw_graph(graph_id, window.hourly_t0_utc, data);
-          //   }
         }; // no else
       }
     );
@@ -57,13 +51,42 @@ $(function() {
         Highcharts.chart(DIV_ID, {
           title: { text: "" },
           legend: { enabled: false },
+          chart: { 
+            zoomType: 'x',
+            panning: true,
+            panKey: 'shift'            
+          },
           //
           plotOptions: {
             series: {
               className: 'main-color',
               negativeColor: true,
-              pointStart: t0.getTime(),
+              lineWidth: 1,
+              pointStart: t0.getTime() + window.tz_offset_millis,
               pointInterval: 3600 * 1000 // one hour
+            },
+            areaspline:{
+              fillColor: {
+                linearGradient: {
+                    x1: 0,
+                    y1: 0,
+                    x2: 0,
+                    y2: 1
+                },
+                stops: [
+                    [0, Highcharts.getOptions().colors[0]],
+                    [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                ]
+              },
+              // marker: {
+              //     radius: 2
+              // },
+              lineWidth: 1
+              // states: {
+              //     hover: {
+              //         lineWidth: 1
+              //     }
+              // },            
             }
           },
           //
@@ -117,7 +140,15 @@ $(function() {
             },
             {
               // w
-              visible: false,
+              visible: true,
+              opposite: true,
+              title: {enabled: false},
+              labels: {              
+                format: '{value} м/с',
+                style: {
+                  color: "#000088"
+                }
+              },
               min: 0,
               max: 20
             }
@@ -126,14 +157,14 @@ $(function() {
           series: [
             {
                 name: 'Температура',
-                type: 'area',
+                type: 'areaspline',
                 yAxis: 0,
                 data: t_series,
                 //
+                lineWidth: 1,
                 color: '#FF0000',
                 negativeColor: '#0088FF',
                 // lineColor: '#303030',
-                // lineWidth: 1,
                 // fillColor: {
                 //   linearGradient: [0, 0, 0, 300],
                 //   stops: ["#000000", "#4488ff"]
@@ -162,6 +193,9 @@ $(function() {
               name: "Сила ветра",
               type: 'spline',
               data: w_series,
+              lineWidth: 1,
+              dashStyle: "Solid",
+              color: "#000099",
               yAxis: 3,
               tooltip: { valueSuffix: ' м/с' }
             }
@@ -169,8 +203,7 @@ $(function() {
           credits: { enabled: false }
         });
         // highcharts
-    
-  }
+  } // graph_month
 
   Highcharts.setOptions({
   	lang: {
@@ -180,7 +213,9 @@ $(function() {
       months: [
         "января", "февраля", "марта", "апреля", "мая", "июня",
         "июля", "августа", "сентября", "октября", "ноября", "декабря"
-      ]
+      ],
+      resetZoom: "Сбросить",
+      resetZoomTitle: "Используйте Shift для горизонтальной прокрутки"
   	}
   });
 
@@ -188,7 +223,7 @@ $(function() {
   // // // // // // 
 
   function set_active_year_month() {
-    $("#st_graph").html("<div class='loading'>Загрузка графика ...</div>");
+    $("#"+DIV_ID).html("<div class='loading'>Загрузка графика ...</div>");
     get_month_hourly(window.st_year, window.st_month, graph_month);
   }
 

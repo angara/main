@@ -76,7 +76,7 @@
     ;
     [:.st-graph
       { :background-color "#eee"
-        :height "300px"
+        :height "290px"
         :border-radius "2px"
         :margin "8px 0 0 0"}
       [:.loading
