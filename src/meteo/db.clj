@@ -84,6 +84,11 @@
     (mc/find-map-by-id (db) ST id (or fields PUB_FIELDS))))
 ;
 
+(defn st-pub [id]
+  (try-warn "st-pub:"
+    (mc/find-one-as-map (db) ST {:_id id :pub 1} PUB_FIELDS)))
+;
+
 
 (defn st-find
   "fetch list of public stations data"
@@ -130,6 +135,19 @@
       (:hour))
     (catch Exception e
       (warn "hourly-ts0:" st_id))))
+;
+
+(defn hourly-ts1 [st_id]
+  (try
+    (->
+      (mq/with-collection (db) HOURS
+        (mq/find {:st st_id})
+        (mq/sort (array-map :hour -1))
+        (mq/limit 1))
+      (first)
+      (:hour))
+    (catch Exception e
+      (warn "hourly-ts1:" st_id))))
 ;
 
 ;;.

@@ -188,10 +188,45 @@ $(function() {
   // // // // // // 
 
   function set_active_year_month() {
-    
+    $("#st_graph").html("<div class='loading'>Загрузка графика ...</div>");
+    get_month_hourly(window.st_year, window.st_month, graph_month);
   }
 
-  get_month_hourly(window.st_year, window.st_month, graph_month)
+  $(".j_year").change(function(evt){
+    window.st_year = $(evt.target).val();
+    set_active_year_month();
+  });
+
+  $(".j_month").click(function(evt){
+    var $btn = $(evt.target);
+    $(".j_month").removeClass("btn-curr");
+    $btn.addClass("btn-curr");
+    window.st_month = $btn.data("month");
+    set_active_year_month();
+  });
+
+
+  // // // // // //  on-load  // // // // // // 
+
+  $(".j_month").each(function(i, el){
+    var month = window.st_month;
+    var $el = $(el);
+    if($el.data("month") == month) {
+      $el.addClass("btn-curr");
+      return false;
+    };
+  });
+
+  $(".j_year option").each(function(i, el) {
+    var year = window.st_year;
+    var $opt = $(el);
+    if($opt.attr("value") == year) {
+      $opt.attr("selected", true);
+      return false;
+    };
+  })
+  
+  set_active_year_month();
 
 });
 

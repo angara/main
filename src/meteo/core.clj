@@ -5,6 +5,7 @@
     [clj-time.core :as tc]
     [clj-time.coerce :refer [to-long]]
     ;
+    [ring.util.response :refer [redirect]]
     [compojure.core :refer [defroutes GET POST]]
     ;
     [mlib.conf :refer [conf]]
@@ -12,7 +13,7 @@
     [mlib.time :refer [ddmmyyyy hhmm]]
     ; [mlib.http :refer [json-resp]]))
     ;
-    [meteo.db :refer [st-ids st-find st-by-id hourly-ts0]]
+    [meteo.db :refer [st-ids st-find st-pub hourly-ts0 hourly-ts1]]
     [meteo.fmt :refer [format-t format-h format-p format-w format-wt]]
     [meteo.util :refer [st-param ST_MAX_NUM fresh]]
     ;
@@ -20,6 +21,8 @@
     [html.frame :refer [render-layout]]))
 ;
 
+
+(def YEAR_0 2013)
 
 (def ST_DEAD_INTERVAL (tc/days 10))
 (def HOURS_INTERVAL (tc/hours 60))
@@ -30,93 +33,101 @@
   (str ST_BASE_URL (:_id st)))
 ;
 
-(defn st-page [{{st-id :st} :params :as req}]
-  (when-let [st (st-by-id
-                  (str st-id)
-                  [:_id :title :descr :addr :ll :elev :last :trends :pub])]
-    ;
-    (when (-> st :pub to-int (= 1))
-      (let [last   (:last st)
-            trends (-> st :trends fresh)
-            dead   (not (fresh last))
-            now    (tc/now)
-            month  (tc/month now)
-            year   (tc/year now)
-            year0  (when-let [ts0 (hourly-ts0 (:_id st))]
-                      (tc/year ts0))]
-        ;
-        (render-layout req
-          { :title (str "Погода - " (:title st))
-            :topmenu :meteo
-            :css [ "//api.angara.net/incs/highcharts/5.0.14/highcharts.css"]
-            :js  [ "//api.angara.net/incs/highcharts/5.0.14/highcharts.js"
-                   "/incs/meteo/st_graph.js"]}
-          ;;
-          [:div.b-meteo.row
-            [:script
-              "window.st_id='" (:_id st) "';"
-              "window.st_month=" month ";"
-              "window.st_year="  year  ";"]
+
+(defn st-page [{params :params :as req}]
+  (let [st-id (-> params :st str)]
+    (when-let [st (st-pub st-id)]  
+      (let [now (tc/now)
+            yr  (-> params :year  (to-int 0))
+            mn  (-> params :month (to-int 0))
             ;
-            [:div
-              (if dead
-                {:class "b-st dead"}
-                {:class "b-st"})
-              [:div.col-md-12
-                [:div.title (-> st :title hesc)]
-                (when-let [d (:descr st)]
-                  [:div.descr (hesc d)])
-                (when-let [a (:addr  st)]
-                  [:div.addr  (hesc a)])
-                (let [t (:ts last)]
-                  [:div.date
-                    (ddmmyyyy t) " - " (hhmm t)])
-                (when dead
-                  [:div.dead-msg "Данные устарели!"])]
-              [:div.clearfix]
-              [:div.col-md-7.col-md-offset-2
-                [:div.twph
-                  [:div.t
-                    (format-t "<span class='lbl'>Температура:</span> "
-                      (:t last) (-> trends :t :avg))]
-                  [:div.w
-                    (format-w "<span class='lbl'>Ветер:</span> "
-                      (:w last) (:g last) (:b last))]
-                  [:div.p
-                    (format-p "<span class='lbl'>Давление:</span> "
-                      (:p last))]
-                  [:div.h
-                    (format-h "<span class='lbl'>Влажность:</span> "
-                      (:h last))]
-                  [:div.wt
-                    (format-wt "<span class='lbl20'>Температура воды:</span> "
-                      (:wt last) (:wl last))]]]
-              [:div.col-md-3]
-                ;"right pane"]
-              [:div.clearfix]
-              ;; /st
-              [:div.col-md-12
-                [:div.months.row
-                  [:div.col-sm-2
-                    [:select#year.form-control
-                      (for [y (range year0 year)]
-                        [:option {:value y} y])
-                      [:option {:value year :selected true} year]]]
+            year0 (when-let [ts0 (hourly-ts0 (:_id st))]
+                    (tc/year ts0))
+            year1 (when-let [ts1 (hourly-ts1 (:_id st))]
+                    (tc/year ts1))
+            ;
+            year  (if (= 0 yr) 
+                    (tc/year now)
+                    (max (or year0 YEAR_0) 
+                      (min yr (or year1 (tc/year now)))))
+            ;
+            month (if (= 0 mn)
+                    (tc/month now)
+                    (max 1 (min mn 12)))]
+        ;
+        (if (or (not= yr year) (not= mn month))
+          (redirect (str ST_BASE_URL st-id "?year=" year "&month=" month))
+          ;;
+          (let [last   (:last st)
+                trends (-> st :trends fresh)
+                dead   (not (fresh last))]
+            ;
+            (render-layout req
+              { :title (str "Погода - " (:title st))
+                :topmenu :meteo
+                :css [ "//api.angara.net/incs/highcharts/5.0.14/highcharts.css"]
+                :js  [ "//api.angara.net/incs/highcharts/5.0.14/highcharts.js"
+                        "/incs/meteo/st_graph.js"]}
+              ;;
+              [:div.b-meteo.row
+                [:script
+                  "window.st_id='" (:_id st) "';"
+                  "window.st_month=" month ";"
+                  "window.st_year="  year  ";"]
+                ;
+                [:div
+                  (if dead
+                    {:class "b-st dead"}
+                    {:class "b-st"})
+                  [:div.col-md-12
+                    [:div.title (-> st :title hesc)]
+                    (when-let [d (:descr st)]
+                      [:div.descr (hesc d)])
+                    (when-let [a (:addr  st)]
+                      [:div.addr  (hesc a)])
+                    (let [t (:ts last)]
+                      [:div.date
+                        (ddmmyyyy t) " - " (hhmm t)])
+                    (when dead
+                      [:div.dead-msg "Данные устарели!"])]
                   [:div.clearfix]
-                  [:div.col-sm-12
-                    (for [[i mon] (map-indexed
-                                    (fn [i m] [(inc i) m])
-                                    RUS_MONTHS_FC)]
-                      [:button.btn.btn-default
-                        { :class (when (= i month) "btn-curr")
-                          :data-month i}
-                        mon])]
-                  ;;
-                  [:div.clearfix]]
-                ;; /year:months
-                [:div#st_graph.st-graph
-                  [:div.loading "Загрузка графика ..."]]]]])))))
-            ;; b-st
+                  [:div.col-md-7.col-md-offset-2
+                    [:div.twph
+                      [:div.t
+                        (format-t "<span class='lbl'>Температура:</span> "
+                          (:t last) (-> trends :t :avg))]
+                      [:div.w
+                        (format-w "<span class='lbl'>Ветер:</span> "
+                          (:w last) (:g last) (:b last))]
+                      [:div.p
+                        (format-p "<span class='lbl'>Давление:</span> "
+                          (:p last))]
+                      [:div.h
+                        (format-h "<span class='lbl'>Влажность:</span> "
+                          (:h last))]
+                      [:div.wt
+                        (format-wt "<span class='lbl20'>Температура воды:</span> "
+                          (:wt last) (:wl last))]]]
+                  [:div.col-md-3]
+                    ;"right pane"]
+                  [:div.clearfix]
+                  ;; /st
+                  [:div.col-md-12
+                    [:div.months.row
+                      [:div.col-sm-2
+                        [:select.j_year.form-control
+                          (for [y (range year0 (inc year1))]
+                            [:option {:value y} y])]]
+                      [:div.clearfix]
+                      [:div.col-sm-12
+                        (for [[i mon] (map-indexed vector RUS_MONTHS_FC)]
+                          [:button.btn.btn-default.j_month {:data-month (inc i)} mon])]
+                      ;;
+                      [:div.clearfix]]
+                    ;; /year:months
+                    [:div#st_graph.st-graph]]]])))))))
+                    ;  [:div.loading "Загрузка графика ..."]]]]])))))))
+                ;; b-st
     ;;
 ;
 

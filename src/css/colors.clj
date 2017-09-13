@@ -16,12 +16,15 @@
 
 (def c_green "#393")
 
-(def c_icon_blue "#44b")
+(def c_ok  "#090")
+(def c_err "#a00")
+
+(def c_icon_blue     "#44b")
 (def c_icon_darkblue "#448")
 
-(def c_label_green "#484")
-(def c_label_grey "#555")
-(def c_label_lgrey "#888")
+(def c_label_green  "#484")
+(def c_label_grey   "#555")
+(def c_label_lgrey  "#888")
 
 (def bg_hover_light "#ffffee")
 

@@ -44,7 +44,7 @@
         :margin "14px 10px"}
       [:.t
         [:b
-          { :margin-left "1px"
+          { :margin-left  "1px"
             :margin-right "1px"}]]
       [:.w  [:b { :color "#459"}]]
       [:.h  [:b { :color "#459"}]]
@@ -58,7 +58,11 @@
           :margin-left "1px"}]]
     [ (> :.dead :div)
       {:color "#777"}]
-    [:.dead-msg]
+    [:.dead-msg
+      { :text-align "center"
+        :color c_err
+        :margin "6px"
+        :font-weight "bold"}]
 
     [:.months
       [:select
@@ -72,7 +76,7 @@
     ;
     [:.st-graph
       { :background-color "#eee"
-        :height "320px"
+        :height "300px"
         :border-radius "2px"
         :margin "8px 0 0 0"}
       [:.loading
