@@ -138,8 +138,8 @@ $(function() {
                       //     color: Highcharts.getOptions().colors[0]
                       // }
                   },
-                  min: 700,
-                  max: 730,
+                  min: 650,
+                  max: 750,
                   opposite: true
               },
               {
@@ -180,11 +180,14 @@ $(function() {
                   type: 'spline',
                   yAxis: 1,
                   data: p_series,
+                  lineWidth: 1,
+                  zIndex: 10,
+                  // shadow: true,
                   // marker: {
                   //     enabled: false
                   // },
                   dashStyle: 'shortdot',
-                  tooltip: { valueSuffix: ' мм.рс' }
+                  tooltip: { valueSuffix: ' мм.рст' }
               },
               {
                 name: "Влажность",
