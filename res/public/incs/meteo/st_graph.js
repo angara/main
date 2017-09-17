@@ -12,23 +12,22 @@ $(function() {
   function get_month_hourly(year, month, cb)
   {
     var st = window.st_id;
-    var t0 = new Date(year, (month-1), 1);
-    var t1 = (month == 12)?
-                new Date(year+1, 0, 1) :
-                new Date(year, month, 1);
+    var tz_ofs = window.tz_offset_millis;
+    var t0 = new Date(Date.UTC(year, month-1, 1) - tz_ofs);
+    var t1 = new Date( ((month == 12)? Date.UTC(year+1, 0, 1): Date.UTC(year,month,1)) - tz_ofs );
 
     $.getJSON(
       METEO_HOURLY+st+"&t0="+t0.toISOString()+"&t1="+t1.toISOString(),
       function(resp) {
         if(resp.ok) {
-          cb(t0, resp.series[st]);
+          cb(Date.UTC(year, month-1, 1), resp.series[st]);
         }; // no else
       }
     );
   }
 
 
-  function graph_month(t0, data)
+  function graph_month(t0_ms, data)
   {
     var t_series = [], p_series = [], h_series = [], w_series = [];
     
@@ -48,161 +47,169 @@ $(function() {
           else { w_series.push(null); }
         }
     
-        Highcharts.chart(DIV_ID, {
-          title: { text: "" },
-          legend: { enabled: false },
-          chart: { 
-            zoomType: 'x',
-            panning: true,
-            panKey: 'shift'            
-          },
-          //
-          plotOptions: {
-            series: {
-              className: 'main-color',
-              negativeColor: true,
-              lineWidth: 1,
-              pointStart: t0.getTime() + window.tz_offset_millis,
-              pointInterval: 3600 * 1000 // one hour
+        var chart = 
+          Highcharts.chart(DIV_ID, {
+            title: { text: "" },
+            legend: { enabled: true },
+            chart: { 
+              zoomType: 'x',
+              panning: true,
+              panKey: 'shift'            
             },
-            areaspline:{
-              fillColor: {
-                linearGradient: {
-                    x1: 0,
-                    y1: 0,
-                    x2: 0,
-                    y2: 1
-                },
-                stops: [
-                    [0, Highcharts.getOptions().colors[0]],
-                    [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                ]
-              },
-              // marker: {
-              //     radius: 2
-              // },
-              lineWidth: 1
-              // states: {
-              //     hover: {
-              //         lineWidth: 1
-              //     }
-              // },            
-            }
-          },
-          //
-          tooltip: {
-            xDateFormat: "<b>%e %B %Y -- %H:%M</b>",
-            shared: true
-          },
-          //
-          xAxis: [{
-            type: "datetime",
-            crosshair: true
-          }],
-          //
-          yAxis: [
-            {
-              // t, idx:0
-              crosshair: true,
-              labels: {
-                  format: '{value}°',
-                  style: {
-                      color: "#aa0044"
-                  }
-              },
-              title: { enabled: false }
-            },
-            {
-                gridLineWidth: 0,
-                // crosshair: true,
-                title: {
-                  enabled: false
-                    // text: 'Давление, мм.рт.ст',
-                    // style: {
-                    //   color: "#2244ff"
-                    // }
-                },
-                labels: {
-                    format: '{value} мм',
-                    // style: {
-                    //     color: Highcharts.getOptions().colors[0]
-                    // }
-                },
-                min: 700,
-                max: 730,
-                opposite: true
-            },
-            {
-              // h
-              visible: false,
-              min: 0,
-              max: 100
-            },
-            {
-              // w
-              visible: true,
-              opposite: true,
-              title: {enabled: false},
-              labels: {              
-                format: '{value} м/с',
-                style: {
-                  color: "#000088"
-                }
-              },
-              min: 0,
-              max: 20
-            }
-          ],
-          //
-          series: [
-            {
-                name: 'Температура',
-                type: 'areaspline',
-                yAxis: 0,
-                data: t_series,
-                //
+            //
+            plotOptions: {
+              series: {
+                className: 'main-color',
+                negativeColor: true,
                 lineWidth: 1,
-                color: '#FF0000',
-                negativeColor: '#0088FF',
-                // lineColor: '#303030',
-                // fillColor: {
-                //   linearGradient: [0, 0, 0, 300],
-                //   stops: ["#000000", "#4488ff"]
-                // },
-                tooltip: { valueSuffix: ' °C' }
-            },
-            {
-                name: 'Давление',
-                type: 'spline',
-                yAxis: 1,
-                data: p_series,
+                pointStart: t0_ms,
+                pointInterval: 3600 * 1000,
+                fillOpacity: 0.7
+              },
+              areaspline:{
+                fillColor: {
+                  linearGradient: {
+                      x1: 0,
+                      y1: 0,
+                      x2: 0,
+                      y2: 1
+                  },
+                  stops: [
+                      [0, Highcharts.getOptions().colors[0]],
+                      [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                  ]
+                },
                 // marker: {
-                //     enabled: false
+                //     radius: 2
                 // },
-                dashStyle: 'shortdot',
-                tooltip: { valueSuffix: ' мм.рс' }
+                lineWidth: 1
+                // states: {
+                //     hover: {
+                //         lineWidth: 1
+                //     }
+                // },            
+              }
             },
-            {
-              name: "Влажность",
-              type: 'spline',
-              data: h_series,
-              yAxis: 2,
-              tooltip: { valueSuffix: ' %' }
+            //
+            tooltip: {
+              xDateFormat: "<b>%e %B %Y -- %H:%M</b>",
+              // followPointer: false,
+              // positioner: function () {
+              //   return { x: 54, y: 2 };  // chart.plotWidth
+              // },
+              shared: true
             },
-            {
-              name: "Сила ветра",
-              type: 'spline',
-              data: w_series,
-              lineWidth: 1,
-              dashStyle: "Solid",
-              color: "#000099",
-              yAxis: 3,
-              tooltip: { valueSuffix: ' м/с' }
-            }
-          ],
-          credits: { enabled: false }
-        });
-        // highcharts
+            //
+            xAxis: [{
+              type: "datetime",
+              crosshair: true
+            }],
+            //
+            yAxis: [
+              {
+                // t, idx:0
+                crosshair: true,
+                labels: {
+                    format: '{value}°',
+                    style: {
+                        color: "#aa0044"
+                    }
+                },
+                title: { enabled: false }
+              },
+              {
+                  gridLineWidth: 0,
+                  // crosshair: true,
+                  title: {
+                    enabled: false
+                      // text: 'Давление, мм.рт.ст',
+                      // style: {
+                      //   color: "#2244ff"
+                      // }
+                  },
+                  labels: {
+                      format: '{value} мм',
+                      // style: {
+                      //     color: Highcharts.getOptions().colors[0]
+                      // }
+                  },
+                  min: 700,
+                  max: 730,
+                  opposite: true
+              },
+              {
+                // h
+                visible: false,
+                min: -100,
+                max: 100
+              },
+              {
+                // w
+                visible: true,
+                opposite: true,
+                title: {enabled: false},
+                labels: {              
+                  format: '{value} м/с',
+                  style: {
+                    color: "#0000aa"
+                    // color: Highcharts.getOptions().colors[0]
+                  }
+                },
+                min: 0,
+                max: 20
+              }
+            ],
+            //
+            series: [
+              {
+                  name: 'Температура',
+                  type: 'areaspline',
+                  yAxis: 0,
+                  data: t_series,
+                  //
+                  lineWidth: 1,
+                  color: '#FF2200',
+                  negativeColor: '#0044FF',
+                  // lineColor: '#303030',
+                  // fillColor: {
+                  //   linearGradient: [0, 0, 0, 300],
+                  //   stops: ["#000000", "#4488ff"]
+                  // },
+                  tooltip: { valueSuffix: ' °C' }
+              },
+              {
+                  name: 'Давление',
+                  type: 'spline',
+                  yAxis: 1,
+                  data: p_series,
+                  // marker: {
+                  //     enabled: false
+                  // },
+                  dashStyle: 'shortdot',
+                  tooltip: { valueSuffix: ' мм.рс' }
+              },
+              {
+                name: "Влажность",
+                type: 'spline',
+                data: h_series,
+                color: "#66cc88",
+                yAxis: 2,
+                tooltip: { valueSuffix: ' %' }
+              },
+              {
+                name: "Сила ветра",
+                type: 'column',
+                data: w_series,
+                lineWidth: 1,
+                dashStyle: "Solid",
+                color: "#0000aa",
+                yAxis: 3,
+                tooltip: { valueSuffix: ' м/с' }
+              }
+            ],
+            credits: { enabled: false }
+          });
+          // highcharts
   } // graph_month
 
   Highcharts.setOptions({
@@ -214,7 +221,7 @@ $(function() {
         "января", "февраля", "марта", "апреля", "мая", "июня",
         "июля", "августа", "сентября", "октября", "ноября", "декабря"
       ],
-      resetZoom: "Сбросить",
+      resetZoom: "Масштаб 1:1",
       resetZoomTitle: "Используйте Shift для горизонтальной прокрутки"
   	}
   });
