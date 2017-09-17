@@ -14,7 +14,7 @@ $(function() {
     var st = window.st_id;
     var tz_ofs = window.tz_offset_millis;
     var t0 = new Date(Date.UTC(year, month-1, 1) - tz_ofs);
-    var t1 = new Date( ((month == 12)? Date.UTC(year+1, 0, 1): Date.UTC(year,month,1)) - tz_ofs );
+    var t1 = new Date( ((month == 12)? Date.UTC(1+year, 0, 1): Date.UTC(year,month,1)) - tz_ofs );
 
     $.getJSON(
       METEO_HOURLY+st+"&t0="+t0.toISOString()+"&t1="+t1.toISOString(),
@@ -75,8 +75,11 @@ $(function() {
                       y2: 1
                   },
                   stops: [
-                      [0, Highcharts.getOptions().colors[0]],
-                      [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    // [0, "#ff0000"],
+                    // [1, "#ffffff"],
+                    // [2, "#0000ff"]
+                    [0, Highcharts.getOptions().colors[0]],
+                    [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
                   ]
                 },
                 // marker: {
@@ -115,7 +118,9 @@ $(function() {
                         color: "#aa0044"
                     }
                 },
-                title: { enabled: false }
+                title: { enabled: false },
+                min: -40,
+                max: 40
               },
               {
                   gridLineWidth: 0,
@@ -152,11 +157,10 @@ $(function() {
                   format: '{value} м/с',
                   style: {
                     color: "#0000aa"
-                    // color: Highcharts.getOptions().colors[0]
                   }
                 },
                 min: 0,
-                max: 20
+                max: 24
               }
             ],
             //
@@ -166,15 +170,9 @@ $(function() {
                   type: 'areaspline',
                   yAxis: 0,
                   data: t_series,
-                  //
                   lineWidth: 1,
                   color: '#FF2200',
                   negativeColor: '#0044FF',
-                  // lineColor: '#303030',
-                  // fillColor: {
-                  //   linearGradient: [0, 0, 0, 300],
-                  //   stops: ["#000000", "#4488ff"]
-                  // },
                   tooltip: { valueSuffix: ' °C' }
               },
               {
@@ -230,6 +228,13 @@ $(function() {
   // // // // // // 
 
   function set_active_year_month() {
+    if(window.history) {
+      window.history.pushState(
+        null, 
+        $("title").text(), 
+        window.location.pathname+"?year="+window.st_year+"&month="+window.st_month
+      );
+    }
     $("#"+DIV_ID).html("<div class='loading'>Загрузка графика ...</div>");
     get_month_hourly(window.st_year, window.st_month, graph_month);
   }
