@@ -267,11 +267,11 @@ $(function() {
     };
   });
 
+  var year = window.st_year;
   $(".j_year option").each(function(i, el) {
-    var year = window.st_year;
     var $opt = $(el);
     if($opt.attr("value") == year) {
-      $opt.attr("selected", true);
+      $opt.prop("selected", true);
       return false;
     };
   })
