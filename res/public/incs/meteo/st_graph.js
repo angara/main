@@ -64,33 +64,18 @@ $(function() {
                 lineWidth: 1,
                 pointStart: t0_ms,
                 pointInterval: 3600 * 1000,
-                fillOpacity: 0.7
+                fillOpacity: 0.6,
+                marker: { radius: 3, symbol: "circle" }                
               },
               areaspline:{
                 fillColor: {
-                  linearGradient: {
-                      x1: 0,
-                      y1: 0,
-                      x2: 0,
-                      y2: 1
-                  },
+                  linearGradient: { x1: 0, y1: -1, x2: 0, y2: 1 },
                   stops: [
-                    // [0, "#ff0000"],
-                    // [1, "#ffffff"],
-                    // [2, "#0000ff"]
-                    [0, Highcharts.getOptions().colors[0]],
-                    [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    [0, "#ff0000"],
+                    [1, "#ffffff"],
+                    [2, "#0000ff"]
                   ]
-                },
-                // marker: {
-                //     radius: 2
-                // },
-                lineWidth: 1
-                // states: {
-                //     hover: {
-                //         lineWidth: 1
-                //     }
-                // },            
+                }
               }
             },
             //
@@ -114,9 +99,7 @@ $(function() {
                 crosshair: true,
                 labels: {
                     format: '{value}°',
-                    style: {
-                        color: "#aa0044"
-                    }
+                    style: { color: "#903" }
                 },
                 title: { enabled: false },
                 min: -40,
@@ -124,19 +107,10 @@ $(function() {
               },
               {
                   gridLineWidth: 0,
-                  // crosshair: true,
-                  title: {
-                    enabled: false
-                      // text: 'Давление, мм.рт.ст',
-                      // style: {
-                      //   color: "#2244ff"
-                      // }
-                  },
+                  title: { enabled: false },
                   labels: {
                       format: '{value} мм',
-                      // style: {
-                      //     color: Highcharts.getOptions().colors[0]
-                      // }
+                      style: { color:  "#b72" }
                   },
                   min: 650,
                   max: 750,
@@ -145,19 +119,18 @@ $(function() {
               {
                 // h
                 visible: false,
-                min: -100,
-                max: 100
+                min: 0,
+                max: 200,
               },
               {
                 // w
+                gridLineWidth: 0,
                 visible: true,
                 opposite: true,
                 title: {enabled: false},
                 labels: {              
                   format: '{value} м/с',
-                  style: {
-                    color: "#0000aa"
-                  }
+                  style: { color: "#24b" }
                 },
                 min: 0,
                 max: 24
@@ -170,30 +143,38 @@ $(function() {
                   type: 'areaspline',
                   yAxis: 0,
                   data: t_series,
-                  lineWidth: 1,
-                  color: '#FF2200',
-                  negativeColor: '#0044FF',
-                  tooltip: { valueSuffix: ' °C' }
+                  marker: { radius: 3 },
+                  color: '#FF6622',
+                  negativeColor: '#2266FF',
+                  tooltip: { valueSuffix: ' °C' },
+                  zones: [
+                    {value: -30, color: "#00f"},
+                    {value: -20, color: "#02f"},
+                    {value: -10, color: "#24f"},
+                    {value:  -5, color: "#48f"},
+                    {value:   0, color: "#4af"},
+                    {value:   5, color: "#fa4"},
+                    {value:  10, color: "#f84"},
+                    {value:  20, color: "#f42"},
+                    {value:  30, color: "#f00"}
+                  ]
               },
               {
                   name: 'Давление',
                   type: 'spline',
                   yAxis: 1,
                   data: p_series,
-                  lineWidth: 1,
                   zIndex: 10,
-                  // shadow: true,
-                  // marker: {
-                  //     enabled: false
-                  // },
-                  dashStyle: 'shortdot',
+                  color: "#ea2",
+                  marker: { radius: 3 },
                   tooltip: { valueSuffix: ' мм.рст' }
               },
               {
                 name: "Влажность",
                 type: 'spline',
                 data: h_series,
-                color: "#66cc88",
+                color: "#4c6",
+                marker: { radius: 3 },
                 yAxis: 2,
                 tooltip: { valueSuffix: ' %' }
               },
@@ -201,9 +182,7 @@ $(function() {
                 name: "Сила ветра",
                 type: 'column',
                 data: w_series,
-                lineWidth: 1,
-                dashStyle: "Solid",
-                color: "#0000aa",
+                color: "#6ae",
                 yAxis: 3,
                 tooltip: { valueSuffix: ' м/с' }
               }
@@ -231,41 +210,44 @@ $(function() {
   // // // // // // 
 
   function set_active_year_month() {
+    var year  = +window.st_year;
+    var month = +window.st_month;
+    
     if(window.history) {
       window.history.pushState(
-        null, 
-        $("title").text(), 
-        window.location.pathname+"?year="+window.st_year+"&month="+window.st_month
+        null, $("title").text(), window.location.pathname+"?year="+year+"&month="+month
       );
     }
+
+    $(".j_month").each(function(i, el){
+      var $el = $(el);
+      var mn = +$el.data("month");
+      $el.removeClass("btn-curr");
+      if(mn == month) {
+        $el.addClass("btn-curr");
+      };
+
+      $el.prop("disabled", (Date.UTC(year, mn-1, 1) > window.now_ms));
+    });
+  
+    //
     $("#"+DIV_ID).html("<div class='loading'>Загрузка графика ...</div>");
-    get_month_hourly(window.st_year, window.st_month, graph_month);
+    get_month_hourly(year, month, graph_month);
   }
 
   $(".j_year").change(function(evt){
-    window.st_year = $(evt.target).val();
+    window.st_year = +$(evt.target).val();
     set_active_year_month();
   });
 
   $(".j_month").click(function(evt){
-    var $btn = $(evt.target);
-    $(".j_month").removeClass("btn-curr");
-    $btn.addClass("btn-curr");
-    window.st_month = $btn.data("month");
+    window.st_month = +$(evt.target).data("month");
     set_active_year_month();
   });
 
 
   // // // // // //  on-load  // // // // // // 
 
-  $(".j_month").each(function(i, el){
-    var month = window.st_month;
-    var $el = $(el);
-    if($el.data("month") == month) {
-      $el.addClass("btn-curr");
-      return false;
-    };
-  });
 
   var year = window.st_year;
   $(".j_year option").each(function(i, el) {

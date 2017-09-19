@@ -83,6 +83,10 @@
         { :color "#888"
           :padding "9px 12px"
           :font-size "90%"}]]])
+      ; [.t0
+      ;   {:color "#555"}]
+      ; [.t10
+      ;   {:color "#"}]]])
 
 ;
 

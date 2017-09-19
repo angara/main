@@ -75,7 +75,8 @@
                   "window.st_id='" (:_id st) "';"
                   "window.st_month=" month ";"
                   "window.st_year="  year  ";"
-                  "window.tz_offset_millis=" TZ_OFFSET_MILLIS ";"]
+                  "window.tz_offset_millis=" TZ_OFFSET_MILLIS ";"
+                  "window.now_ms=" (to-long now) ";"]
                 ;
                 [:div
                   (if dead
