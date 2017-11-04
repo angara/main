@@ -224,6 +224,7 @@
               ;
               content
               [:div.clearfix]
+              ;
               [:div.b-botnav
                 [:a {:href "//angara.net/"} "Главная"]
                 (for [n (next TOP_NAVS)]
