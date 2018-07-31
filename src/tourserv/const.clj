@@ -68,6 +68,7 @@
     { :id "smallsea"  :title "Малое Море"}
     { :id "olkhon"    :title "Ольхон"}
     { :id "sevbaik"   :title "Северобайкальск"}
+    { :id "tofalaria" :title "Тофалария"}
     { :id "chiv"      :title "Чивыркуй"}
     { :id "shumak"    :title "Шумак"}])
 ;

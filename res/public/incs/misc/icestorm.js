@@ -25,7 +25,7 @@ $(function(){
                   "font-size": "150%",
                   "font-weight": "bold",
                   "color": "#0a4"
-                }).text("Заявка принята.")
+                }).text("Заявка принята / Application accepted")
               ).append(
                 $("<div>").css({
                   "margin":"2em 10em 6em 10em",
@@ -33,6 +33,10 @@ $(function(){
                 }).html(
                   "Для того, что бы подтвердить участие в гонке,"+
                   " заполните, пожалуйста, <a href='http://www.ice-storm.com/images/anketa.pdf'>анкету</a>."+
+                  "<br/>"+
+                  "To confirm participation in the race please fill out the "+
+                  " <a href='http://www.ice-storm.com/images/anketa-eng.pdf'>agreement</a>, sign, scan and send to "+
+                  " <a href='mailto:icestorm@angara.net?Subject=anketa'>icestorm@angara.net</a>."+
                   "<br/><br/>"+
                   "Скан заполненной и подписанной анкеты просим Вас отправить по адресу:"+
                   " <a href='mailto:icestorm@angara.net?Subject=anketa'>icestorm@angara.net</a>."

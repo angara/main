@@ -16,43 +16,43 @@
   ;; boot -d boot-deps ancient
   :dependencies
   '[
-    [org.clojure/clojure "1.8.0"]
+    [org.clojure/clojure "1.9.0"]
     [org.clojure/tools.namespace "0.2.11" :scope "test"]
-    [org.clojure/core.cache "0.6.5"]
+    [org.clojure/core.cache "0.7.1"]
 
-    [org.clojure/tools.logging "0.4.0"]
+    [org.clojure/tools.logging "0.4.1"]
     [ch.qos.logback/logback-classic "1.2.3"]
 
-    [clj-time "0.14.0"]
-    [clj-http "3.7.0"]
+    [clj-time "0.14.4"]
+    [clj-http "3.9.0"]
 
-    [ring/ring-core "1.6.2"]
-    [ring/ring-jetty-adapter "1.6.2"]
+    [ring/ring-core "1.6.3"]
+    [ring/ring-jetty-adapter "1.6.3"]
     [ring/ring-json "0.4.0"]
     [ring/ring-headers "0.3.0"]
 
     [cheshire "5.8.0"]
-    [compojure "1.6.0"]
+    [compojure "1.6.1"]
 
     [hiccup "1.0.5"]
-    [garden "1.3.2"]
-    [mount "0.1.11"]
+    [garden "1.3.5"]
+    [mount "0.1.12"]
 
     [com.novemberain/monger "3.1.0"]
 
-    [org.postgresql/postgresql "42.1.4"]
+    [org.postgresql/postgresql "42.2.4"]
 
     ;; https://funcool.github.io/clojure.jdbc/latest/
     [funcool/clojure.jdbc "0.9.0"]
     ;; https://github.com/tomekw/hikari-cp
-    [hikari-cp "1.8.0"]
+    [hikari-cp "2.6.0"]
 
-    [honeysql "0.9.1"]  ; https://github.com/jkk/honeysql
+    [honeysql "0.9.3"]  ; https://github.com/jkk/honeysql
 
     [com.draines/postal "2.0.2"]
 
     ;; https://github.com/martinklepsch/boot-garden
-    [org.martinklepsch/boot-garden "1.3.2-0" :scope "test"]
+    [org.martinklepsch/boot-garden "1.3.2-1" :scope "test"]
     [proto-repl "0.3.1" :scope "test"]])
 ;
 
