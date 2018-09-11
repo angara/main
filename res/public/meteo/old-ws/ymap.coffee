@@ -82,7 +82,7 @@ update_st = (data) ->
 
 
 $ ->
-    ymaps_api = "http://api-maps.yandex.ru/2.0-stable/?lang=ru_RU"+
+    ymaps_api = "https://api-maps.yandex.ru/2.0-stable/?lang=ru_RU"+
                     "&load=package.standard&coordorder=longlat"
 
     METEO = window.meteo

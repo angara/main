@@ -89,7 +89,7 @@
 
   $(function() {
     var METEO, ymaps_api;
-    ymaps_api = "http://api-maps.yandex.ru/2.0-stable/?lang=ru_RU" + "&load=package.standard&coordorder=longlat";
+    ymaps_api = "https://api-maps.yandex.ru/2.0-stable/?lang=ru_RU" + "&load=package.standard&coordorder=longlat";
     METEO = window.meteo;
     return $.getScript(ymaps_api, function() {
       return ymaps.ready(function() {
