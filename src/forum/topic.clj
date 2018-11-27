@@ -12,7 +12,7 @@
     [mlib.core :refer [to-int]]
     [sql.core :refer [fetch exec]]
     ;
-    [forum.db :refer [FORUM_TOPICS FORUM_LASTREAD USERS]]))
+    [forum.db :refer [FORUM_TOPICS FORUM_LASTREAD USERS lastreads]]))
 ;
 
 
@@ -107,7 +107,6 @@
         ;
 ;
 
-
 (defn topic-state [{user :user params :params}]
   (let [uid (-> user :id to-int)
         tid (-> params :tid to-int)
@@ -125,10 +124,36 @@
             {:err :not_found :msg "Тема не найдена."}))))))
 ;
 
+(defn get-lastreads [{user :user params :params}]
+  (try
+    (let [uid  (-> user :id to-int)
+          tids (-> params :tids (mapv to-int) not-empty)
+          lrs  (lastreads uid tids)]
+      (if lrs
+        (json-resp {:ok 1 :lrs lrs}) 
+        (json-resp 400 {:err :dberr :msg "Ошибка выборки данных."})))
+    (catch Exception err
+      (warn "get-lastreads:" {:user user :params params :err err})
+      (json-resp 400 {:err :bad_request :msg "Ошибка при обработке запроса."}))))
+;
+
+(defn get-watch [{user :user params :params}])
+  ;; XXX: !!!
+;
+
+(defn set-watch [{user :user params :params}])
+  ;; XXX: !!!
+;
+
+
 (defroutes topic-routes
   (POST "/notify" [] topic-notify)
   (POST "/title"  [] topic-title)
-  (POST "/state"  [] topic-state))  ;; {:tid tid :closed true|false}
+  (POST "/state"  [] topic-state)  ;; {:tid tid :closed true|false}
+
+  (GET  "/lastreads" [] get-lastreads)  ;;  {:tids []}
+  (GET  "/watch"     [] get-watch)      ;;  {:}
+  (POST "/watch"     [] set-watch))     ;;  {:}
 ;
 
 ;;.

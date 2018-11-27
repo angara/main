@@ -2,7 +2,7 @@
 ;;  Angara.Net main
 ;;
 
-(def project {:name "angara.net/main" :version "1.2.0"})
+(def project {:name "angara.net/main" :version "1.3.0"})
 
 (def jar-main 'web.main)
 (def jar-file "main.jar")
@@ -23,31 +23,31 @@
     [org.clojure/tools.logging "0.4.1"]
     [ch.qos.logback/logback-classic "1.2.3"]
 
-    [clj-time "0.14.4"]
-    [clj-http "3.9.0"]
+    [clj-time "0.15.1"]
+    [clj-http "3.9.1"]
 
-    [ring/ring-core "1.6.3"]
-    [ring/ring-jetty-adapter "1.6.3"]
+    [ring/ring-core "1.7.1"]
+    [ring/ring-jetty-adapter "1.7.1"]
     [ring/ring-json "0.4.0"]
     [ring/ring-headers "0.3.0"]
 
-    [cheshire "5.8.0"]
+    [cheshire "5.8.1"]
     [compojure "1.6.1"]
 
     [hiccup "1.0.5"]
-    [garden "1.3.5"]
-    [mount "0.1.12"]
+    [garden "1.3.6"]
+    [mount "0.1.14"]
 
     [com.novemberain/monger "3.1.0"]
 
-    [org.postgresql/postgresql "42.2.4"]
+    [org.postgresql/postgresql "42.2.5"]
 
     ;; https://funcool.github.io/clojure.jdbc/latest/
     [funcool/clojure.jdbc "0.9.0"]
     ;; https://github.com/tomekw/hikari-cp
     [hikari-cp "2.6.0"]
 
-    [honeysql "0.9.3"]  ; https://github.com/jkk/honeysql
+    [honeysql "0.9.4"]  ; https://github.com/jkk/honeysql
 
     [com.draines/postal "2.0.2"]
 

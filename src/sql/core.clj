@@ -33,7 +33,8 @@
     (with-open [conn (dbc)]
       (jdbc/execute conn
         (sql/format sqlmap :params params)))
-    (catch Exception e (warn e))))
+    (catch Exception e 
+      (warn e))))
 ;
 
 (defn next-id [tbl]

@@ -2,13 +2,13 @@
 (ns forum.db
   (:require
     [clojure.string :as s]
-;    [clj-time.core :as tc]
+    [clj-time.core :as tc]
     [honeysql.helpers :as h]
     ;
     [mlib.conf :refer [conf]]
 ;    [mlib.log :refer [warn]]
     [mlib.core :refer [to-int]]
-    [sql.core :refer [fetch]])) ;exec]]))
+    [sql.core :refer [fetch exec insert-into]]))
 ;
 
 (def FORUM_LASTREAD (keyword "forum_lastread"))
@@ -43,6 +43,11 @@
 ; attach     | character varying(80)       |
 ; ipaddr     | character varying(40)       | not null
 ; topic_head | boolean                     | not null default false
+
+(def FORUM_GROUP_FAV (keyword "forum_group_fav"))
+;  uid    | integer                     |           | not null | 
+;  grp    | integer                     |           | not null | 
+;  ts     | timestamp without time zone |           | not null | now()
 
 (def USERS (keyword "users"))
 ; uid       | integer                     | not null
@@ -95,7 +100,6 @@
     (fetch)))
 ;
 
-
 (defn attach-params
   "returns: [type '34/56/f_123456']"
   [msg]
@@ -109,6 +113,50 @@
           base (str (.substring padded len-4 len-2) "/"
                     (.substring padded len-2 len) "/" "f_" id)]
       {:type type :base base})))
+;
+
+(defn get-lastread [uid tid]
+  (->
+    (h/select :*)
+    (h/from FORUM_LASTREAD)
+    (h/where 
+      [:= :uid (to-int uid 0)]
+      [:= :tid (to-int tid 0)])
+    (fetch)
+    (first)))
+;
+
+(defn lastreads [uid tids]
+  (->
+    (h/select :*)
+    (h/from FORUM_LASTREAD)
+    (h/where
+      [:= :uid (to-int uid 0)]
+      [:in :tid tids])))
+
+(defn update-watch [uid tid state]
+  (->
+    (h/update :FORUM_LASTREAD)
+    (h/sset {:watch (if state 1 0)})
+    (h/where 
+      [:= :uid uid]
+      [:= :tid tid])
+    (exec)
+    (= 1)))
+;
+
+(defn set-watch [uid tid state]
+  (or
+    (update-watch uid tid state)
+    (->
+      (h/insert-into :FORUM_LASTREAD)
+      (h/values [{:uid    uid 
+                  :tid    tid 
+                  :msgid  0 
+                  :watch  (if state 1 0) 
+                  :last_post_time (tc/now)}])
+      (exec)
+      (= 1))))
 ;
 
 ;;.

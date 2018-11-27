@@ -3,15 +3,15 @@
   :dev true
 
   :mdb {
-    :angara { :uri "mongodb://angara:angaweb.6@localhost:22022/angara" }
-    :meteo  { :uri "mongodb://meteo:metaweb.6@localhost:22022/meteo"  }
-  }
+        :angara { :uri "mongodb://angara:angaweb.6@localhost:22022/angara"}
+        :meteo  { :uri "mongodb://meteo:metaweb.6@localhost:22022/meteo"}}
+  
 
   :psql {
-    :jdbc-url "jdbc:postgresql://localhost:5516/angara"
-    :username "angara"
-    :password "anga.ex1.16"
-  }
+         :jdbc-url "jdbc:postgresql://localhost:5516/angara"
+         :username "angara"
+         :password "anga.ex1.16"}
+  
 
 ;  :bots {
 ;    :meteo38bot {
@@ -24,9 +24,9 @@
 ;  }
 
   :photomap {
-    :google-key "AIzaSyC_7-NIQTS3Ttdw9JMz6lzfKuVqNQNo0qU"
+             :google-key "AIzaSyC_7-NIQTS3Ttdw9JMz6lzfKuVqNQNo0qU"}}
     ; :google-key "AIzaSyCQR4ahK5BKgpQlxv5-gCvIpMAVvERV0Bg"
     ;:google-key "AIzaSyCp3t3SQOk4qPJBjSwdx2L2jKsl9HmOB8Qq"
-  }
+  
 
-}
+
