@@ -2,7 +2,7 @@
 ;;  Angara.Net main
 ;;
 
-(def project {:name "angara.net/main" :version "1.3.0"})
+(def project {:name "angara.net/main" :version "1.4.0"})
 
 (def jar-main 'web.main)
 (def jar-file "main.jar")
@@ -36,7 +36,7 @@
 
     [hiccup "1.0.5"]
     [garden "1.3.6"]
-    [mount "0.1.14"]
+    [mount "0.1.15"]
 
     [com.novemberain/monger "3.1.0"]
 
@@ -44,12 +44,14 @@
 
     ;; https://funcool.github.io/clojure.jdbc/latest/
     [funcool/clojure.jdbc "0.9.0"]
+    
     ;; https://github.com/tomekw/hikari-cp
     [hikari-cp "2.6.0"]
+    
+    ;; https://github.com/jkk/honeysql
+    [honeysql "0.9.4"]  
 
-    [honeysql "0.9.4"]  ; https://github.com/jkk/honeysql
-
-    [com.draines/postal "2.0.2"]
+    [com.draines/postal "2.0.3"]
 
     ;; https://github.com/martinklepsch/boot-garden
     [org.martinklepsch/boot-garden "1.3.2-1" :scope "test"]

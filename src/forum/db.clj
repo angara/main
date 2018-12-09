@@ -134,10 +134,10 @@
       [:= :uid (to-int uid 0)]
       [:in :tid tids])))
 
-(defn update-watch [uid tid state]
+(defn update-watch [uid tid watch]
   (->
     (h/update :FORUM_LASTREAD)
-    (h/sset {:watch (if state 1 0)})
+    (h/sset {:watch watch})
     (h/where 
       [:= :uid uid]
       [:= :tid tid])
@@ -145,15 +145,15 @@
     (= 1)))
 ;
 
-(defn set-watch [uid tid state]
+(defn insert-watch [uid tid watch]
   (or
-    (update-watch uid tid state)
+    (update-watch uid tid watch)
     (->
       (h/insert-into :FORUM_LASTREAD)
       (h/values [{:uid    uid 
                   :tid    tid 
                   :msgid  0 
-                  :watch  (if state 1 0) 
+                  :watch  watch
                   :last_post_time (tc/now)}])
       (exec)
       (= 1))))

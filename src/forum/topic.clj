@@ -12,7 +12,7 @@
     [mlib.core :refer [to-int]]
     [sql.core :refer [fetch exec]]
     ;
-    [forum.db :refer [FORUM_TOPICS FORUM_LASTREAD USERS lastreads]]))
+    [forum.db :refer [FORUM_TOPICS FORUM_LASTREAD USERS lastreads get-lastread insert-watch update-watch]]))
 ;
 
 
@@ -137,12 +137,35 @@
       (json-resp 400 {:err :bad_request :msg "Ошибка при обработке запроса."}))))
 ;
 
-(defn get-watch [{user :user params :params}])
-  ;; XXX: !!!
+(defn get-watch [{user :user params :params}]
+  (try
+    (let [uid (-> user :id to-int)
+          tid (-> params :tid to-int)]
+      (if (and uid tid)
+        (json-resp {:ok 1 
+                    :tid tid 
+                    :watch (->> tid (get-lastread uid) :watch)})
+        (json-resp 400 
+          {:err :bad_request :msg "uid and tid required"})))
+    (catch Exception err
+      (warn "get-watch:" {:user user :params params :err err})
+      (json-resp 400 {:err :bad_request :msg "Ошибка при обработке запроса."}))))
 ;
 
-(defn set-watch [{user :user params :params}])
-  ;; XXX: !!!
+(defn set-watch [{user :user params :params}]
+  (try
+    (let [uid   (-> user   :id to-int)
+          tid   (-> params :tid to-int)
+          watch (-> params :watch to-int)]
+      (if (and uid tid watch)
+        (if (update-watch uid tid watch)
+          (json-resp {:ok 1 :act "watch-updated" :tid tid :watch watch})
+          (if (insert-watch uid tid watch)
+            (json-resp {:ok 1 :act "watch-inserted" :tid tid :watch watch})
+            (json-resp 400 {:err :bad_request :msg "unable to set watch"})))))
+    (catch Exception err
+      (warn "set-watch:" {:user user :params params :err err})
+      (json-resp 400 {:err :bad_request :msg "Ошибка при обработке запроса."}))))
 ;
 
 
@@ -152,8 +175,8 @@
   (POST "/state"  [] topic-state)  ;; {:tid tid :closed true|false}
 
   (GET  "/lastreads" [] get-lastreads)  ;;  {:tids []}
-  (GET  "/watch"     [] get-watch)      ;;  {:}
-  (POST "/watch"     [] set-watch))     ;;  {:}
+  (GET  "/watch"     [] get-watch)      ;;  {:tid "int"}
+  (POST "/watch"     [] set-watch))     ;;  {:tid "int" :watch "int"}
 ;
 
 ;;.
