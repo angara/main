@@ -69,6 +69,7 @@
     { :id "olkhon"    :title "Ольхон"}
     { :id "sevbaik"   :title "Северобайкальск"}
     { :id "tofalaria" :title "Тофалария"}
+    { :id "khubsugul" :title "Хубсугул"}
     { :id "chiv"      :title "Чивыркуй"}
     { :id "shumak"    :title "Шумак"}])
 ;
