@@ -32,7 +32,7 @@
 
 (defn connect [cnf]
   (-> (:tz conf "Asia/Irkutsk") DateTimeZone/forID DateTimeZone/setDefault)
-  (let [mdb (mg/connect-via-uri (:uri cnf))]
+  (let [mdb (mg/connect-via-uri (:url cnf))]
     (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
     mdb))
 ;
@@ -51,7 +51,7 @@
 
 (defstate mdb
   :start
-    (connect (-> conf :mdb :angara))
+    (connect (-> conf :mdb-angara))
   :stop
     (disconnect mdb))
 ;

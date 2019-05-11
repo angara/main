@@ -16,6 +16,7 @@
     [meteo.db :refer [st-ids st-find st-pub hourly-ts0 hourly-ts1]]
     [meteo.fmt :refer [format-t format-h format-p format-w format-wt]]
     [meteo.util :refer [st-param ST_MAX_NUM fresh]]
+    [meteo.graph :refer [t3-svg]]
     ;
     [misc.util :refer [RUS_MONTHS_FC]]
     [html.frame :refer [render-layout]]))
@@ -225,11 +226,28 @@
             " и не могут быть использованы в качестве документальных."]]])))
 ;
 
+;; ;; ;; ;; ;; ;; ;; ;; ;; ;;
+
+(defn graph-page [req]
+  (render-layout req
+    { :title "Погода в Иркутске и Прибайкалье в реальном времени"
+      :topmenu :meteo}
+    ;
+    [:div.b-meteo
+      [:b "SVG image"]
+      [:br]
+      [:img {:src "graph/t3.svg?st=uiii" :style "width:40%;"}]]))
+;
+  
+;; ;; ;; ;; ;; ;; ;; ;; ;; ;;
+
 (defroutes meteo-routes
+  (GET "/"              [] index-page)
 
-  (GET "/"       [] index-page)
-  (GET "/st/:st" [] st-page))
+  (GET "/graph"         [] graph-page)
 
+  (GET "/graph/t3.svg"  [] t3-svg)
+  (GET "/st/:st"        [] st-page))
 ;
 
 ;;.

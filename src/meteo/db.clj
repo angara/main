@@ -15,7 +15,7 @@
 
 (defstate mdb
   :start
-    (connect (-> conf :mdb :meteo))
+    (connect (-> conf :mdb-meteo))
   :stop
     (disconnect mdb))
 ;

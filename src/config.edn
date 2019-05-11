@@ -3,33 +3,39 @@
 ;;
 
 {
-  :dev true
+  :main
+  { ; https://github.com/ring-clojure/ring/blob/master/ring-jetty-adapter/src/ring/adapter/jetty.clj
+    :http 
+    {
+      :host  "127.0.0.1"
+      :port  8001
+      :join? false}}
+  ;;  
+
 
   :tz "Asia/Irkutsk"
 
-  :mdb {
-    :angara { :uri "mongodb://localhost:22022/angara" }
-    :meteo  { :uri "mongodb://localhost:22022/meteo"  }
-  }
+  ; :mdb-angara { :uri "mongodb://localhost:22022/angara"}
+  ; :mdb-meteo  { :uri "mongodb://localhost:22022/meteo"}
+  
 
 
   ;; calendar
-  :calendar {
-    :admins
-      #{
-        "1"
-        "6441"
-      }
-  }
+  :calendar 
+  {
+    :admins #{"1" "6441"}}
+      
+  
 
   ;; meteo
-  :meteo {
+  :meteo 
+  {
     :st_default
-    [
-      "uiii" "irgp" "asbtv" "npsd"
-      "olha" "irk2" "zbereg"
-      "lin_baik" "lin_list" "nicola" "ulirba" "mamai"]
-  }
+          [
+            "uiii" "irgp" "asbtv" "npsd"
+            "olha" "irk2" "zbereg"
+            "lin_baik" "lin_list" "nicola" "ulirba" "mamai"]}
+  
 
   ;; common
   :urls
@@ -37,31 +43,24 @@
     :login      "https://angara.net/auth/login"
     :logout     "https://angara.net/auth/logout"
     :auth_reset "https://angara.net/auth/reset"
-    :register   "https://angara.net/auth/register"
-  }
-
-  ;; https://github.com/ring-clojure/ring/blob/master/ring-jetty-adapter/src/ring/adapter/jetty.clj
-  :http {
-    :host  "127.0.0.1"
-    :port  8001
-    :join? false
-  }
+    :register   "https://angara.net/auth/register"}
+  
+ 
 
   ;; https://github.com/brettwooldridge/HikariCP
-  :psql {
-    :jdbc-url "jdbc:postgresql://localhost:5516/angara"
+  :psql {:jdbc-url "jdbc:postgresql://localhost:5516/angara?user=angara&password=..."}
     ; :connection-timeout 30000
     ; :idle-timeout 600000
     ; :max-lifetime 1800000
     ; :minimum-idle 10
     ; :maximum-pool-size  10
     ; :adapter "postgresql"
-    :username "angara"
-    :password "PASSWORD"
+        ;  :username "angara"
+        ;  :password "PASSWORD"}
     ; :database-name "database"
     ; :server-name "localhost"
     ; :port-number 5432
-  }
+  
 
   :yandex-metrika     "12139321"
   :mailru-top         "474619"
@@ -70,24 +69,23 @@
   :rtb-top    "R-A-1908-10"
   :rtb-bottom "R-A-1908-8"
 
-  :slowreq {
-    :ms 1000
-  }
-
-
+  :slowreq {:ms 1000}
+  
   ;; app modules ;;
 
-  :forum {
+  :forum 
+  {
     ;; hardcoded in jsp module
     :upload-uri "/upload/"
-    :upload-dir "/www/angara/upload/"
-  }
+    :upload-dir "/www/angara/upload/"}
+  
 
-  :photomap {
-    :hash-dir "../bots/var/photos"
-    :base-uri "/photomap"
-    :google-key "__KEY__"
-  }
+  :photomap 
+  {
+      :hash-dir "../bots/var/photos"
+      :base-uri "/photomap"
+      :google-key "__KEY__"}
+  
 
   ; :bots {
   ;   ;; t2
@@ -103,20 +101,23 @@
   ;   ; }
   ; }
 
-  :icestorm {
-    :smtp {
+  :icestorm 
+  {
+    :smtp 
+    {
       :host "smtp.yandex.com"
       :ssl  true
       :port 465
       :user "noreply@angara.net"
-      :pass "anga.smtp16"
-    }
-    :envel {
+      :pass "anga.smtp16"}
+
+    :envel 
+    {
       :from "noreply@angara.net"
       :to ["maxp@ya.ru"]
-      :subject "IceStorm 2017: регистрация"
-    }
-  }
-}
+      :subject "IceStorm 2017: регистрация"}}
+
+  ;; values are overriden at runtime by build.edn
+  :build {:app "?APP?" :git "?HASH?" :bld "?TIME?"}}
 
 ;;.

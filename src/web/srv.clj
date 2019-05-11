@@ -10,7 +10,7 @@
 ;
 
 (defn start [handler]
-  (let [hc (:http conf)]
+  (let [hc (-> conf :main :http)]
     (info "build -" (:build conf))
     (info "start server -" hc)
     (run-jetty handler hc)))
