@@ -84,7 +84,7 @@
 
 
 (defn is-admin? [uid]
-  (-> conf :calendar :admins (get uid)))
+  (-> conf :main :calendar :admins (get uid)))
 ;
 
 (defn allow-add? [uid tinfo]

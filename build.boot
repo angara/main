@@ -16,7 +16,7 @@
   ;; boot -d boot-deps ancient
   :dependencies
   '[
-    [org.clojure/clojure "1.10.0"]
+    [org.clojure/clojure "1.10.1"]
  ;   [org.clojure/tools.namespace "0.2.11" :scope "test"]
     [org.clojure/core.cache "0.7.2"]
 

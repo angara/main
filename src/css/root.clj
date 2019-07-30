@@ -230,9 +230,11 @@
 
   [:.yandex-adaptive
     {:width "940px" :height "120px" :margin "0 auto"}]
+
   (at-media {:max-width (px 768)}
     [:.yandex-adaptive
       {:width "600px" :height "120px"}])
+
   (at-media {:max-width (px 576)}
     [:.yandex-adaptive
       {:width "290px" :height "250px"}])

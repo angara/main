@@ -65,8 +65,6 @@
     ;
     (context "/meteo"         _ meteo-routes)
     ;
-    (context "/meteo1"        _ meteo-routes)   ;; TODO: remove
-    ;
     (GET     "/search"        _ (redirect "/yasearch/"))
     ;; (GET     "/yasearch"      _ search/yasearch)
     (GET     "/yasearch/"     _ ya-search)
@@ -110,9 +108,9 @@
   (->
     (make-routes)
     (wrap-user)
-    ;; (wrap-csrf {:skip-uris #{"/auth/login"}})   ;; TODO: fix
     (wrap-sess sess-load)
     middleware
     (wrap-slowreq (:slowreq conf))))
+;
 
 ;;.

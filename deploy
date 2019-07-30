@@ -1,20 +1,19 @@
 #!/bin/bash
 
-PROD_HOST="www@ex1"
-PROD_PATH="/www/main"
-PROD_VAR="/www/main/var"
-PROD_CONF="/www/conf/main.edn"
+PROD_HOST="app"
+PROD_PATH="/app/main"
+PROD_CONF="/app/conf/main.edn"
 
-JAR="tmp/target/main.jar"
+JAR="tmp/angara-main.jar"
 
+# PROD_VAR="/www/main/var"
 # ssh $PROD_HOST mkdir -p ${PROD_VAR} 
 
 chmod g+r $JAR
-scp $JAR ${PROD_HOST}:${PROD_PATH}
-# scp ../conf/main.edn ${PROD_HOST}:${PROD_CONF}
-# scp run stop ${PROD_HOST}:${PROD_PATH}
-# scp www-main.service ${PROD_HOST}:${PROD_PATH}
+scp pm2.json run.sh $JAR ${PROD_HOST}:${PROD_PATH}
 
-ssh $PROD_HOST $PROD_PATH/stop
+# scp ../conf/main.edn ${PROD_HOST}:${PROD_CONF}
+
+ssh ${PROD_HOST} pm2 restart main
 
 #.

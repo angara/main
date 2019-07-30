@@ -34,7 +34,7 @@
 (defn curr-temp [req]
   (when-let [st (or
                   (some get-fresh (take 10 (st-param req)))
-                  (some get-fresh (-> conf :meteo :st_default)))]
+                  (some get-fresh (-> conf :main :meteo :st_default)))]
     (when-let [t (format-t ""
                     (-> st :last :t)
                     (-> st :trends (fresh) :t :avg))]

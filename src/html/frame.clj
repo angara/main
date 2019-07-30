@@ -10,7 +10,6 @@
     [meteo.curr :refer [curr-temp]]))
 ;
 
-
 (def INCS "/incs/")
 
 (defn inc-pfx [uri]
@@ -36,7 +35,7 @@
   (let [wt (or title page-title)
         ds (or og-descr DESCR)
         og-tit (or og-title wt "Angara.Net")
-        og-img (str "http://angara.net" (or og-image (inc-pfx "img/angara-og.png")))
+        og-img (str "https://angara.net" (or og-image (inc-pfx "img/angara-og.png")))
         og-url (or og-url
                 (make-url "https" "angara.net" (:uri req) (:query-string req)))]
     (list
@@ -171,7 +170,7 @@
           [:div.col-sm-4.text-right
             [:div.copy
               [:br]
-              [:a.copy-tm {:href "http://angara.net/"} "Angara.Net"]
+              [:a.copy-tm {:href "https://angara.net/"} "Angara.Net"]
               " &copy; 2002-2019"]]
           ;
           [:div.clearfix]]]]

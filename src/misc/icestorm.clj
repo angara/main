@@ -14,8 +14,8 @@
 
 (defn index [req]
   (layout req
-    {:title "IceStorm - 2019: регистрация"
-     :page-title "Ледовый Шторм 2019 - Ice Storm 2019"}
+    {:title "IceStorm - 2020: регистрация"
+     :page-title "Ледовый Шторм 2020 - Ice Storm 2020"}
     [:div.icestorm
       [:div.container
         {:style {:padding "14px 0 20px 0"}}
@@ -113,8 +113,8 @@
 
 (defn send-text [text]
   (try
-    (let [smtp  (-> conf :icestorm :smtp)
-          envel (-> conf :icestorm :envel)
+    (let [smtp  (-> conf :smtp)
+          envel (-> conf :icestorm :envelope)
           rc  (send-message smtp
                 (merge envel {:type "text/plain;charset=utf-8" :body text}))]
       (-> rc :error (= :SUCCESS)))

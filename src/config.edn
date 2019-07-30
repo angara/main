@@ -9,43 +9,54 @@
     {
       :host  "127.0.0.1"
       :port  8001
-      :join? false}}
-  ;;  
+      :join? false}
+    ;
 
+    :calendar {:admins #{"1" "6441"}}
 
-  :tz "Asia/Irkutsk"
+    :meteo 
+    {
+      :st_default
+      [ "uiii" "irgp" "asbtv" "npsd" "olha" "zbereg" "polyana"
+        "lin_list" "nicola" "mamai" "lin_uzur lin_ushk"]}
+    ;
 
-  ; :mdb-angara { :uri "mongodb://localhost:22022/angara"}
-  ; :mdb-meteo  { :uri "mongodb://localhost:22022/meteo"}
+    :forum 
+    {
+      ;; hardcoded in jsp module
+      :upload-uri "/upload/"
+      :upload-dir "/app/files/upl/"}
   
+    :photomap 
+    {
+      :hash-dir "../files/bots/photos"
+      :base-uri "/photomap"
+      :google-key "__KEY__"}
+    
+    :icestorm 
+    {
+      :envelope 
+      {
+        :from "noreply@angara.net"
+        :to ["maxp@ya.ru"]
+        :subject "IceStorm 2020: регистрация"}}}
 
+  ;; ;; ;; ;; ;; ;; ;; ;; ;;
+  ;; commons    
+  ;; ;; ;; ;; ;; ;; ;; ;; ;;
 
-  ;; calendar
-  :calendar 
-  {
-    :admins #{"1" "6441"}}
-      
-  
-
-  ;; meteo
-  :meteo 
-  {
-    :st_default
-          [
-            "uiii" "irgp" "asbtv" "npsd"
-            "olha" "irk2" "zbereg"
-            "lin_baik" "lin_list" "nicola" "ulirba" "mamai"]}
-  
-
-  ;; common
   :urls
   {
     :login      "https://angara.net/auth/login"
     :logout     "https://angara.net/auth/logout"
     :auth_reset "https://angara.net/auth/reset"
     :register   "https://angara.net/auth/register"}
-  
- 
+  ;  
+            
+  ;; ;; ;; ;; ;; ;; ;; ;; ;;
+
+  ; :mdb-angara { :uri "mongodb://localhost:22022/angara"}
+  ; :mdb-meteo  { :uri "mongodb://localhost:22022/meteo"}
 
   ;; https://github.com/brettwooldridge/HikariCP
   :psql {:jdbc-url "jdbc:postgresql://localhost:5516/angara?user=angara&password=..."}
@@ -70,54 +81,11 @@
   :rtb-bottom "R-A-1908-8"
 
   :slowreq {:ms 1000}
-  
-  ;; app modules ;;
 
-  :forum 
-  {
-    ;; hardcoded in jsp module
-    :upload-uri "/upload/"
-    :upload-dir "/www/angara/upload/"}
-  
-
-  :photomap 
-  {
-      :hash-dir "../bots/var/photos"
-      :base-uri "/photomap"
-      :google-key "__KEY__"}
-  
-
-  ; :bots {
-  ;   ;; t2
-  ;   :meteo38bot {
-  ;     :apikey "tlg-api-key"
-  ;     :sender-sleep 5000
-  ;     :poll-limit 100
-  ;     :poll-timeout 3     ;; must be less than socket-timeout!
-  ;   }
-  ;   ;; yo
-  ;   ; :angarabot {
-  ;   ;   :apikey "tlg-api-key"
-  ;   ; }
-  ; }
-
-  :icestorm 
-  {
-    :smtp 
-    {
-      :host "smtp.yandex.com"
-      :ssl  true
-      :port 465
-      :user "noreply@angara.net"
-      :pass "anga.smtp16"}
-
-    :envel 
-    {
-      :from "noreply@angara.net"
-      :to ["maxp@ya.ru"]
-      :subject "IceStorm 2017: регистрация"}}
+  :tz "Asia/Irkutsk"
 
   ;; values are overriden at runtime by build.edn
-  :build {:app "?APP?" :git "?HASH?" :bld "?TIME?"}}
+  :build {:app "?APP?" :git "?HASH?" :bld "?TIME?"}
 
+  :. :.}
 ;;.

@@ -21,7 +21,6 @@ function do_logout() {
 
 function popmenu_toggle(evt)
 {
-  console.log("toggle:", evt);
   evt.preventDefault();
   var popmenu = $(evt.currentTarget).closest(".c-popmenu");
   if(!popmenu.length) {

@@ -235,8 +235,10 @@
     ;
     [:div.b-meteo
       [:b "SVG image"]
+      [:br] [:br]
+      [:img {:src "graph/t3.svg?st=uiii" :style "width:60%; margin:0;"}]
       [:br]
-      [:img {:src "graph/t3.svg?st=uiii" :style "width:40%;"}]]))
+      [:br]]))
 ;
   
 ;; ;; ;; ;; ;; ;; ;; ;; ;; ;;
