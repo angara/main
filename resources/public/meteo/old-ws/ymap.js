@@ -33,7 +33,7 @@
   };
 
   function meteo_link(st_id) {
-    return "httpa://angara.net/meteo/st/"+st+id
+    return "https://angara.net/meteo/st/"+st_id;
   }
 
   t_deg = function(t) {
