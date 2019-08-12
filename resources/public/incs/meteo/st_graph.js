@@ -179,7 +179,7 @@ $(function() {
                 tooltip: { valueSuffix: ' %' }
               },
               {
-                name: "Сила ветра",
+                name: "Ветер",
                 type: 'column',
                 data: w_series,
                 color: "#6ae",

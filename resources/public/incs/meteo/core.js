@@ -286,7 +286,7 @@ $(function() {
           tooltip: { valueSuffix: ' %' }
         },
         {
-          name: "Сила ветра",
+          name: "Ветер",
           type: 'spline',
           data: w_series,
           yAxis: 3,
