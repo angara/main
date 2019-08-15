@@ -51,7 +51,7 @@
 
 (defn tinfo-calendar [tinfo]
   (when tinfo
-    (let [cnf (:forum conf)
+    (let [cnf (-> conf :main :forum)
           dir (:upload-dir cnf)
           {type :type base :base} (:attach tinfo)
           t100 (str base "_100.jpg")
