@@ -21,8 +21,7 @@
 
 (defn index [req]
   (let [build (:build conf)
-        tearline (str (:name build) " " (:version build)
-                      " b" (:num build) ". " (:timestamp build))]
+        tearline (str (:app build) " " (:bld build))]
     (text-resp (str "
 meteo API endpoints:
 ---

@@ -272,6 +272,7 @@ $(function() {
             type: 'spline',
             yAxis: 1,
             data: p_series,
+            color: '#bb22bb',
             // marker: {
             //     enabled: false
             // },
@@ -282,6 +283,7 @@ $(function() {
           name: "Влажность",
           type: 'spline',
           data: h_series,
+          color: '#228822',
           yAxis: 2,
           tooltip: { valueSuffix: ' %' }
         },
@@ -289,6 +291,7 @@ $(function() {
           name: "Ветер",
           type: 'spline',
           data: w_series,
+          color: '#220088',
           yAxis: 3,
           tooltip: { valueSuffix: ' м/с' }
         }

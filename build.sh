@@ -19,6 +19,6 @@ clj -e "(set! *compile-path* \"${CLASSES}\") (compile 'web.main)" \
   || exit 1
 
 echo "start command:"
-echo "  CONFIG_EDN=../conf/__CONF__.edn java -jar angara-main.jar -m web.main"
+echo "  CONFIG_EDN=../conf/__CONF__.edn java -jar angara-main.jar"
 
 #.
