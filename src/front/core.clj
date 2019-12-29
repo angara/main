@@ -1,7 +1,6 @@
 (ns front.core
   (:require
-    [mlib.log :refer [warn]]
-    [mlib.conf :refer [conf]]
+    [mlib.logger :refer [warn]]
     [html.frame :refer [render-layout]]))
 ;
 

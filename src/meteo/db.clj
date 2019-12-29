@@ -7,8 +7,8 @@
     [monger.conversion :refer [from-db-object]]
     [mount.core :refer [defstate]]
     ;
-    [mlib.log :refer [warn]]
-    [mlib.conf :refer [conf]]
+    [mlib.logger :refer [warn]]
+    [mlib.config :refer [conf]]
     [mdb.core :refer [connect disconnect try-warn]]))
 ;
 
@@ -133,7 +133,7 @@
         (mq/limit 1))
       (first)
       (:hour))
-    (catch Exception e
+    (catch Exception _e
       (warn "hourly-ts0:" st_id))))
 ;
 
@@ -146,7 +146,7 @@
         (mq/limit 1))
       (first)
       (:hour))
-    (catch Exception e
+    (catch Exception _e
       (warn "hourly-ts1:" st_id))))
 ;
 

@@ -2,7 +2,7 @@
 (ns sql.core
   (:require
     [clojure.string :as s]
-    [mlib.log :refer [warn]]
+    [mlib.logger :refer [warn]]
     [jdbc.core :as jdbc]
     [honeysql.core :as sql]
     [sql.conn :refer [dbc]]))
@@ -58,7 +58,8 @@
 ;; ;; ;; ;; ;; ;; ;; ;; ;; ;; ;;
 
 (comment
-  (def struct
+
+  (def _struct
     { :table "table_name"
       :fields
         [ :id [:serial :pkey]

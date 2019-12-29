@@ -5,8 +5,8 @@
     [monger.query :as mq]
     [mount.core :refer [defstate]]
     ;
-    [mlib.log :refer [warn]]
-    [mlib.conf :refer [conf]]
+    [mlib.logger :refer [warn]]
+    ;[mlib.config :refer [conf]]
     [mdb.core :refer [dbc try-warn]]))
 ;
 

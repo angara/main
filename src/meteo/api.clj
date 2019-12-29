@@ -2,24 +2,24 @@
 (ns meteo.api
   (:require
     [clojure.string :as s]
-    [compojure.core :refer [GET ANY defroutes]]
+    [compojure.core :refer [GET defroutes]]
     [clj-time.core :as tc]
     [clj-time.format :as tf]
     ;
-    [mlib.conf :refer [conf]]
+    [mlib.config :refer [conf]]
     [mlib.core :refer [to-float to-int]]
     [mlib.http :refer [json-resp text-resp]]
-    [mlib.log :refer [debug warn]]
+    [mlib.logger :refer [debug warn]]
     ;
     [mdb.core :refer [id_id]]
-    [meteo.db :refer [db st-ids st-near PUB_FIELDS hourly-data]]))
+    [meteo.db :refer [st-ids st-near PUB_FIELDS hourly-data]]))
 ;
 
 (def ST_MAX_NUM 50)
 (def HOURLY_FETCH_LIMIT 50000)  ;; 24*30*50 = 36000
 (def HOURS_MAX 3000)            ;; 24*30*3 = 2160
 
-(defn index [req]
+(defn index [_req]
   (let [build (:build conf)
         tearline (str (:app build) " " (:bld build))]
     (text-resp (str "

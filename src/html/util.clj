@@ -1,9 +1,8 @@
 
 (ns html.util
   (:require
-    [mlib.log :refer [warn]]
+    [mlib.logger :refer [warn]]
     [mlib.http :as h]
-    [mlib.conf :refer [conf]]
     [mlib.web.snippets :as snip]))
 ;
 
@@ -57,10 +56,10 @@
 ;   (str "http://www.gravatar.com/avatar/" (digest/md5 (str u)) "?d=identicon&s=" s))
 
 
-(defn- req-url [req]
-  (let [qs (:query-string req)]
-    (str (:uri req) (and qs (str "?" qs)))))
-;
+; (defn- req-url [req]
+;   (let [qs (:query-string req)]
+;     (str (:uri req) (and qs (str "?" qs)))))
+; ;
 
 (defn req-tempfile [req file-param]
   (try

@@ -1,10 +1,10 @@
 
 (ns web.srv
   (:require
-    [mlib.log :refer [debug info warn]]
+    [mlib.logger :refer [debug info warn]]
     [ring.adapter.jetty :refer [run-jetty]]
     [mount.core :refer [defstate] :as mount]
-    [mlib.conf :refer [conf]]
+    [mlib.config :refer [conf]]
     [mlib.web.middleware :refer [middleware]]
     [web.app :as app]))
 ;

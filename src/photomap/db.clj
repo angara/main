@@ -1,9 +1,8 @@
 
 (ns photomap.db
   (:require
-    [mlib.log :refer [debug info warn]]
-    [monger.collection :as mc]
     [monger.query :as mq]
+    [mlib.logger :refer [warn]]
     [mdb.core :refer [dbc try-warn]]))
 ;
 

@@ -2,10 +2,10 @@
 (ns misc.icestorm
   (:require
     [clojure.string :as s]
-    [mlib.log :refer [warn]]
+    [mlib.logger :refer [warn]]
     [compojure.core :refer [GET POST defroutes]]
     [postal.core :refer [send-message]]
-    [mlib.conf :refer [conf]]
+    [mlib.config :refer [conf]]
     [mlib.core :refer [to-int]]
     [mlib.http :refer [json-resp]]
     [html.frame :refer [layout]]))
@@ -122,7 +122,7 @@
       (warn "send-text:" e))))
 ;
 
-(defn register [{params :params :as req}]
+(defn register [{params :params :as _req}]
   (let [name  (-> params :name  str s/trim validate-name)
         phone (-> params :phone str s/trim validate-phone)
         email (-> params :email str s/trim validate-email)

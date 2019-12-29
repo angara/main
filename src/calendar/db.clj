@@ -6,8 +6,7 @@
     [monger.query :as mq]
     [mount.core :refer [defstate]]
     ;
-    [mlib.log :refer [warn]]
-    [mlib.conf :refer [conf]]
+    [mlib.logger :refer [warn]]
     [mdb.core :refer [dbc try-warn new_id oid]]))
 ;
 

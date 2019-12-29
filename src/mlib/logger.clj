@@ -14,8 +14,17 @@
     (. ZonedDateTime now)))
 ;
 
-(defn format-item [logger & args]
-  (str (timestamp) " " (:name logger) " " (apply pr-str args)))
+(defn format-metainfo [mi]
+  (str (.toUpperCase (name (:level mi))) ":" (:ns mi) "." (:line mi)))
+;
+
+(defn format-item [metainfo & args]
+  (str 
+    (timestamp) 
+    " " 
+    (format-metainfo metainfo) 
+    " " 
+    (apply pr-str args)))
 ;
 
 (defn stdout-handler [logger & args]
@@ -32,47 +41,79 @@
     :error stderr-handler})
 ;
 
-(defonce logger-map (atom {}))
-
-(defn register! [level file line]
-  (let [id (keyword (gensym "logger_"))]
-    (swap! logger-map assoc id 
-      { :level level 
-        :file file 
-        :line line 
-        :name (str (.toUpperCase (name level)) ":" file "." line)
-        :handler (get level-handler-map level stderr-handler)})
-    id))
+(defn get-handler [metainfo]
+  (or 
+    (get level-handler-map (:level metainfo))
+    (get level-handler-map :error)))
 ;
 
-(defn log! [id & args]
-  (let [logger (get @logger-map id)
-        handler (:handler logger)]  
-    (if handler
-      (apply handler logger args)
-      (.println *err* 
-        (apply str (str "!!! missing logger: " id " !!! ") args)))))
+; (defonce logger-map (atom {}))
+
+; (defn register! [level file line]
+;   (let [id (keyword (gensym "logger_"))]
+;     (swap! logger-map assoc id 
+;       { :level level 
+;         :file file 
+;         :line line 
+;         :name (str (.toUpperCase (name level)) ":" file "." line)
+;         :handler (get level-handler-map level stderr-handler)})
+;     id))
+; ;
+
+; (defn log! [id & args]
+;   (let [logger (get @logger-map id)
+;         handler (:handler logger)]  
+;     (if handler
+;       (apply handler logger args)
+;       (.println *err* 
+;         (apply str (str "!!! missing logger: " id " !!! ") args)))))
+; ;
+
+(defn log! 
+  "metainfo is a map {:level log_level  :ns namespace_string  :line file_line}"
+  [metainfo & args]
+  (apply (get-handler metainfo) metainfo args))
 ;
 
 (defmacro debug [& args]
-  (let [id (register! :debug (str *ns*) (:line (meta &form)))]
-    `(log! ~id ~@args)))
+  (let [metainfo {:level :debug :ns (str *ns*) :line (:line (meta &form))}]
+    `(log! ~metainfo ~@args)))
 ;
 
 (defmacro info [& args]
-  (let [id (register! :info (str *ns*) (:line (meta &form)))]
-    `(log! ~id ~@args)))
+  (let [metainfo {:level :info :ns (str *ns*) :line (:line (meta &form))}]
+    `(log! ~metainfo ~@args)))
 ;
 
 (defmacro warn [& args]
-  (let [id (register! :warn (str *ns*) (:line (meta &form)))]
-    `(log! ~id ~@args)))
+  (let [metainfo {:level :warn :ns (str *ns*) :line (:line (meta &form))}]
+    `(log! ~metainfo ~@args)))
 ;
 
 (defmacro error [& args]
-  (let [id (register! :error (str *ns*) (:line (meta &form)))]
-    `(log! ~id ~@args)))
+  (let [metainfo {:level :error :ns (str *ns*) :line (:line (meta &form))}]
+    `(log! ~metainfo ~@args)))
 ;
+
+; (defmacro debug [& args]
+;   (let [id (register! :debug (str *ns*) (:line (meta &form)))]
+;     `(log! ~id ~@args)))
+; ;
+
+; (defmacro info [& args]
+;   (let [id (register! :info (str *ns*) (:line (meta &form)))]
+;     `(log! ~id ~@args)))
+; ;
+
+; (defmacro warn [& args]
+;   (let [id (register! :warn (str *ns*) (:line (meta &form)))]
+;     `(log! ~id ~@args)))
+; ;
+
+; (defmacro error [& args]
+;   (let [id (register! :error (str *ns*) (:line (meta &form)))]
+;     `(log! ~id ~@args)))
+; ;
 
 (comment
 

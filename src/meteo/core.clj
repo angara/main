@@ -1,14 +1,14 @@
 
 (ns meteo.core
   (:require
-    [clojure.string :as s]
+    ; [clojure.string :as s]
     [clj-time.core :as tc]
     [clj-time.coerce :refer [to-long]]
     ;
     [ring.util.response :refer [redirect]]
-    [compojure.core :refer [defroutes GET POST]]
+    [compojure.core :refer [defroutes GET]]
     ;
-    [mlib.conf :refer [conf]]
+    [mlib.config :refer [conf]]
     [mlib.core :refer [hesc to-int]]
     [mlib.time :refer [ddmmyyyy hhmm]]
     ; [mlib.http :refer [json-resp]]))

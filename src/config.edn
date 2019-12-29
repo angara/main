@@ -4,7 +4,7 @@
 
 {
   :main
-  { ; https://github.com/ring-clojure/ring/blob/master/ring-jetty-adapter/src/ring/adapter/jetty.clj
+  {
     :http 
     {
       :host  "127.0.0.1"
@@ -59,7 +59,9 @@
   ; :mdb-meteo  { :uri "mongodb://localhost:22022/meteo"}
 
   ;; https://github.com/brettwooldridge/HikariCP
-  :psql {:jdbc-url "jdbc:postgresql://localhost:5516/angara?user=angara&password=..."}
+  :psql 
+  {
+    :jdbc-url "jdbc:postgresql://localhost:5516/angara?user=angara&password=..."}
     ; :connection-timeout 30000
     ; :idle-timeout 600000
     ; :max-lifetime 1800000
@@ -77,15 +79,20 @@
   :mailru-top         "474619"
   :analytics          "UA-486770-1"
 
-  :rtb-top    "R-A-1908-10"
-  :rtb-bottom "R-A-1908-8"
+  :rtb-top    "R-A-1908-15"
+  :rtb-bottom "R-A-1908-14"
 
   :slowreq {:ms 1000}
 
   :tz "Asia/Irkutsk"
 
   ;; values are overriden at runtime by build.edn
-  :build {:app "?APP?" :git "?HASH?" :bld "?TIME?"}
+  :build 
+  {
+    :appname "angara/main" 
+    :version "?.?.?" 
+    :commit "?HASH?" 
+    :timestamp "?TIME?"}   ;; 2019-12-29T19:25:44+08:00
 
   :. :.}
 ;;.

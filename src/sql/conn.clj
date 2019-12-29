@@ -1,13 +1,13 @@
 
 (ns sql.conn
   (:require
-    [mlib.log :refer [info warn]]
+    ;[mlib.logger :refer [info warn]]
     [clj-time.coerce :as tc]
     [jdbc.core :as jdbc]
     [jdbc.proto :refer [ISQLType ISQLResultSetReadColumn]]
     [hikari-cp.core :refer [make-datasource]]
     [mount.core :refer [defstate]]
-    [mlib.conf :refer [conf]]))
+    [mlib.config :refer [conf]]))
 ;
 
 ;; https://github.com/tomekw/hikari-cp/
@@ -23,10 +23,10 @@
           :password "password"
           :database-name "database"
           :server-name "localhost"
-          :port-number 5432})
+          :port-number 5432}))
 
-  (with-open [conn (jdbc/connection ds)]
-    (do-stuff conn)))
+  ; (with-open [conn (jdbc/connection ds)]
+  ;   (do-stuff conn)))
 ;
 
 

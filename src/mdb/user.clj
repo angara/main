@@ -1,11 +1,12 @@
 
 (ns mdb.user
   (:require
-    [mlib.log :refer [warn]]
+    [mlib.logger :refer [warn]]
     [clojure.core.cache :as cache]
     [monger.collection :as mc]
-    [mlib.conf :refer [conf]]
-    [mlib.core :refer [urand-bytes hexbyte]]
+    ;
+    [mlib.random :refer [random-bytes urand64]]
+    [mlib.core :refer [hexbyte]]
     [mlib.time :refer [now-ms]]
     [mdb.core :refer [dbc id_id]]))
 ;
@@ -20,9 +21,19 @@
 ;;; sess
 
 (defn new-sid []
-  (apply str (format "%x" (now-ms)) "." (map hexbyte (urand-bytes 8))))
-;
+  (apply str 
+    (format "%x" (now-ms)) 
+    "." 
+    (map hexbyte (random-bytes 8))))
+;;
 
+(comment
+
+  (new-sid)
+
+  (format "%d.%d" (now-ms) (biginteger (urand64)))
+
+  .)
 
 (def sess-cache
   (atom (cache/ttl-cache-factory {} :ttl 10000)))

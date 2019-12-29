@@ -4,18 +4,18 @@
 
 (ns web.app
   (:require
-    [mlib.log :refer [debug info warn]]
+    [mlib.logger :refer [debug info warn]]
     [ring.util.response :refer [redirect]]
-    [compojure.core :refer [GET POST ANY context routes]]
+    [compojure.core :refer [GET ANY context routes]]
     [compojure.route :as route]
 
-    [monger.collection :as mc]
-    [monger.operators :refer [$set $unset]]
+    ; [monger.collection :as mc]
+    ; [monger.operators :refer [$set $unset]]
 
-    [mlib.conf :refer [conf]]
-    [mlib.http :refer [json-resp text-resp]]
+    [mlib.config :refer [conf]]
+;    [mlib.http :refer [json-resp text-resp]]
     [mlib.time :refer [now-ms]]
-    [mlib.web.sess :refer [wrap-sess sid-resp]]
+    [mlib.web.sess :refer [wrap-sess]] ; sid-resp]]
     [mlib.web.middleware :refer [middleware]]
 
     [mdb.user :refer [user-by-id sess-load FLDS_REQ_USER]]
@@ -41,7 +41,7 @@
 ; ;
 
 
-(defn api-404 [req]
+(defn api-404 [_req]
   { :status  404
     :headers {"Content-Type" "text/plain"}
     :body    "API endpoint not found"})
@@ -96,9 +96,9 @@
 (defn wrap-slowreq [handler cnf]
   (let [ms (:ms cnf)]
     (fn [req]
-      (let [t0 (do (now-ms))
-            resp (do (handler (assoc req :start-time t0)))
-            dt (do (- (now-ms) t0))]
+      (let [t0    (now-ms)
+            resp  (handler (assoc req :start-time t0))
+            dt    (- (now-ms) t0)]
         (when (< ms dt)
           (info "slowreq:" dt (:remote-addr req)(:uri req)))
         resp))))

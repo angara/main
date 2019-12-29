@@ -1,7 +1,7 @@
 
 (ns meteo.curr
   (:require
-    [mlib.conf :refer [conf]]
+    [mlib.config :refer [conf]]
     ;
     [meteo.db :refer [st-by-id]]
     [meteo.fmt :refer [format-t]]

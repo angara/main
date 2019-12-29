@@ -5,7 +5,7 @@
     [clj-time.core :as tc]
     [compojure.core :refer [defroutes GET POST]]  ;context ANY
     ;
-    [mlib.conf :refer [conf]]
+    [mlib.config :refer [conf]]
     [mlib.core :refer [to-int]]
     [mlib.http :refer [json-resp]]
     ;

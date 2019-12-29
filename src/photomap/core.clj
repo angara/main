@@ -2,11 +2,11 @@
 (ns photomap.core
   (:require
     [hiccup.page :refer [html5]]
-    [compojure.core :refer [GET POST routes]]
+    [compojure.core :refer [GET routes]]
     [compojure.route :refer [files]]
     ;
-    [mlib.log :refer [debug info warn]]
-    [mlib.conf :refer [conf]]
+    ;[mlib.logger :refer [debug info warn]]
+    [mlib.config :refer [conf]]
     [mlib.http :refer [json-resp]]
     [mlib.time :refer [ddmmyy-hhmm]]
     ;
@@ -71,7 +71,7 @@
       :orig (photo-uri hash ".jpg"))))
 ;
 
-(defn markers [req]
+(defn markers [_req]
   (let [photos (db/hist)]
     (json-resp {:ok 1 :markers (map photo->marker photos)})))
 ;

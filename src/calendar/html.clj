@@ -1,16 +1,15 @@
 
 (ns calendar.html
   (:require
-    [clojure.string :refer [lower-case]]
     [clj-time.core :as tc]
     [hiccup.core :refer [html]]
     [ring.util.response :refer [header]]
     ;
-    [mlib.log :refer [debug info warn]]
+    [mlib.logger :refer [debug warn]]
     [mlib.core :refer [hesc]]
     [mlib.http :refer [html-resp]]
     [mlib.time :refer [ddmmyyyy]]
-    [mlib.web.snippets :refer [ya-rtb]]
+    ; [mlib.web.snippets :refer [ya-rtb]]
     ;
     [html.frame :refer [render-layout]]
     [misc.util :refer [rus-date]]
@@ -75,14 +74,14 @@
               (hesc (:title r))]])])))
 ;
 
-(defn front-block [req]
+(defn front-block [_req]
   (let [crecs (take FRONT_BLOCK_LIMIT (crecs-publ))]
     (->
       [:div.b-calendar-block
         (for [r crecs
               :let [dt (rus-date (:date r))
                     title (:title r)
-                    img (:thumb r)
+                    _img (:thumb r)
                     url (:link r)]]
           [:div.crec
             [:a {:href url}

@@ -2,7 +2,7 @@
 (ns html.frame
   (:require
     [hiccup.page :refer [html5]]
-    [mlib.conf :refer [conf]]
+    [mlib.config :refer [conf]]
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [yandex-metrika mailru-top ya-rtb]]
     [html.util :refer [glyphicon css-link script]]
@@ -154,7 +154,7 @@
                 (ext-fn req))])]]]))
 ;
 
-(defn footer [req]
+(defn footer [_req]
   [:div.b-footer
     [:div.footer-bg
       [:div.container
@@ -171,7 +171,7 @@
             [:div.copy
               [:br]
               [:a.copy-tm {:href "https://angara.net/"} "Angara.Net"]
-              " &copy; 2002-2019"]]
+              " &copy; 2002-2020"]]
           ;
           [:div.clearfix]]]]
     ;; counters

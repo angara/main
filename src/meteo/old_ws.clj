@@ -5,17 +5,17 @@
     [monger.collection :as mc]
     [monger.query :as mq]
     [hiccup.page :refer [html5]]
-    [compojure.core :refer [GET ANY defroutes]]
+    [compojure.core :refer [GET defroutes]]
     [compojure.route :refer [resources]]
     ;
-    [mlib.log :refer [warn]]
+    [mlib.logger :refer [warn]]
     [mlib.http :refer [json-resp]]
     [meteo.db :refer [db ST]]))
 ;
 
 (def BASE "/meteo/old-ws")
 
-(defn index [req]
+(defn index [_req]
   (html5
     [:html
       [:head

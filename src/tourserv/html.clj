@@ -2,10 +2,9 @@
 
 (ns tourserv.html
   (:require
-    [mlib.log :refer [debug info warn]]
-    [mlib.conf :refer [conf]]
+    [mlib.config :refer [conf]]
     [mlib.core :refer [hesc]]
-    [mlib.web.snippets :refer [ya-rtb]]
+    ; [mlib.web.snippets :refer [ya-rtb]]
     ;
     [html.frame :refer [render-layout]]
     [tourserv.const :refer [TYPES TYPE_MAP TOWNS TOWN_MAP]]

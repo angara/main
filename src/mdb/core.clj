@@ -1,18 +1,19 @@
 
 (ns mdb.core
   (:require
-    [mlib.log :refer [warn]]
-    [clj-time.core :as t]
+    [mlib.logger :refer [warn]]
+    ; [clj-time.core :as t]
     [mount.core :refer [defstate]]
     [monger.json]
     [monger.joda-time]
     [monger.core :as mg]
     [monger.collection :as mc]
-    [monger.query :as query]
-    [mlib.conf :refer [conf]])
+    ;c[monger.query :as query]
+    [mlib.config :refer [conf]])
   (:import
     [org.bson.types ObjectId]
-    [com.mongodb MongoOptions ServerAddress WriteConcern]
+    ;[com.mongodb MongoOptions ServerAddress WriteConcern]
+    [com.mongodb WriteConcern]
     [org.joda.time DateTimeZone]))
 ;
 
@@ -64,8 +65,9 @@
 (defn new_id [] (ObjectId.))
 
 (defn oid [s]
-  (try (ObjectId. s) (catch Exception e (str s))))
-
+  (try (ObjectId. s) 
+    (catch Exception _e (str s))))
+;
 
 ;;; ;;; ;;; ;;; ;;;
 

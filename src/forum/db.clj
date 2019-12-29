@@ -5,10 +5,8 @@
     [clj-time.core :as tc]
     [honeysql.helpers :as h]
     ;
-    [mlib.conf :refer [conf]]
-;    [mlib.log :refer [warn]]
     [mlib.core :refer [to-int]]
-    [sql.core :refer [fetch exec insert-into]]))
+    [sql.core :refer [fetch exec]])) ;insert-into]]))
 ;
 
 (def FORUM_LASTREAD (keyword "forum_lastread"))

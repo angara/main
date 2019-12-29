@@ -4,7 +4,7 @@
     [clojure.string :as s]
     [clj-time.core :as tc]
     ;
-    [mlib.conf :refer [conf]]))
+    [mlib.config :refer [conf]]))
 ;
 
 
@@ -22,7 +22,7 @@
         (:ts data)
         (tc/minus (tc/now) FRESH_INTERVAL))
       data)
-    (catch Exception ignore)))
+    (catch Exception _ignore)))
 ;
 
 (defn comma-split [s]

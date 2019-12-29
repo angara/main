@@ -5,14 +5,15 @@
     [clojure.string :as s]
     [clj-time.core :as tc]
     [honeysql.helpers :as h]
-    [compojure.core :refer [GET POST ANY defroutes]]
+    [compojure.core :refer [GET POST defroutes]]
     ;
-    [mlib.log :refer [warn]]
+    [mlib.logger :refer [warn]]
     [mlib.http :refer [json-resp]]
     [mlib.core :refer [to-int]]
     [sql.core :refer [fetch exec]]
     ;
-    [forum.db :refer [FORUM_TOPICS FORUM_LASTREAD USERS lastreads get-lastread insert-watch update-watch]]))
+    [forum.db :refer 
+      [FORUM_TOPICS FORUM_LASTREAD USERS lastreads get-lastread insert-watch update-watch]]))
 ;
 
 
@@ -157,7 +158,7 @@
     (let [uid   (-> user   :id to-int)
           tid   (-> params :tid to-int)
           watch (-> params :watch to-int)]
-      (if (and uid tid watch)
+      (when (and uid tid watch)
         (if (update-watch uid tid watch)
           (json-resp {:ok 1 :act "watch-updated" :tid tid :watch watch})
           (if (insert-watch uid tid watch)

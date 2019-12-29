@@ -51,18 +51,17 @@
 /out/
 /tmp/
 /node_modules/
-
-# explicit versions in package.json
-/package-lock.json
+__pycache__/
 
 ## allow 
 !.gitignore
 !.dockerignore
 !.eslint*
 !.npmingore
+!.travis.yml
 !yarn.lock
 
-# vscode java
+## vscode java
 !.classpath
 !.project
 

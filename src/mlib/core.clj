@@ -7,8 +7,8 @@
     [clojure.string :as s]
     [clojure.java.io :as io]
     [clojure.edn :as edn]
-    [cheshire.core :as json]
-    [cheshire.generate :refer [add-encoder]])
+    [cheshire.core :as json])
+;    [cheshire.generate :refer [add-encoder]])
   (:import
     [java.security MessageDigest]))
 ;
@@ -25,7 +25,7 @@
   ( [s default]
     (try
       (if (string? s) (Integer/parseInt s) (int s))
-      (catch Exception ignore default))))
+      (catch Exception _ignore default))))
 ;
 
 (defn ^Integer to-long
@@ -35,7 +35,7 @@
   ( [s default]
     (try
       (if (string? s) (Long/parseLong s) (long s))
-      (catch Exception ignore default))))
+      (catch Exception _ignore default))))
 ;
 
 (defn ^Float to-float
@@ -45,7 +45,7 @@
   ( [s default]
     (try
       (if (string? s) (Float/parseFloat s) (float s))
-      (catch Exception ignore default))))
+      (catch Exception _ignore default))))
 ;
 
 (defn ^Double to-double
@@ -55,19 +55,19 @@
   ( [s default]
     (try
       (if (string? s) (Double/parseDouble s) (double s))
-      (catch Exception ignore default))))
+      (catch Exception _ignore default))))
 ;
 
-(defn urand-bytes [n]
-  (with-open [in (io/input-stream (io/file "/dev/urandom"))]
-    (let [buf (byte-array n)
-          nrd (.read in buf)]
-      buf)))
-;
+; (defn urand-bytes [n]
+;   (with-open [in (io/input-stream (io/file "/dev/urandom"))]
+;     (let [buf (byte-array n)
+;           nrd (.read in buf)]
+;       buf)))
+; ;
 
-(defn urand32 []
-  (reduce #(+ (* 256 %1) (bit-and 255 %2)) 0 (urand-bytes 4)))
-;
+; (defn urand32 []
+;   (reduce #(+ (* 256 %1) (bit-and 255 %2)) 0 (urand-bytes 4)))
+; ;
 
 
 ;;;;;; edn ;;;;;;
@@ -138,10 +138,11 @@
 ;
 
 
+;; !!! !!!
 (defn parse-json [s]
   (try
     (json/parse-string (str s) true)
-    (catch Exception e)))
+    (catch Exception _ignore)))
 ;
 
 ;;;;;;  hashes  ;;;;;;
@@ -200,6 +201,5 @@
     (assert (every? map? maps))
     (apply merge-with deep-merge* maps)))
 ;
-
 
 ;;.
