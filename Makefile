@@ -4,10 +4,13 @@ GROUP_ID 	= angara
 ARTEFACT  = main
 MAIN      = web.main
 
+PROD_HOST	=	app
+PROD_PATH	=	/app/main
+
 # # #
 
 .EXPORT_ALL_VARIABLES:
-.PHONY: clean inc-major inc-minor inc-patch shapshot release
+.PHONY: clean inc-major inc-minor inc-patch shapshot release css jar uberjar
 #
 SHELL = bash
 #
@@ -50,11 +53,22 @@ compile:
 	mkdir -p ${CLASSES}
 	clojure -e "(set! *compile-path* \"${CLASSES}\") (compile '${MAIN})"
 
+css:
+	clojure -A:css -m make-css resources/public/incs/css/main.css
+
+css-dev:
+	clojure -A:css -m make-css resources/public/incs/css/main.css pretty
+
 jar: pom config compile
 	clojure -A:depstar -m hf.depstar.jar ${JAR_FILE}
 
-uberjar: clean pom config compile
+uberjar: clean pom config compile css
 	clojure -A:depstar:uberjar -m hf.depstar.uberjar ${UBER_JAR} --main ${MAIN}
+
+deploy:
+	chmod g+r ${UBER_JAR}
+	scp pm2.json run.sh ${UBER_JAR} ${PROD_HOST}:${PROD_PATH}
+	ssh ${PROD_HOST} pm2 restart main
 
 # snapshot: export VERSION := ${VERSION}-SNAPSHOT
 # snapshot: uberjar

@@ -56,8 +56,8 @@
 (defn json-request?
   "check for application/json content-type"
   [req]
-  (if-let [ctype (get-in req [:headers "content-type"])]
-    (not (empty? (re-find #"^application/(.+\+)?json" ctype)))))
+  (when-let [ctype (get-in req [:headers "content-type"])]
+    (seq (re-find #"^application/(.+\+)?json" ctype))))
 ;
 
 (defn ajax? [request]

@@ -2,7 +2,7 @@
 
 PROD_HOST="app"
 PROD_PATH="/app/main"
-PROD_CONF="/app/conf/main.edn"
+# PROD_CONF="/app/conf/main.edn"
 
 JAR="tmp/angara-main.jar"
 

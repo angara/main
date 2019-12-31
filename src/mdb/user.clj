@@ -5,8 +5,7 @@
     [clojure.core.cache :as cache]
     [monger.collection :as mc]
     ;
-    [mlib.random :refer [random-bytes urand64]]
-    [mlib.core :refer [hexbyte]]
+    [mlib.random :refer [urand64]]
     [mlib.time :refer [now-ms]]
     [mdb.core :refer [dbc id_id]]))
 ;
@@ -21,17 +20,18 @@
 ;;; sess
 
 (defn new-sid []
-  (apply str 
-    (format "%x" (now-ms)) 
-    "." 
-    (map hexbyte (random-bytes 8))))
+  (format "%d.%d" (now-ms) (urand64)))
+  ; (apply str 
+  ;   (format "%x" (now-ms)) 
+  ;   "." 
+  ;   (map hexbyte (random-bytes 8))))
 ;;
 
 (comment
 
   (new-sid)
 
-  (format "%d.%d" (now-ms) (biginteger (urand64)))
+  (format "%d.%d" (now-ms) (urand64))
 
   .)
 

@@ -23,7 +23,7 @@
   ( [s default]
     (try
       (if (string? s) (Integer/parseInt s) (int s))
-      (catch Exception ignore default))))
+      (catch Exception _ignore default))))
 ;
 
 (defn ^Integer to-long
@@ -33,7 +33,7 @@
   ( [s default]
     (try
       (if (string? s) (Long/parseLong s) (long s))
-      (catch Exception ignore default))))
+      (catch Exception _ignore default))))
 ;
 
 (defn ^Float to-float
@@ -42,8 +42,10 @@
     (to-float s nil))
   ( [s default]
     (try
-      (if (string? s) (Float/parseFloat s) (float s))
-      (catch Exception ignore default))))
+      (if (string? s) 
+        (Float/parseFloat s) 
+        (float s))
+      (catch Exception _ignore default))))
 ;
 
 (defn ^Double to-double
@@ -52,8 +54,10 @@
     (to-double s nil))
   ( [s default]
     (try
-      (if (string? s) (Double/parseDouble s) (double s))
-      (catch Exception ignore default))))
+      (if (string? s) 
+        (Double/parseDouble s) 
+        (double s))
+      (catch Exception _ignore default))))
 ;
 
 ;; ;; ;; time ;; ;; ;;
@@ -82,13 +86,17 @@
 (defn ^String str-head
   "Returns the first n characters of s."
   [n ^String s]
-  (if (>= n (.length s)) s (.substring s 0 n)))
+  (if (>= n (.length s)) 
+    s 
+    (.substring s 0 n)))
 ;
 
 (defn ^String str-tail
   "Returns the last n characters of s."
   [n ^String s]
-  (if (< (count s) n) s (.substring s (- (count s) n))))
+  (if (< (count s) n) 
+    s 
+    (.substring s (- (count s) n))))
 ;
 
 (defn hesc

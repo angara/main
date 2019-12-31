@@ -5,7 +5,7 @@
 
 (def random (SecureRandom.))
 
-(defn random-bytes [^:long n]
+(defn random-bytes ^bytes [^long n]
   (let [b (byte-array n)]
     (.nextBytes random b)
     b))
@@ -18,11 +18,8 @@
     (random-bytes 4)))
 ;;
 
-(defn ^:BigInt urand64 []
-  (reduce
-    #(+' (*' 256 %1) (bit-and 255 ^:long %2))
-    (bigint 0)
-    (random-bytes 8)))
+(defn urand64 ^BigInteger []
+  (BigInteger. 1 (random-bytes 8)))
 ;;
 
 ;;.

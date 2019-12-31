@@ -3,8 +3,8 @@
   (:refer-clojure :exclude [>])
   (:require
     [garden.def :refer [defstyles]]
-    [garden.units :refer [px pt em ex]]
-    [garden.selectors :refer [>]]
+    [garden.units :refer [px em]]   ;; pt ex
+    ; [garden.selectors :refer [>]]
     [garden.stylesheet :refer [at-media]]
     ;
     [css.controls :refer [controls]]
@@ -75,6 +75,11 @@
         :flex-direction 'column
         :justify-content 'flex-end}]
 
+    [:.clear-after:after
+      { :content ""
+        :display  "table"
+        :clear    "both"}]
+
     [:.msg
       { :color "#888"
         :padding (px 2)}]
@@ -106,18 +111,18 @@
         :border-bottom (str "1px solid " c_topbar_brd)}
 
       [:.logo
-        { :margin "4px 4px 3px 4px"}]
+        { :margin "5px 4px 4px 4px"}]
 
       [:.b-search
-        {:margin "12px 0"}]
+        {:margin "15px 0"}]
 
       [:.b-signin
-        { :margin "15px 2px 15px 8px"
+        { :margin "16px 2px 16px 8px"
           :text-align 'right}]
 
       [:.b-user
         { :text-align 'right
-          :margin "11px 2px 12px 8px"}
+          :margin "12px 2px 12px 8px"}
         [:.name
           { :overflow 'hidden
             :white-space 'nowrap}]]
@@ -239,8 +244,19 @@
     [:.yandex-adaptive
       {:width "290px" :height "250px"}])
 
-  [:.rtb-top {:margin-top "4px"}]
-  [:.rtb-bottom {:margin-top "10px" :margin-bottom "4px"}]
+  [:.rtb-top 
+    { :margin-top "4px"
+      :content    ""
+      :display    "table"
+      :clear      "both"}]
+
+  [:.rtb-bottom 
+    {
+      :margin-top     "10px" 
+      :margin-bottom  "4px"
+      :content        ""
+      :display        "table"
+      :clear          "both"}]
 
   b-calendar
   b-meteo

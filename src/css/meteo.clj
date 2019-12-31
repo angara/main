@@ -2,11 +2,11 @@
 (ns css.meteo
   (:refer-clojure :exclude [>])
   (:require
-    [garden.units :refer [px pt em ex]]
-    [garden.stylesheet :refer [at-media]]
+    ; [garden.units :refer [px pt em ex]]
+    ; [garden.stylesheet :refer [at-media]]
     [garden.selectors :refer [>]]
     ;
-    [css.colors :refer :all]))
+    [css.colors :as c]))
 ;
 
 
@@ -60,7 +60,7 @@
       {:color "#777"}]
     [:.dead-msg
       { :text-align "center"
-        :color c_err
+        :color c/c_err
         :margin "6px"
         :font-weight "bold"}]
 
@@ -71,7 +71,7 @@
         {:margin "6px"}]
       [:.btn-curr
         { :font-weight "bold"
-          :background-color bg_menu_sel
+          :background-color c/bg_menu_sel
           :color "#fff"}]]
     ;
     [:.st-graph
@@ -194,8 +194,8 @@
           [:i
             {:color "#139"}]
           [:&:hover
-            { :background-color bg_menu_sel
-              :color c_menu_sel}]]]]])
+            { :background-color c/bg_menu_sel
+              :color c/c_menu_sel}]]]]])
 ;; /b-card
 
 ;;; ;;; ;;; ;;; ;;;

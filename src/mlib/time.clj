@@ -27,30 +27,55 @@
 (def tf-iso-datetime (tf/formatter "yyyy-MM-dd HH:mm:ss" (t/default-time-zone)))
 
 (defn parse-yyyymmdd [s]
-  (try (tf/parse tf-yyyymmdd (str s)) (catch Exception ignore)))
+  (try (tf/parse tf-yyyymmdd (str s)) 
+    (catch Exception _ignore)))
+
 (defn parse-ddmmyyyy [s]
-  (try (tf/parse tf-ddmmyyyy (str s)) (catch Exception ignore)))
+  (try (tf/parse tf-ddmmyyyy (str s)) 
+    (catch Exception _ignore)))
+
 (defn parse-ddmmyy [s]
-  (try (tf/parse tf-ddmmyy (str s)) (catch Exception ignore)))
+  (try (tf/parse tf-ddmmyy (str s)) 
+    (catch Exception _ignore)))
 
 (defn hhmm [date]
-  (if date (try (tf/unparse tf-hhmm date) (catch Exception ignore))))
+  (when date 
+    (try (tf/unparse tf-hhmm date) 
+      (catch Exception _ignore))))
+
 (defn hhmmss [date]
-  (if date (try (tf/unparse tf-hhmmss date) (catch Exception ignore))))
+  (when date 
+    (try (tf/unparse tf-hhmmss date) 
+      (catch Exception _ignore))))
 
 (defn ddmmyy [date]
-  (if date (try (tf/unparse tf-ddmmyy date) (catch Exception ignore))))
+  (when date 
+    (try (tf/unparse tf-ddmmyy date) 
+      (catch Exception _ignore))))
+
 (defn ddmmyyyy [date]
-  (if date (try (tf/unparse tf-ddmmyyyy date) (catch Exception ignore))))
+  (when date 
+    (try (tf/unparse tf-ddmmyyyy date) 
+      (catch Exception _ignore))))
 
 (defn ddmmyy-hhmm [date]
-  (if date (try (tf/unparse tf-ddmmyy-hhmm date) (catch Exception ignore))))
+  (when date 
+    (try (tf/unparse tf-ddmmyy-hhmm date) 
+      (catch Exception _ignore))))
+
 (defn ddmmyy-hhmmss [date]
-  (if date (try (tf/unparse tf-ddmmyy-hhmmss date) (catch Exception ignore))))
+  (when date 
+    (try (tf/unparse tf-ddmmyy-hhmmss date) 
+      (catch Exception _ignore))))
 
 (defn iso-date [date]
-  (if date (try (tf/unparse tf-yyyymmdd date) (catch Exception ignore))))
+  (when date 
+    (try (tf/unparse tf-yyyymmdd date) 
+      (catch Exception _ignore))))
+
 (defn iso-datetime [ts]
-  (if ts (try (tf/unparse tf-iso-datetime ts) (catch Exception ignore))))
+  (when ts 
+    (try (tf/unparse tf-iso-datetime ts) 
+      (catch Exception _ignore))))
 
 ;;.

@@ -7,6 +7,8 @@
     [web.srv :refer [server]]))
 ;
 
+(set! *warn-on-reflection* true)
+
 (def _void server)
 
 (defn restart []

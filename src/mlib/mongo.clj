@@ -24,7 +24,7 @@
 
 (defn oid [s]
   (try (ObjectId. s) 
-    (catch Exception e 
+    (catch Exception _e 
       (str s))))
 
 (defn next-sn [conn seq-coll seq-name]
