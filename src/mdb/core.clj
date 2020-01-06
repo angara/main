@@ -8,7 +8,7 @@
     [monger.joda-time]
     [monger.core :as mg]
     [monger.collection :as mc]
-    ;c[monger.query :as query]
+    ;[monger.query :as query]
     [mlib.config :refer [conf]])
   (:import
     [org.bson.types ObjectId]
