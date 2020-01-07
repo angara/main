@@ -17,7 +17,8 @@
     [sql.core :refer [fetch]]))
 ;=
 
-(def MDB {:url "mongodb://meteo:metaweb.19@dbm:4417/meteo"})
+(def MDB {:url "mongodb://mdb:27017/meteo"})
+(def METEO_DAT "dat_test")
 
 (defstate meteo-db
   :start
@@ -72,7 +73,7 @@
     (h/from :dat)
     (h/where 
       ; [:and 
-      ;   [:= :loc_id 12]
+      ;   [:= :loc_id 3]
         [:< :stamp (sql/raw "'2013-02-17'::timestamp")])    
     (h/order-by [:stamp])
     (h/limit limit)
@@ -83,24 +84,23 @@
   (when-let [st (get LOC_ST (:loc_id d))]
     (when-let [fld (get LOC_TYP (:typ d))]
       (let [ts    (tc/to-date (:stamp d))
-            data  {fld (:val d)}
-            data  (if (#{:w :g} fld)
-                    (assoc data :b (:ext d))
-                    data)]
-        (merge data
-          { :_id
-            (ObjectId. 
-              ^Date   ts
-              (int    (:loc_id d)) 
-              (short  0) 
-              (int    0))
-            :st st
-            :ts ts})))))
+            data  { :_id
+                      (ObjectId. 
+                        ^Date   ts
+                        (int    (:loc_id d)) 
+                        (short  0) 
+                        (int    0))
+                    :st st
+                    :ts ts
+                    fld (:val d)}]
+        (if (#{:w :g} fld)
+          (assoc data :b (:ext d))
+          data)))))
 ;;
 
 (defn upsert [d]
   (-> (:db meteo-db)
-    (mc/update :dat1
+    (mc/update METEO_DAT
       {:_id (:_id d)}
       {:$set (dissoc d :_id)}
       {:upsert true})
@@ -108,6 +108,8 @@
     (= 1)))
 ;;
       
+(def MAX10 10000000)
+
 (comment
 
   (find-dat {:st "olha"})
@@ -116,33 +118,12 @@
  
   (locs)
 
-  (doseq [t (dats 10000000)]
-    (when-let [d (sql->mng t)]
-      ;(prn d 
-        (upsert d)))
-
-      
-    ; (prn (tc/to-date (:stamp t))) 
-    ; (prn 
-    ;   t
-    ;   (ObjectId. 
-    ;     ^Date (tc/to-date (:stamp t)) 
-    ;     (int    (:loc_id t)) 
-    ;     (short  0) 
-    ;     (int    0))))
-
-  (sql/format 
-    (->
-      (h/select :*)
-      (h/from :dat)
-      (h/where 
-        [:and
-          [:= :typ 'T']
-          [:< :stamp (sql/raw "'2013-01-19'::timestamp")]])
-      (h/order-by [:stamp])
-      (h/limit 5)))
-
-  (sql/raw "'2013-02-17'::timestamp")
+  (doseq [t (dats MAX10)]
+    (if-let [d (sql->mng t)]
+      ; (prn
+      ;   d
+        (upsert d)
+      (prn "err:" t)))
 
   ,)
 
