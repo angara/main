@@ -165,6 +165,9 @@
           "window.hourly_t1=new Date(" (to-long t1) ");"
           "window.hourly_t0_utc=new Date(" (to-long t0-utc) ");"]
         ;
+        ;; brief stations
+        ; [:div "123"]
+        ;
         [:div.row
           (for [id ids
                 :let [st (get sts id)]

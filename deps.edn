@@ -4,7 +4,7 @@
   :deps
   {
     org.clojure/clojure       {:mvn/version "1.10.1"}
-    org.clojure/core.async    {:mvn/version "0.6.532"}
+    org.clojure/core.async    {:mvn/version "0.7.559"}
     org.clojure/core.cache    {:mvn/version "0.8.2"}
 
     clojure.java-time         {:mvn/version "0.3.2"}
@@ -58,31 +58,29 @@
       :main-opts
         ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
 
-    :depstar
-    {
-      :extra-paths ["resources"]
-      :extra-deps {seancorfield/depstar {:mvn/version "0.3.4"}}}
+    ; :depstar
+    ; {
+    ;   :extra-paths ["resources"]
+    ;   :extra-deps {seancorfield/depstar {:mvn/version "0.3.4"}}}
 
     :uberjar
     {
-      :extra-paths ["resources" "target/classes"]}}
+      :extra-paths ["resources" "target/classes"]}
 
     ;; https://github.com/tonsky/uberdeps
-    ; :uberdeps
-    ; {
-    ;   :extra-paths ["resources" "tmp/classes"]
-    ;   :extra-deps {uberdeps {:mvn/version "0.1.4"}}
-    ;   :main-opts ["-m" "uberdeps.uberjar --target tmp/angara-main.jar --level debug"]}
+    :uberdeps
+    {
+      :extra-deps {uberdeps {:mvn/version "0.1.7"}}
+      :main-opts ["-m" "uberdeps.uberjar" "--aliases" "uberjar"]}}
 
   ;; ;; ;; ;;
 
-
-  ;; workaround cambada's "ArtifactDescriptorException"
-  :mvn/repos
-  {
-    "central" {:url "https://repo1.maven.org/maven2/"}
-    ; "central" {:url "https://repo.maven.apache.org/maven2/"}
-    "clojars" {:url "https://clojars.org/repo"}}
+  ; ;; workaround cambada's "ArtifactDescriptorException"
+  ; :mvn/repos
+  ; {
+  ;   "central" {:url "https://repo1.maven.org/maven2/"}
+  ;   ; "central" {:url "https://repo.maven.apache.org/maven2/"}
+  ;   "clojars" {:url "https://clojars.org/repo"}}
 
   :. :.}
 

@@ -4,15 +4,12 @@
     [clojure.tools.namespace.repl :as tnr]
     [util :as util]
     ;
-    [web.srv :refer [server]]
-    ;
-    [m :refer [meteo-db]]))
+    [web.srv :refer [server]]))
 ;
 
 (set! *warn-on-reflection* true)
 
 (def _void server)
-(def _void1 meteo-db)
 
 (defn restart []
   (prn "restart")
@@ -26,9 +23,9 @@
 
 (comment
 
-  (reset)
   (restart)
-  
+  (reset)
+    
   ,)
 
 ;;.

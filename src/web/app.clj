@@ -76,8 +76,6 @@
     (context "/tourserv"      _ tourserv/routes)
     (context "/photomap"      _ (photomap/make-routes))
 
-    ; (if (:dev conf)
-    ;   (route/files "/" {:root "tmp/res/public"}))
     (route/resources "/" {:root "public"})
 
     (GET "/*" _  not-found)

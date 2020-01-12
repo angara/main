@@ -62,8 +62,15 @@ css-dev:
 jar: pom config compile
 	clojure -A:depstar -m hf.depstar.jar ${JAR_FILE}
 
-uberjar: clean pom config compile css
-	clojure -A:depstar:uberjar -m hf.depstar.uberjar ${UBER_JAR} --main ${MAIN}
+# uberjar: clean pom config compile css
+# 	clojure -A:depstar:uberjar -m hf.depstar.uberjar ${UBER_JAR} --main ${MAIN}
+
+# uberdeps: clean pom config compile css
+# 	clojure -A:uberdeps -m uberdeps.uberjar --target ${UBER_JAR} --main-class ${MAIN} --level info
+
+uber: clean pom config compile css
+	clojure -A:uberdeps --target ${UBER_JAR} --main-class ${MAIN} --level info \
+	| grep -v com.sun.mail/javax.mail | grep -v services/com.fasterxml.jackson.core.JsonFactory
 
 deploy:
 	chmod g+r ${UBER_JAR}
