@@ -5,8 +5,7 @@
     [clj-time.core :as tc]
     ;
     [mlib.config :refer [conf]]))
-;
-
+;=
 
 (def ST_PARAM  :st)
 (def ST_COOKIE "meteo_st")
@@ -22,7 +21,8 @@
         (:ts data)
         (tc/minus (tc/now) FRESH_INTERVAL))
       data)
-    (catch Exception _ignore)))
+    (catch Exception 
+      _ignore)))
 ;
 
 (defn comma-split [s]
@@ -39,6 +39,5 @@
       (comma-split (-> req :cookies (get ST_COOKIE) :value))
       (-> conf :meteo :st_default))))
 ;
-
 
 ;;.

@@ -17,8 +17,10 @@
     :meteo 
     {
       :st_default
-      [ "uiii" "irgp" "asbtv" "npsd" "olha" "zbereg" "polyana"
-        "lin_list" "nicola" "mamai" "lin_uzur lin_ushk"]}
+      [ "uiii" "irgp" "npsd" "olha" "zbereg" 
+        "polyana"
+        "lin_list" "lin_uzur" "lin_ushk" 
+        "mamai"]}
     ;
 
     :forum 

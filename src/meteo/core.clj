@@ -1,4 +1,3 @@
-
 (ns meteo.core
   (:require
     ; [clojure.string :as s]
@@ -8,25 +7,25 @@
     [ring.util.response :refer [redirect]]
     [compojure.core :refer [defroutes GET]]
     ;
-    [mlib.config :refer [conf]]
-    [mlib.core :refer [hesc to-int]]
-    [mlib.time :refer [ddmmyyyy hhmm]]
-    ; [mlib.http :refer [json-resp]]))
+    [mlib.config  :refer  [conf]]
+    [mlib.core    :refer  [hesc to-int]]
+    [mlib.time    :refer  [ddmmyyyy hhmm]]
     ;
-    [meteo.db :refer [st-ids st-find st-pub hourly-ts0 hourly-ts1]]
-    [meteo.fmt :refer [format-t format-h format-p format-w format-wt]]
-    [meteo.util :refer [st-param ST_MAX_NUM fresh]]
-    [meteo.graph :refer [t3-svg]]
+    [meteo.db     :refer  [st-ids st-find st-pub hourly-ts0 hourly-ts1]]
+    [meteo.fmt    :refer  [format-t format-h format-p format-w format-wt]]
+    [meteo.util   :refer  [st-param ST_MAX_NUM fresh]]
+    [meteo.graph  :refer  [t3-svg]]
+    [meteo.brief  :refer  [index-brief]]
     ;
-    [misc.util :refer [RUS_MONTHS_FC]]
-    [html.frame :refer [render-layout]]))
-;
+    [misc.util    :refer  [RUS_MONTHS_FC]]
+    [html.frame   :refer  [render-layout]]))
+;=
 
 
 (def YEAR_0 2013)
 
-(def ST_DEAD_INTERVAL (tc/days 10))
-(def HOURS_INTERVAL (tc/hours 60))
+(def ST_DEAD_INTERVAL (tc/days 10))   ;; duplicated in brief
+(def HOURS_INTERVAL   (tc/hours 60))
 (def TZ_OFFSET_MILLIS (* 8 3600 1000))
 
 (def ST_BASE_URL "/meteo/st/")
@@ -165,8 +164,7 @@
           "window.hourly_t1=new Date(" (to-long t1) ");"
           "window.hourly_t0_utc=new Date(" (to-long t0-utc) ");"]
         ;
-        ;; brief stations
-        ; [:div "123"]
+        (index-brief)
         ;
         [:div.row
           (for [id ids

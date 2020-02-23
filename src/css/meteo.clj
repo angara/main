@@ -1,4 +1,3 @@
-
 (ns css.meteo
   (:refer-clojure :exclude [>])
   (:require
@@ -198,6 +197,22 @@
               :color c/c_menu_sel}]]]]])
 ;; /b-card
 
+(def b-meteo-brief
+  [:.b-meteo-brief
+    {:margin-bottom "2em" :margin-top "1ex"}
+    [:.station 
+      { :font-size "18px" 
+        :margin "10px"
+        :border-bottom "1px solid #cde"
+        :padding-bottom "10px"}
+
+      [:.title  {:font-size "22px" :color "#48e" :margin "0 1em 2px 1em"}
+        [:i {:font-size "76%" :margin "0 4px" :color "#383"}]
+        [:.hhmm {:font-size "14px" :float "right" :color "#aaa" :margin "4px 0 4px 8px"}]]
+      [:.lbl    {:display "inline-block" :width "10em" :margin "0 6px 0 12px" :text-align "right"}]
+      [:.value  {:margin-left "3em" :white-space "nowrap"}]]])
+;
+
 ;;; ;;; ;;; ;;; ;;;
 
 (def b-meteo
@@ -216,7 +231,7 @@
       [:button
         {:margin "6px 2px"}]]
     ;
-
+    b-meteo-brief
     b-card
     b-st])
   ;; /b-meteo

@@ -1,4 +1,3 @@
-
 (ns meteo.fmt
   (:import
     [java.util Locale])
@@ -35,13 +34,15 @@
 (defn nf1 [x]
   (try
     (-> x nfix1 strip-zeros strip-dot)
-    (catch Exception ignore)))
+    (catch Exception 
+      _ignore)))
 ;
 
 (defn nf2 [x]
   (try
     (-> x nfix2 strip-zeros strip-dot)
-    (catch Exception ignore)))
+    (catch Exception 
+      _ignore)))
 ;
 
 
@@ -50,7 +51,8 @@
     (get
       ["С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"]
       (int (Math/floor (mod (/ (+ b 22) 45) 8))))
-    (catch Exception ignore)))
+    (catch Exception 
+      _ignore)))
 ;
 
 (defn format-w [pref w g b]
@@ -96,7 +98,8 @@
         "&deg;"
         [:span {:class (str "arr " trc)} arr]))
       ;
-    (catch Exception ignore)))
+    (catch Exception 
+      _ignore)))
 ;
 
 (defn format-wt [pref wt wl]
@@ -105,7 +108,8 @@
       (str pref "<nobr><b>" (Math/round (float wt)) "</b>&deg;</nobr>"
         (when wl
           (str ", <nobr>уровень <b>" (nf2 wl) "</b> м</nobr>"))))
-    (catch Exception ignore)))
+    (catch Exception 
+      _ignore)))
 ;
 
 ;;.
