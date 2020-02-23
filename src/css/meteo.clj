@@ -1,13 +1,14 @@
 (ns css.meteo
   (:refer-clojure :exclude [>])
   (:require
-    ; [garden.units :refer [px pt em ex]]
-    ; [garden.stylesheet :refer [at-media]]
     [garden.selectors :refer [>]]
+    [garden.stylesheet :refer [at-media]]
     ;
     [css.colors :as c]))
 ;
 
+
+; (def SM_MAX_WIDTH "575.98px")
 
 (def ST_COLOR "#28D")
 
@@ -209,8 +210,11 @@
       [:.title  {:font-size "22px" :color "#48e" :margin "0 1em 2px 1em"}
         [:i {:font-size "76%" :margin "0 4px" :color "#383"}]
         [:.hhmm {:font-size "14px" :float "right" :color "#aaa" :margin "4px 0 4px 8px"}]]
-      [:.lbl    {:display "inline-block" :width "10em" :margin "0 6px 0 12px" :text-align "right"}]
-      [:.value  {:margin-left "3em" :white-space "nowrap"}]]])
+      [:.value  {:margin-left "1em" :white-space "nowrap"}]
+      [:.val {:text-align "right"}]
+      (at-media {:min-width "768px"}
+        [:.lbl {:text-align "right"}]     
+        [:.val {:text-align "left"}])]])
 ;
 
 ;;; ;;; ;;; ;;; ;;;
