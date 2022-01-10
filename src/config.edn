@@ -17,8 +17,8 @@
     :meteo 
     {
       :st_default
-      [ "uiii" "irgp" "npsd" "olha" "zbereg" 
-        "polyana"
+      [ "uiii" "irgp" "npsd" "olha" "olha2"
+        "zbereg" "polyana" "khomutovo" ""
         "lin_list" "lin_uzur" "lin_ushk" 
         "mamai"]}
     ;

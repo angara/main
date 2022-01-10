@@ -1,28 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0">
-    
   <modelVersion>4.0.0</modelVersion>
-    
   <groupId>angara</groupId>
-    
   <artifactId>main</artifactId>
-    
-  <version>1.5.104</version>
-    
+  <version>1.6.104</version>
   <properties>
-        
     <maven.compiler.source>11</maven.compiler.source>
-        
     <maven.compiler.target>11</maven.compiler.target>
-      
   </properties>
-    
   <build>
-        
     <sourceDirectory>src</sourceDirectory>
-      
   </build>
-  
   <dependencies>
     <dependency>
       <groupId>org.clojure</groupId>

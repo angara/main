@@ -171,7 +171,7 @@
             [:div.copy
               [:br]
               [:a.copy-tm {:href "https://angara.net/"} "Angara.Net"]
-              " &copy; 2002-2020"]]
+              " &copy; 2002-2022"]]
           ;
           [:div.clearfix]]]]
     ;; counters
@@ -216,7 +216,9 @@
               page-nav
               ;
               (when rtb-top
-                [:div.rtb-top (ya-rtb rtb-top true)])
+                [:div.rtb-top {:style "overflow: auto; display: block;"}
+                  (ya-rtb rtb-top true) 
+                  [:div.clearfix]])
               ;
               (when page-title
                 [:h1.page-title page-title])
@@ -232,8 +234,9 @@
                     [:a {:href (:href n)} (:menu n)]))]
               ;
               (when rtb-bottom
-                [:div.rtb-bottom
-                  (ya-rtb rtb-bottom true)])]]
+                [:div.rtb-bottom {:style "overflow: auto; display: block;"}
+                  (ya-rtb rtb-bottom true)
+                  [:div.clearfix]])]]
           ;
           (footer req)]])))
     ; /html5
