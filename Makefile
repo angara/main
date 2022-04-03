@@ -4,7 +4,7 @@ GROUP_ID 	= angara
 ARTEFACT  = main
 MAIN      = web.main
 
-PROD_HOST	=	app
+PROD_HOST	=	angara
 PROD_PATH	=	/app/main
 
 # # #
@@ -82,8 +82,8 @@ uberjar: clean config css
 
 deploy:
 	chmod g+r ${UBER_JAR}
-	scp pm2.json run.sh ${UBER_JAR} ${PROD_HOST}:${PROD_PATH}
-	ssh ${PROD_HOST} pm2 restart main
+	scp ${UBER_JAR} ${PROD_HOST}:${PROD_PATH}
+#	ssh ${PROD_HOST} pm2 restart main
 
 # snapshot: export VERSION := ${VERSION}-SNAPSHOT
 # snapshot: uberjar

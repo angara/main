@@ -1,4 +1,3 @@
-
 (ns html.frame
   (:require
     [hiccup.page :refer [html5]]
@@ -133,9 +132,8 @@
     {:id "info"     :href "/info/"      :menu "Информация"}
     ;; Карты
     {:id "text"     :href "/live/"      :menu "Статьи"}
-    {:id "shops"    :href "/shops/"     :menu "Магазины"}
+    ;; {:id "shops"    :href "/shops/"     :menu "Магазины"}
     {:id "tourserv" :href "/tourserv"   :menu "Турсервис"}
-    {:id "bb"       :href "/bb/"        :menu "Объявления"}
     {:id "photo"    :href "/photo/"     :menu "Фото"}
     {:id "forum"    :href "/forum/"     :menu "Форум"}
     {:id "meteo"    :href "/meteo/"     :menu "Погода"  :ext curr-temp}])
