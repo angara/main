@@ -1,5 +1,5 @@
 #
-#	 generic .gitignore
+#	 maxp.dev: generic .gitignore
 #
 
 ## no hiddens in scm
@@ -51,18 +51,18 @@
 /out/
 /tmp/
 /node_modules/
+
+## cache
 __pycache__/
 
 ## allow 
-!.gitignore
+!.clj-kondo/
+!.git*
+!.github/
 !.dockerignore
 !.eslint*
 !.npmingore
 !.travis.yml
 !yarn.lock
-
-## vscode java
-!.classpath
-!.project
 
 #.

@@ -102,8 +102,8 @@ $(function() {
                     style: { color: "#903" }
                 },
                 title: { enabled: false },
-                min: -40,
-                max: 40
+                min: -50,
+                max: 50
               },
               {
                   gridLineWidth: 0,
@@ -112,8 +112,8 @@ $(function() {
                       format: '{value} мм',
                       style: { color:  "#b72" }
                   },
-                  min: 650,
-                  max: 750,
+                  min: 600,
+                  max: 800,
                   opposite: true
               },
               {

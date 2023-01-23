@@ -119,8 +119,10 @@
                     [:div.months.row
                       [:div.col-sm-2
                         [:select.j_year.form-control
-                          (for [y (range year0 (inc year1))]
-                            [:option {:value y} y])]]
+                          (when (and year0 year1)
+                            (for [y (range year0 (inc year1))]
+                              [:option {:value y} y]))
+                         ]]
                       [:div.clearfix]
                       [:div.col-sm-12
                         (for [[i mon] (map-indexed vector RUS_MONTHS_FC)]

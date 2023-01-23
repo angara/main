@@ -164,29 +164,28 @@
               [:h3 (:title t)]]
             (:descr t)])]
       [:div.col-md-4.col-md-offset-1
-        [:hr]
-        [:div
-          [:a {:href "/rest/pikcher/"} [:h4 "Турбаза Пик Черского"]]
-          [:a {:href "/rest/pikcher/"}
-            [:img
-              {:src "/rest/pikcher/logo_200.jpg"
-               :style "margin: 0 12px 4px 0; float:left;
-                        border: 1px solid #ccc; padding: 1px;"}]]
-          "<p>База расположена в верховьях реки Слюдянка,"
-          " которая впадает в озеро Байкал."
-          " Это предгольцовая зона с вековыми кедрами у подножья пика Черского,"
-          " на который проходит один из популярных маршрутов выходных дней "
-          "<a href='/rest/pikcher/'>...&raquo;&raquo;</a></p>"]
-        [:div.clearfix]
-        [:hr]
+        ; [:hr]
+        ; [:div
+        ;   [:a {:href "/rest/pikcher/"} [:h4 "Турбаза Пик Черского"]]
+        ;   [:a {:href "/rest/pikcher/"}
+        ;     [:img
+        ;       {:src "/rest/pikcher/logo_200.jpg"
+        ;        :style "margin: 0 12px 4px 0; float:left;
+        ;                 border: 1px solid #ccc; padding: 1px;"}]]
+        ;   "<p>База расположена в верховьях реки Слюдянка,"
+        ;   " которая впадает в озеро Байкал."
+        ;   " Это предгольцовая зона с вековыми кедрами у подножья пика Черского,"
+        ;   " на который проходит один из популярных маршрутов выходных дней "
+        ;   "<a href='/rest/pikcher/'>...&raquo;&raquo;</a></p>"]
+        ; [:div.clearfix]
+        ; [:hr]
 
         [:div
           [:a {:href "/rest/hdaban/"} [:h4 "Турбаза Хамар-Дабан"]]
           [:a {:href "/rest/hdaban/"}
             [:img
-              {:src "/rest/hdaban/logo.jpg"
-               :style
-                "margin: 0 12px 4px 0; float:left; border: 1px solid #ccc;"}]]
+              {:src "/rest/hdaban/logo-200.jpg"
+               :style "margin: 0 12px 4px 0; float:left; border: 1px solid #ccc;"}]]
           "<p>Размещение в уютных домиках в одном из самых популярных мест"
           " Хамар-Дабана, недалеко от пика Черского.</p>"
           " <p>К Вашим услугам гиды-проводники, которые помогут организовать"
