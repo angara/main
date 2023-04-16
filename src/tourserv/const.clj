@@ -66,6 +66,7 @@
     { :id "irkutsk"   :title "Иркутск"}
     { :id "listv"     :title "Листвянка"}
     { :id "smallsea"  :title "Малое Море"}
+    { :id "mondy"     :title "Монды"}
     { :id "olkhon"    :title "Ольхон"}
     { :id "sevbaik"   :title "Северобайкальск"}
     { :id "tofalaria" :title "Тофалария"}
