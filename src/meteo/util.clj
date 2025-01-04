@@ -1,11 +1,11 @@
-
 (ns meteo.util
   (:require
     [clojure.string :as s]
     [clj-time.core :as tc]
     ;
-    [mlib.config :refer [conf]]))
-;=
+    [app.config :refer [conf]]
+   ,))
+
 
 (def ST_PARAM  :st)
 (def ST_COOKIE "meteo_st")
@@ -38,6 +38,3 @@
       (comma-split (-> req :params ST_PARAM))
       (comma-split (-> req :cookies (get ST_COOKIE) :value))
       (-> conf :meteo :st_default))))
-;
-
-;;.

@@ -1,5 +1,3 @@
-
-
 (ns forum.topic
   (:require
     [clojure.string :as s]
@@ -13,8 +11,8 @@
     [sql.core :refer [fetch exec]]
     ;
     [forum.db :refer 
-      [FORUM_TOPICS FORUM_LASTREAD USERS lastreads get-lastread insert-watch update-watch]]))
-;
+      [FORUM_TOPICS FORUM_LASTREAD USERS lastreads get-lastread insert-watch update-watch]]
+   ,))
 
 
 (def ROLE_FORUM \F)
@@ -128,7 +126,7 @@
 (defn get-lastreads [{user :user params :params}]
   (try
     (let [uid  (-> user :id to-int)
-          tids (-> params :tids (mapv to-int) not-empty)
+          tids (->> params :tids (mapv to-int) not-empty)
           lrs  (lastreads uid tids)]
       (if lrs
         (json-resp {:ok 1 :lrs lrs}) 
@@ -167,7 +165,6 @@
     (catch Exception err
       (warn "set-watch:" {:user user :params params :err err})
       (json-resp 400 {:err :bad_request :msg "Ошибка при обработке запроса."}))))
-;
 
 
 (defroutes topic-routes
@@ -178,6 +175,3 @@
   (GET  "/lastreads" [] get-lastreads)  ;;  {:tids []}
   (GET  "/watch"     [] get-watch)      ;;  {:tid "int"}
   (POST "/watch"     [] set-watch))     ;;  {:tid "int" :watch "int"}
-;
-
-;;.

@@ -1,7 +1,7 @@
 (ns html.frame
   (:require
     [hiccup.page :refer [html5]]
-    [mlib.config :refer [conf]]
+    [app.config :refer [conf]]
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [yandex-metrika mailru-top ya-rtb]]
     [html.util :refer [glyphicon css-link script]]

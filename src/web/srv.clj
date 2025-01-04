@@ -1,27 +1,25 @@
-
 (ns web.srv
   (:require
-    [mlib.logger :refer [info]]
+    [taoensso.telemere :refer [log!]]
     [ring.adapter.jetty :refer [run-jetty]]
-    [mount.core :refer [defstate] :as mount]
-    [mlib.config :refer [conf]]
+    [mount.core :refer [defstate]]
+    [app.config :refer [conf]]
     [mlib.web.middleware :refer [middleware]]
-    [web.app :as app]
+    [web.app :refer [app-handler]]
    ,))
 
 
 (defn start [handler]
   (let [hc (-> conf :main :http)]
-    (info "build -" (:build conf))
-    (info "start server -" hc)
+    (log! "start server -" hc)
     (run-jetty handler hc)))
 
 
 (defstate server
   :start
     (->
-      (app/app-handler)
+      (app-handler)
       (middleware)
-      start)
+      (start))
   :stop
     (.stop server))

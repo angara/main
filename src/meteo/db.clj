@@ -1,4 +1,3 @@
-
 (ns meteo.db
   (:require
     [monger.core :as mg]
@@ -8,9 +7,9 @@
     [mount.core :refer [defstate]]
     ;
     [mlib.logger :refer [warn]]
-    [mlib.config :refer [conf]]
-    [mdb.core :refer [connect disconnect try-warn]]))
-;
+    [app.config :refer [conf]]
+    [mdb.core :refer [connect disconnect try-warn]]
+   ,))
 
 
 (defstate mdb
@@ -18,11 +17,11 @@
     (connect (-> conf :mdb-meteo))
   :stop
     (disconnect mdb))
-;
+
 
 (defn db []
   (:db mdb))
-;
+
 
 (def PUB_FIELDS
   [:_id :ts :ll :elev :title :descr :addr :url :last :trends])
@@ -94,6 +93,7 @@
   "fetch list of public stations data"
   [q & [fields]]
   (try-warn "st-by-id:"
+    #_{:clj-kondo/ignore [:invalid-arity]}
     (mq/with-collection (db) ST
       (mq/find q)
       (mq/fields (or fields PUB_FIELDS))
@@ -116,17 +116,19 @@
 (defn hourly-data [ids t0 t1 limit]
   (when ids
     (try
+      #_{:clj-kondo/ignore [:invalid-arity]}
       (mq/with-collection (db) HOURS
         (mq/find {:st {:$in ids} :hour {:$gte t0 :$lt t1}})
         ;(mq/sort (array-map :hour 1))
         (mq/limit limit))
       (catch Exception e
         (warn "hourly-data:" ids t0 t1 e)))))
-;
+
 
 (defn hourly-ts0 [st_id]
   (try
     (->
+      #_{:clj-kondo/ignore [:invalid-arity]}
       (mq/with-collection (db) HOURS
         (mq/find {:st st_id})
         (mq/sort (array-map :hour 1))
@@ -135,11 +137,12 @@
       (:hour))
     (catch Exception _e
       (warn "hourly-ts0:" st_id))))
-;
+
 
 (defn hourly-ts1 [st_id]
   (try
     (->
+      #_{:clj-kondo/ignore [:invalid-arity]}
       (mq/with-collection (db) HOURS
         (mq/find {:st st_id})
         (mq/sort (array-map :hour -1))
@@ -148,6 +151,3 @@
       (:hour))
     (catch Exception _e
       (warn "hourly-ts1:" st_id))))
-;
-
-;;.

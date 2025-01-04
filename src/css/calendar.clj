@@ -1,12 +1,9 @@
 
 (ns css.calendar
   (:require
-    [garden.def :refer [defstyles]]
-    [garden.units :refer [px pt em ex]]
-    [garden.stylesheet :refer [at-media]]
-    ;
-    [css.colors :refer :all]))
-;
+    [css.colors :refer [c_green c_grey bg_dark]]
+   ,))
+
 
 (def b-calendar
   [:.b-calendar
@@ -83,7 +80,5 @@
         {:margin "0 10px 8px 0"}]
       ;
       [:&:hover
-        {:background-color "#ffffee"}]]])
-;
-
-;;.
+        {:background-color "#ffffee"}]]]
+        ,)

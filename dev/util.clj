@@ -5,13 +5,13 @@
   (:require
     [clojure.string :as str]
     [clojure.java.shell :refer [sh]]
-    [java-time :as time]
+    [java-time.api :as time]
     [mount.core :as mount]
     ;
-    [mlib.config :refer [conf]]
-    [mlib.util :refer [edn-read edn-resource]]))
-    ;
-;=
+    [mlib.util :refer [edn-read edn-resource]]
+    [app.main]
+   ,))
+
 
 (defn get-commit-hash []
   (->
@@ -37,13 +37,13 @@
 
 (time/format DateTimeFormatter/ISO_LOCAL_DATE_TIME (time/local-date-time))
 
-(defn start-conf[]
-  (mount/stop)
-  (->
-    (mount/only [#'conf])
-    (mount/with-args (configs))
-    (mount/start)))
-;
+;; (defn start-conf[]
+;;   (mount/stop)
+;;   (->
+;;     (mount/only [#'conf])
+;;     (mount/with-args (configs))
+;;     (mount/start)))
+;; ;
 
 (defn restart []
   (mount/stop)
@@ -60,15 +60,3 @@
   (prn "dev/stop")
   (mount/stop))
 ;
-
-
-(comment
-
-  (restart)  
-
-  (start-conf)
-
-  .)
-;
-
-;;.

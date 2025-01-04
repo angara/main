@@ -6,7 +6,7 @@
     [clj-time.core :as tc]
     [clj-time.format :as tf]
     ;
-    [mlib.config :refer [conf]]
+    [app.config :refer [conf]]
     [mlib.core :refer [to-float to-int]]
     [mlib.http :refer [json-resp text-resp]]
     [mlib.logger :refer [debug warn]]
@@ -150,7 +150,3 @@ Hourly aggregations -
   (GET "/st/near"   []  near)
   ;
   (GET "/st/hourly" []  hourly))
-
-;
-
-;;.

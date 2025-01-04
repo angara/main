@@ -1,11 +1,7 @@
-;;
-;;  mlib: run proccessing loop in separate thread
-;;
-
 (ns mlib.thread
   (:require
     [clojure.core.async :refer [thread <!!]]))
-;
+
 
 (defn- thread-loop [state' init step cleanup]
   (thread
@@ -18,7 +14,7 @@
           (cleanup @state' nil)))
       (catch Exception ex
         (cleanup @state' ex)))))
-;
+
 
 (defn start-loop
   " start loop in separate thread using state returned by init-fn,
@@ -37,11 +33,11 @@
   (let [state' (atom {::loop-flag true})]
     { ::state state'
       ::thread (thread-loop state' init step cleanup)}))
-;
+
 
 (defn clear-loop-flag [state']
   (swap! state' assoc ::loop-flag false))
-;
+
 
 (defn stop-loop
   "reset loop-flag and wait for the thread"
@@ -49,39 +45,9 @@
   (when thread-state
     (clear-loop-flag (::state  thread-state))
     (<!!             (::thread thread-state))))
-;
+
 
 (defn join [thread-state]
   (<!! (::thread thread-state)))
-;
 
-(comment
 
-  ;; example
-
-  ; (defn init [state']
-  ;   (update state' assoc :conn (make-connection cfg)))
-  ; ;
-
-  ; (defn step [state']
-  ;   (println
-  ;     (read (:conn @state'))))
-  ; ;
-
-  ; (defn cleanup [state ex]
-  ;   (when ex
-  ;     (error ex))
-  ;   (when-let [conn (:conn state)]
-  ;     (close conn)))
-  ; ;
-
-  ; (defstate service
-  ;   :start
-  ;     (start-loop init step cleanup)
-  ;   :stop
-  ;     (stop-loop service))
-  ; ;
-
-  .)
-
-;;.

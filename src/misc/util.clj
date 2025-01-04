@@ -1,4 +1,3 @@
-
 (ns misc.util
   (:require
     [clj-time.core :as tc]))
@@ -73,6 +72,3 @@
     [ (str (tc/day t))
       (get RUS_DATE_MONTHS (dec (tc/month t)))
       (str (tc/year t))]))
-;
-
-;;.

@@ -7,7 +7,7 @@
     [ring.util.response :refer [redirect]]
     [compojure.core :refer [defroutes GET]]
     ;
-    [mlib.config  :refer  [conf]]
+    [app.config  :refer  [conf]]
     [mlib.core    :refer  [hesc to-int]]
     [mlib.time    :refer  [ddmmyyyy hhmm]]
     ;

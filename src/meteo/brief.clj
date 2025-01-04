@@ -3,30 +3,30 @@
     ; [clojure.string :as s]
     [clj-time.core :as tc]
     ; 
-    [mlib.config        :refer [conf]]
-    [mlib.core          :refer [hesc]]
-    [mlib.time          :refer [hhmm]]
-    [mlib.web.snippets  :refer [ya-rtb]]
+    [app.config        :refer [conf]]
+    [mlib.core         :refer [hesc]]
+    [mlib.time         :refer [hhmm]]
+    [mlib.web.snippets :refer [ya-rtb]]
     ; ;
-    [meteo.db           :refer [st-ids]]
-    [meteo.fmt          :refer [format-t format-h format-p format-w format-wt]]))
-;=
+    [meteo.db          :refer [st-ids]]
+    [meteo.fmt         :refer [format-t format-h format-p format-w format-wt]]
+   ,))
 
 
 (def ST_DEAD_INTERVAL (tc/hours 8))   ;; duplicated in index but different
 (def ST_BASE_URL      "/meteo/st/")   ;; duplicated in index
 
 (defn fresh-st-data []
-  (let [st-list (get-in conf [:main :meteo :st_default])
+  (let [st-list (-> conf :main :meteo :st_default)
         t0  (tc/minus (tc/now) ST_DEAD_INTERVAL)]
     (->>
       (st-ids st-list)
       (keep
-        #(when-let [ts (get-in % [:last :ts])]
+        #(when-let [ts (-> % :last :ts)]
           (when (tc/after? ts t0)
             %)))
       (sort-by 
-        #(get-in % [:last :ts]))
+        #(-> % :last :ts))
       (reverse))))
 ;;
 
@@ -38,7 +38,7 @@
 ;-
 
 (defn format-station [{id :_id title :title last :last trends :trends}]
-  (let [t-val   (format-t   nil (:t last) (get-in trends [:t :avg]))
+  (let [t-val   (format-t   nil (:t last) (-> trends :t :avg))
         w-val   (format-w   nil (:w last) (:g last) (:b last))
         p-val   (format-p   nil (:p last))
         h-val   (format-h   nil (:h last))

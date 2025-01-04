@@ -3,15 +3,19 @@
   (:refer-clojure :exclude [>])
   (:require
     [garden.def :refer [defstyles]]
-    [garden.units :refer [px em]]   ;; pt ex
-    ; [garden.selectors :refer [>]]
+    
+    [garden.units :refer 
+     #_{:clj-kondo/ignore [:unresolved-var]}
+     [px em]]   ;; pt ex
+   
     [garden.stylesheet :refer [at-media]]
     ;
     [css.controls :refer [controls]]
     [css.calendar :refer [b-calendar]]
     [css.meteo :refer [b-meteo]]
-    [css.tourserv :refer [b-tourserv]]))
-;
+    [css.tourserv :refer [b-tourserv]]
+   ,))
+
 
 (def p100 "100%")
 
@@ -222,6 +226,7 @@
         :text-align 'center
         :color "#48c"}]])
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defstyles main
   commons
   margins
@@ -879,5 +884,3 @@
 ;         color: c_bbtitle
 ;         margin-bottom: 10px
 ;
-;
-; //.

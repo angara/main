@@ -1,12 +1,9 @@
 
 (ns css.tourserv
   (:require
-    [garden.def :refer [defstyles]]
-    [garden.units :refer [px pt em ex]]
-    [garden.stylesheet :refer [at-media]]
-    ;
-    [css.colors :refer :all]))
-;
+    [css.colors :refer [bg_h4 c_label_grey c_icon_blue c_icon_darkblue]]
+   ,))
+
 
 (def b-tourserv
   [:.b-tourserv
@@ -39,7 +36,3 @@
       [:.email   { :margin "auto 1rem" :color c_icon_darkblue}]
       [:.person  { :margin "auto 1rem" :color c_icon_darkblue}]]
     [:.b-index]])
-
-;
-
-;;.

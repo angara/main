@@ -2,14 +2,12 @@
 (ns mdb.core
   (:require
     [mlib.logger :refer [warn]]
-    ; [clj-time.core :as t]
     [mount.core :refer [defstate]]
     [monger.json]
     [monger.joda-time]
     [monger.core :as mg]
     [monger.collection :as mc]
-    ;[monger.query :as query]
-    [mlib.config :refer [conf]])
+    [app.config :refer [conf]])
   (:import
     [org.bson.types ObjectId]
     ;[com.mongodb MongoOptions ServerAddress WriteConcern]

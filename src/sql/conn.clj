@@ -1,4 +1,3 @@
-
 (ns sql.conn
   (:require
     ;[mlib.logger :refer [info warn]]
@@ -7,8 +6,9 @@
     [jdbc.proto :refer [ISQLType ISQLResultSetReadColumn]]
     [hikari-cp.core :refer [make-datasource]]
     [mount.core :refer [defstate]]
-    [mlib.config :refer [conf]]))
-;
+    [app.config :refer [conf]]
+   ,))
+
 
 ;; https://github.com/tomekw/hikari-cp/
 (comment
