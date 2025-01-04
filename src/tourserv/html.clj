@@ -179,6 +179,8 @@
         ;   "<a href='/rest/pikcher/'>...&raquo;&raquo;</a></p>"]
         ; [:div.clearfix]
         ; [:hr]
+       
+       ;; 8 tr/yrar, 2024-02-22 - 2025-02-22
 
         [:div
           [:a {:href "/rest/hdaban/"} [:h4 "Турбаза Хамар-Дабан"]]

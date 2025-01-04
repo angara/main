@@ -6,14 +6,15 @@
     [mlib.web.snippets :refer [yandex-metrika mailru-top ya-rtb]]
     [html.util :refer [glyphicon css-link script]]
     [html.search :refer [ya-site-form]]
-    [meteo.curr :refer [curr-temp]]))
-;
+    [meteo.curr :refer [curr-temp]]
+   ,))
+
 
 (def INCS "/incs/")
 
 (defn inc-pfx [uri]
   (if (= (first uri) \/) (str uri) (str INCS uri)))
-;
+
 
 (defn login-url [& [redir]]
   (let [url (-> conf :urls :login)]
@@ -132,7 +133,6 @@
     {:id "info"     :href "/info/"      :menu "Информация"}
     ;; Карты
     {:id "text"     :href "/live/"      :menu "Статьи"}
-    ;; {:id "shops"    :href "/shops/"     :menu "Магазины"}
     {:id "tourserv" :href "/tourserv"   :menu "Турсервис"}
     {:id "photo"    :href "/photo/"     :menu "Фото"}
     {:id "forum"    :href "/forum/"     :menu "Форум"}
@@ -169,13 +169,13 @@
             [:div.copy
               [:br]
               [:a.copy-tm {:href "https://angara.net/"} "Angara.Net"]
-              " &copy; 2002-2023"]]
+              " &copy; 2002-2025"]]
           ;
           [:div.clearfix]]]]
     ;; counters
     (yandex-metrika (:yandex-metrika conf))
     (mailru-top (:mailru-top conf))])
-;
+
 
 (defn head [req {:keys [css js] :as params}]
   [:head
@@ -186,7 +186,6 @@
       (concat ["css/main.css"] css))
     (map #(script (inc-pfx %))
       (concat ["js/mlib.js" "js/site.js"] js))])
-;
 
 
 (defn layout

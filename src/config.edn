@@ -18,9 +18,8 @@
     {
       :st_default
       [ "uiii" "irgp" "npsd" "olha" "olha2"
-        "zbereg" "polyana" "khomutovo" ""
-        "lin_list" "lin_uzur" "lin_ushk" 
-        "mamai"]}
+        "khomutovo" ""
+       ]}
     ;
 
     :forum 
@@ -29,21 +28,7 @@
       :upload-uri "/upload/"
       :upload-dir "/app/files/upl/"}
   
-    ;; :photomap 
-    ;; {
-    ;;   :hash-dir "../files/bots/photos"
-    ;;   :base-uri "/photomap"
-    ;;   :google-key "__KEY__"}
-    
-    ;; :icestorm 
-    ;; {
-    ;;   :envelope 
-    ;;   {
-    ;;     :from "noreply@angara.net"
-    ;;     :to ["maxp@ya.ru"]
-    ;;     :subject "IceStorm 2020: регистрация"}}
-    
-    }
+  }
 
   ;; ;; ;; ;; ;; ;; ;; ;; ;;
   ;; commons    
@@ -81,7 +66,6 @@
 
   :yandex-metrika     "12139321"
   :mailru-top         "474619"
-  ; :analytics          "UA-486770-1"
 
   :rtb-top    "R-A-1908-15"
   :rtb-bottom "R-A-1908-14"
@@ -99,4 +83,3 @@
   ;;   :timestamp "?TIME?"}   ;; 2019-12-29T19:25:44+08:00
 
   ,}
-;;.
