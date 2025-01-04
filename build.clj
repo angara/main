@@ -3,24 +3,24 @@
    [java.time LocalDateTime]
    [java.time.format DateTimeFormatter])  
   (:require 
-    [clojure.string :refer [trim-newline]]
+    [clojure.java.io :as io]
     [clojure.tools.build.api :as b]
   ,))
 
 
-(def APPLICATION 'lsn/mgate)
-(def VER_MAJOR 0)
-(def VER_MINOR 33)
-(def MAIN_CLASS 'lsn.mgate.main)
+(def APP_NAME "angara.main")
+(def VER_MAJOR 2)
+(def VER_MINOR 0)
+(def MAIN_CLASS 'app.main)
 
+(def JAR_NAME   "angara-main.jar")
 
-(def CLJ_SRC   "src")
+(def CLJ_SRC    "src")
 (def JAVA_SRC   "java")
-
 (def TARGET     "target")
 (def CLASSES    "target/classes")
 (def RESOURCES  "resources")
-(def VERSION_FILE "VERSION")
+(def BUILD_INFO "build-info.properties")
 
 
 (defn iso-now ^String []
@@ -35,10 +35,24 @@
   (format "%s.%s.%s" VER_MAJOR VER_MINOR (b/git-count-revs nil)))
 
 
-(defn write-version [_]
-  (let [ver (str (version nil) "\n")]
-    (println "version:" ver)
-    (spit VERSION_FILE ver)))
+(defn build-info [_]
+  {:appname APP_NAME
+   :version (version nil)
+   :branch (b/git-process {:git-args "branch --show-current"})
+   :commit (b/git-process {:git-args "rev-parse --short HEAD"})
+   :timestamp (iso-now)}
+  ,)
+
+
+(defn write-build-info [build-info]
+  (let [out-file (io/file CLASSES BUILD_INFO)
+        props (java.util.Properties.)]
+    (doseq [[k v] build-info]
+      (.put props (name k) (str v)))
+    (io/make-parents out-file)
+    (with-open [output (io/output-stream out-file)]
+      (.store props output "build-info"))
+    ,))
 
 
 ;; https://clojure.org/guides/tools_build
@@ -53,15 +67,13 @@
 
 
 (defn uberjar [_]
-  (let [appname   (name APPLICATION)
-        version   (trim-newline (slurp VERSION_FILE))
-        branch    (b/git-process {:git-args "branch --show-current"})
-        commit    (b/git-process {:git-args "rev-parse --short HEAD"})
-        timestamp (iso-now)
-        uber-file (format "%s/%s.jar" TARGET (name APPLICATION))
-        basis     (b/create-basis {:project "deps.edn"})]
+  (let [build-info (build-info nil)
+        uber-file (io/file TARGET JAR_NAME)
+        basis (b/create-basis {:project "deps.edn"})]
 
-    (println "building:" appname version branch commit)
+    (println "building:" build-info) 
+
+    (write-build-info build-info)
 
     ;; (javac {:basis basis})
 
@@ -70,16 +82,12 @@
     
     (b/compile-clj {:basis basis
                     :src-dirs [CLJ_SRC]
-                    :class-dir CLASSES
-                    :java-opts [(str "-Dbuild_info.appname="   appname)
-                                (str "-Dbuild_info.version="   version)
-                                (str "-Dbuild_info.branch="    branch)
-                                (str "-Dbuild_info.commit="    commit)
-                                (str "-Dbuild_info.timestamp=" timestamp)]
-                    ,})
+                    :class-dir CLASSES})
 
     (b/uber {:basis basis
              :class-dir CLASSES
-             :uber-file uber-file
+             :uber-file (str uber-file)
              :main MAIN_CLASS})
+    
+    (println "complete:" (str uber-file))
     ,))

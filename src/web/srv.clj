@@ -11,7 +11,7 @@
 
 (defn start [handler]
   (let [hc (-> conf :main :http)]
-    (log! "start server -" hc)
+    (log! [ "start server -" (:host hc) (:port hc)])
     (run-jetty handler hc)))
 
 

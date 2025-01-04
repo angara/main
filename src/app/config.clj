@@ -7,16 +7,14 @@
    ,))
 
 
-(defmacro get-build-info []
-  {:appname   (System/getProperty "build_info.appname")
-   :version   (System/getProperty "build_info.version")
-   :branch    (System/getProperty "build_info.branch")
-   :commit    (System/getProperty "build_info.commit")
-   :timestamp (System/getProperty "build_info.timestamp")})
+(defn read-build-info []
+  (let [props (doto (java.util.Properties.)
+                (.load (-> "build-info.properties" (io/resource) (io/input-stream))))]
+    (into {} (for [[k v] props] [(keyword k) v]))))
 
 
 (def build-info
-  (get-build-info))
+  (read-build-info))
 
 
 (defn- deep-merge* [& maps]
