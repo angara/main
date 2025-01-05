@@ -96,6 +96,6 @@
     (make-routes)
     (wrap-user)
     (wrap-sess sess-load)
-    middleware
+    (middleware)
     (wrap-slowreq (:slowreq conf))
    ,))

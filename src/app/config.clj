@@ -29,11 +29,11 @@
 
 
 (defn base-config []
-  (-> "config.edn" io/resource slurp edn/read-string (assoc :build-info (build-info))))
+  (-> "config.edn" (io/resource) (slurp) (edn/read-string) (assoc :build-info (build-info))))
 
 
 (defn env-config []
-  (-> (System/getenv "CONFIG_EDN") slurp edn/read-string))
+  (-> "CONFIG_EDN" (System/getenv) (slurp) (edn/read-string)))
 
 
 (defstate conf

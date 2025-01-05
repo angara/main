@@ -10,8 +10,7 @@
       :host  "127.0.0.1"
       :port  8001
       :join? false}
-    ;
-
+    
     :calendar {:admins #{"1" "6441"}}
 
     :meteo 
@@ -20,7 +19,7 @@
       [ "uiii" "irgp" "npsd" "olha" "olha2"
         "khomutovo" ""
        ]}
-    ;
+    
 
     :forum 
     {

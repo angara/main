@@ -1,6 +1,5 @@
 (ns meteo.brief
   (:require
-    ; [clojure.string :as s]
     [clj-time.core :as tc]
     ; 
     [app.config        :refer [conf]]

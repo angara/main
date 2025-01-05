@@ -4,10 +4,21 @@
     [app.config :refer [conf]]
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [yandex-metrika mailru-top ya-rtb]]
-    [html.util :refer [glyphicon css-link script]]
     [html.search :refer [ya-site-form]]
     [meteo.curr :refer [curr-temp]]
    ,))
+
+
+(defn script [js-file]
+  [:script {:src js-file :type "text/javascript" :defer 1}])
+
+
+(defn css-link [css-file]
+  [:link {:href css-file :rel "stylesheet" :type "text/css"}])
+
+
+(defn glyphicon [nm]
+  [:span {:class (str "glyphicon glyphicon-" nm)}])
 
 
 (def INCS "/incs/")
@@ -21,7 +32,7 @@
     (if redir
       (str url "?redir=" redir)
       url)))
-;
+
 
 
 (def DESCR
