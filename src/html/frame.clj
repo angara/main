@@ -34,12 +34,11 @@
       url)))
 
 
-
 (def DESCR
   (str "Активный отдых, спорт, туризм, путешествия, фото."
       " Новости экстремального спорта, календарь событий, фотографии."
       " Байкал и Прибайкалье. Прогноз погоды."))
-;
+
 
 (defn head-meta
   [req {:keys [title page-title og-title og-image og-url og-descr]}]
@@ -63,7 +62,6 @@
       [:meta {:property "og:url"    :content og-url}]
       [:meta {:property "og:description" :content ds}]
       [:link {:rel "shortcut icon" :href "//angara.net/favicon.ico"}])))
-;
 
 
 (def bootstrap-head
@@ -76,7 +74,6 @@
               :src  "//api.angara.net/incs/jquery/3.2.0/jquery.min.js"}]
     [:script {:type "text/javascript" :defer 1
               :src  "//api.angara.net/incs/bootstrap/3.3.7/js/bootstrap.min.js"}]))
-;
 
 ;;; ;;; ;;; ;;; ;;;
 
@@ -88,7 +85,7 @@
       "[\"\", \"-\"],"
       "[do_logout, \"Выйти\"]"
     "]"))
-;
+
 
 (defn user-block [user uri]
   (if user
@@ -111,7 +108,7 @@
       [:div.b-signin
         [:a.btn.btn-default {:href (login-url uri)}
           "Войти" (glyphicon "log-in marl-8")]])))
-;
+
 
 (defn topbar [req]
   (let [user (:user req)]
@@ -134,7 +131,6 @@
             (user-block user (:uri req))]
           ;
           [:div.clearfix]]]]))
-;
 
 
 (def TOP_NAVS
@@ -149,7 +145,6 @@
     {:id "forum"    :href "/forum/"     :menu "Форум"}
     {:id "meteo"    :href "/meteo/"     :menu "Погода"  :ext curr-temp}])
 
-;
 
 (defn topnav [req active]
   (let [act (and active (name active))]
@@ -161,7 +156,7 @@
               [:a {:href (:href n)} (:menu n)]
               (when ext-fn
                 (ext-fn req))])]]]))
-;
+
 
 (defn footer [_req]
   [:div.b-footer
@@ -248,20 +243,19 @@
           ;
           (footer req)]])))
     ; /html5
-;
 
 
 (defn html5-resp [content]
   {:status 200
    :headers {"Content-Type" "text/html;charset=utf-8"}
    :body (html5 content)})
-;
+
 
 (defn render-layout [req params & content]
   {:status 200
    :headers {"Content-Type" "text/html;charset=utf-8"}
    :body (apply layout req params content)})
-;
+
 
 (defn no-access [req]
   {:status 403
@@ -276,7 +270,6 @@
             [:a {:href (-> conf :urls :login)} "входа на сайт"]
             "."]
           [:br]])})
-;
 
 
 (defn not-found [req]
@@ -288,7 +281,6 @@
           [:h2 "Страница по этому адресу отсутствует."]
           [:br]
           [:p "Попробуйте воспользоваться <a href='/search'>поиском</a>."]])})
-;
 
 
 (defn error-page [req msg]
@@ -298,13 +290,10 @@
       (layout req {}
         [:div.jumbotron.error
           [:h1 msg]])})
-;
+
 
 (defn wrap-user-required [handler]
   (fn [req]
     (if (:user req)
       (handler req)
       (no-access req))))
-;
-
-;;.

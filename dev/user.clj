@@ -1,31 +1,24 @@
-
 (ns user
   (:require
-    [clojure.tools.namespace.repl :as tnr]
-    [util :as util]
-    ;
-    [web.srv :refer [server]]))
-;
+    [mount.core :as mnt]
+    [app.config :as cf]
+    [web.srv]
+   ,))
+
 
 (set! *warn-on-reflection* true)
 
-(def _void server)
 
-(defn restart []
-  (prn "restart")
-  (util/stop)
-  (util/start))
-;
-
-(defn reset []
-  (tnr/refresh :after 'user/restart))
-;
+(defn start []
+  (let [cfg (cf/deep-merge (cf/base-config) (cf/env-config))]
+    (-> cfg
+        (mnt/start-with-args))
+    )
+  )
 
 (comment
 
-  (restart)
-  (reset)
-    
-  ,)
+  (start)
+  (mnt/stop)
 
-;;.
+  ,)

@@ -1,6 +1,5 @@
 (ns sql.conn
   (:require
-    ;[mlib.logger :refer [info warn]]
     [clj-time.coerce :as tc]
     [jdbc.core :as jdbc]
     [jdbc.proto :refer [ISQLType ISQLResultSetReadColumn]]
@@ -35,11 +34,11 @@
     (make-datasource (:psql conf))
   :stop
     (.close ds))
-;
+
 
 (defn dbc []
   (jdbc/connection ds))
-;
+
 
 ;;; ;;; ;;; ;;;
 

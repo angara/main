@@ -10,9 +10,12 @@
 
 
 (defn start [handler]
-  (let [hc (-> conf :main :http)]
-    (log! [ "start server -" (:host hc) (:port hc)])
-    (run-jetty handler hc)))
+  (let [build-info (:build-info conf)
+        hc (-> conf :main :http)]
+    (log! [(:appname build-info) (:version build-info) (:commit build-info)])
+    (log! ["start http server:" (:host hc) (:port hc)])
+    (run-jetty handler hc)
+    ,))
 
 
 (defstate server

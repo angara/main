@@ -1,4 +1,3 @@
-
 (ns meteo.api
   (:require
     [clojure.string :as s]
@@ -12,16 +11,17 @@
     [mlib.logger :refer [debug warn]]
     ;
     [mdb.core :refer [id_id]]
-    [meteo.db :refer [st-ids st-near PUB_FIELDS hourly-data]]))
-;
+    [meteo.db :refer [st-ids st-near PUB_FIELDS hourly-data]]
+   ,))
+
 
 (def ST_MAX_NUM 50)
 (def HOURLY_FETCH_LIMIT 50000)  ;; 24*30*50 = 36000
 (def HOURS_MAX 3000)            ;; 24*30*3 = 2160
 
 (defn index [_req]
-  (let [build (:build conf)
-        tearline (str (:app build) " " (:bld build))]
+  (let [build (:build-info conf)
+        tearline (str (:appname build) " " (:version build))]
     (text-resp (str "
 meteo API endpoints:
 ---
@@ -40,7 +40,6 @@ Hourly aggregations -
 
 ---
 " tearline))))
-;
 
 
 ;; test: ll=104.27,52.28
@@ -48,21 +47,19 @@ Hourly aggregations -
 (def ST_ALIVE (tc/days 7))
 
 (defn q-alive []
-  { :pub 1
-    :ts {:$gte (tc/minus (tc/now) ST_ALIVE)}})
-;
+  {:pub 1 :ts {:$gte (tc/minus (tc/now) ST_ALIVE)}})
+
 
 (defn ok-data [par data]
   (json-resp
     (merge par {:ok 1 :data data})))
-;
+
 
 (defn params-sts [params]
   (->>
     (-> params :st str (s/split #"," ST_MAX_NUM))
     (remove s/blank?)
     (not-empty)))
-;
 
 ;;; ;;; ;;; ;;;
 
@@ -72,7 +69,7 @@ Hourly aggregations -
       (map id_id (st-ids sts PUB_FIELDS)))
     ;;
     (json-resp {:err :params})))
-;
+
 
 (defn near [{params :params}]
   (let [[lng lat] (-> params :ll str (s/split #","))
@@ -91,7 +88,6 @@ Hourly aggregations -
                   :st_max ST_MAX_NUM}))
       ;;
       (json-resp {:err :params}))))
-;
 
 
 (defn parse-time [t]
@@ -99,7 +95,7 @@ Hourly aggregations -
     (tf/parse (str t))
     (catch Exception e
       (debug "parse-time:" t e))))
-;
+
 
 (defn hourly-series [sts t0 t1 n]
   (let [res (volatile! {})]
@@ -119,7 +115,7 @@ Hourly aggregations -
     ;
     (reduce-kv
       #(assoc %1 %2 (seq %3))  {}  @res)))
-;
+
 
 (defn hourly [{params :params}]
   (if-let [sts (params-sts params)]
@@ -139,7 +135,7 @@ Hourly aggregations -
         (json-resp {:err :time})))
     ;;
     (json-resp {:err :params})))
-;
+
 
 ;;; ;;; ;;; ;;;
 

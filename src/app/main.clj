@@ -20,7 +20,7 @@
      )
     (catch Exception ex
       (log! {:level :warn
-             :error ex}
-            "exception in main"
+             :error ex
+             :msg "exception in main"}
             )))
   ,)

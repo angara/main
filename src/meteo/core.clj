@@ -13,7 +13,6 @@
     [meteo.db     :refer  [st-ids st-find st-pub hourly-ts0 hourly-ts1]]
     [meteo.fmt    :refer  [format-t format-h format-p format-w format-wt]]
     [meteo.util   :refer  [st-param ST_MAX_NUM fresh]]
-    [meteo.graph  :refer  [t3-svg]]
     [meteo.brief  :refer  [index-brief]]
     ;
     [lib.rus-date :refer  [RUS_MONTHS_FC]]
@@ -64,9 +63,8 @@
             (render-layout req
               { :title (str "Погода - " (:title st))
                 :topmenu :meteo
-                :css [ "//api.angara.net/incs/highcharts/5.0.14/highcharts.css"]
-                :js  [ "//api.angara.net/incs/highcharts/5.0.14/highcharts.js"
-                        "/incs/meteo/st_graph.js"]}
+                :css [ "/incs/highcharts/5.0.14/highcharts.css"]
+                :js  [ "/incs/highcharts/5.0.14/highcharts.js" "/incs/meteo/st_graph.js"]}
               ;;
               [:div.b-meteo.row
                 [:script
@@ -153,9 +151,8 @@
     (render-layout req
       { :title "Погода в Иркутске и Прибайкалье в реальном времени"
         :topmenu :meteo
-        :css [ "//api.angara.net/incs/highcharts/5.0.14/highcharts.css"]
-        :js  [ "//api.angara.net/incs/highcharts/5.0.14/highcharts.js"
-               "/incs/meteo/core.js"]}
+        :css [ "/incs/highcharts/5.0.14/highcharts.css"]
+        :js  [ "/incs/highcharts/5.0.14/highcharts.js" "/incs/meteo/core.js"]}
       ;
       [:div.b-meteo
         [:script
@@ -226,23 +223,6 @@
             " и не могут быть использованы в качестве документальных."]]])))
 
 
-(defn graph-page [req]
-  (render-layout req
-    { :title "Погода в Иркутске и Прибайкалье в реальном времени"
-      :topmenu :meteo}
-    ;
-    [:div.b-meteo
-      [:b "SVG image"]
-      [:br] [:br]
-      [:img {:src "graph/t3.svg?st=uiii" :style "width:60%; margin:0;"}]
-      [:br]
-      [:br]]))
-
-
 (defroutes meteo-routes
   (GET "/"              [] index-page)
-
-  (GET "/graph"         [] graph-page)
-
-  (GET "/graph/t3.svg"  [] t3-svg)
   (GET "/st/:st"        [] st-page))

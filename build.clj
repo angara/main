@@ -8,7 +8,7 @@
   ,))
 
 
-(def APP_NAME   "angara.main")
+(def APP_NAME   "angara-main")
 (def VER_MAJOR  2)
 (def VER_MINOR  0)
 (def MAIN_CLASS 'app.main)

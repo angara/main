@@ -15,8 +15,7 @@
     [calendar.core :refer [calendar-routes]]
     [forum.core :refer [forum-api-routes]]
     [front.core :refer [main-page]]
-    [meteo.api :refer [meteo-api-routes]]
-    [meteo.core :refer [meteo-routes]]
+    [meteo.core :as meteo]
     [tourserv.core :as tourserv]
   ,))
 
@@ -49,10 +48,12 @@
   (routes
     (GET     "/"              _ main-page)
     ;
-    (context "/api/meteo"     _ meteo-api-routes)
-    (ANY     "/api/*"         _ api-404)
+    ;; (context "/api/meteo"     _ meteo-api-routes)
+    ;; (ANY     "/api/*"         _ api-404)
     ;
-    (context "/meteo"         _ meteo-routes)
+    (GET "/meteo/"              [] meteo/index-page)
+    (GET "/meteo/st/:st"        [] meteo/st-page)
+   
     ;
     (GET     "/search"        _ (redirect "/yasearch/"))
     (GET     "/yasearch/"     _ ya-search)

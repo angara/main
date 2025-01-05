@@ -146,7 +146,6 @@
 
 
 (defn t3-svg [{_params :params}]
-  ; (prn "params:" params)
   { :status 200
     :headers {"Content-Type" "image/svg+xml"}
     :body (html T3)})
