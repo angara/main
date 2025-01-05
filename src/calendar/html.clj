@@ -12,7 +12,7 @@
     ; [mlib.web.snippets :refer [ya-rtb]]
     ;
     [html.frame :refer [render-layout]]
-    [misc.util :refer [rus-date]]
+    [lib.rus-date :refer [rus-date]]
     [calendar.db :refer [crecs-all crecs-publ]]))
 ;
 

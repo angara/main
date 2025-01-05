@@ -10,8 +10,8 @@
     [mlib.core :refer [to-int]]
     [sql.core :refer [fetch exec]]
     ;
-    [forum.db :refer 
-      [FORUM_TOPICS FORUM_LASTREAD USERS lastreads get-lastread insert-watch update-watch]]
+    [forum.db :refer [FORUM_TOPICS FORUM_LASTREAD USERS 
+                      lastreads get-lastread insert-watch update-watch]]
    ,))
 
 
@@ -20,14 +20,14 @@
 
 (def FIRST_CHARS
   (set "0123456789\"ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"))
-;
+
 
 (def STOP_STRS
   [
     ".."  ",," "??" "**" "--" "++" "==" "//"
     "((" "))" "[[" "]]" "{{" "}}" "<<" ">>" "##" "@@" "$$"
     "~~" "``" "''" "&&" "__" "||" ";;" "::" "\"\"" "\\\\"])
-;
+
 
 (defn user-role-set [uid]
   (->
@@ -35,7 +35,6 @@
     (h/from USERS)
     (h/where [:= :uid uid])
     fetch first :roles str set))
-;
 
 
 (defn topic-notify [{user :user params :params}]
@@ -50,14 +49,13 @@
             (h/sset {:watch (if nfy 1 0)})
             (h/where [:= :uid uid] [:= :tid tid])
             exec)}))))
-;
 
 
 (defn- valid-title? [title]
   (and
     (FIRST_CHARS (first title))
     (not (some #(s/includes? title %) STOP_STRS))))
-;
+
 
 (defn- correct-title [title]
   (let [title (reduce
@@ -73,7 +71,7 @@
       (let [title (str (s/upper-case (subs title 0 1)) (subs title 1))]
         (when (valid-title? title)
           title)))))
-;
+
 
 (defn- update-title [tid title & where]
   (let [rc (->
@@ -86,7 +84,7 @@
         :title title}
       { :err :update_failed
         :msg "Невозможно изменить заголовок темы."})))
-;
+
 
 (defn topic-title [{user :user params :params}]
   (let [uid (-> user :id to-int)
@@ -102,9 +100,7 @@
               [:> :created (tc/minus (tc/now) FORUM_EDIT_AGE)]))
           ;
           {:err :bad_data :msg "Недопустимый текст заголовока."})))))
-          ;
-        ;
-;
+
 
 (defn topic-state [{user :user params :params}]
   (let [uid (-> user :id to-int)
@@ -121,7 +117,7 @@
           (if rc
             {:ok 1 :tid tid :state (if close "closed" "opened")}
             {:err :not_found :msg "Тема не найдена."}))))))
-;
+
 
 (defn get-lastreads [{user :user params :params}]
   (try
@@ -134,7 +130,7 @@
     (catch Exception err
       (warn "get-lastreads:" {:user user :params params :err err})
       (json-resp 400 {:err :bad_request :msg "Ошибка при обработке запроса."}))))
-;
+
 
 (defn get-watch [{user :user params :params}]
   (try
@@ -149,7 +145,7 @@
     (catch Exception err
       (warn "get-watch:" {:user user :params params :err err})
       (json-resp 400 {:err :bad_request :msg "Ошибка при обработке запроса."}))))
-;
+
 
 (defn set-watch [{user :user params :params}]
   (try

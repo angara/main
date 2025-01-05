@@ -3,7 +3,6 @@
     [java.util Locale])
   (:require
     [clojure.string :as s]))
-;
 
 
 (def HPA_MMHG 1.3332239)

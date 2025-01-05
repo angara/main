@@ -46,45 +46,24 @@
 (extend-protocol ISQLType
   ;
   org.joda.time.DateTime
-  (as-sql-type [this conn]
+  (as-sql-type [this _conn]
     (tc/to-sql-time this))
   ;
-  (set-stmt-parameter! [this conn stmt index]
+  (set-stmt-parameter! [this _conn stmt index]
     (.setTimestamp stmt index
       (tc/to-sql-time this))))
-;
+
 
 (extend-protocol ISQLResultSetReadColumn
   ;
   java.sql.Timestamp
-  (from-sql-type [this conn metadata index]
+  (from-sql-type [this _conn _metadata _index]
     (tc/from-sql-time this))
   ;
   java.sql.Date
-  (from-sql-type [this conn metadata index]
+  (from-sql-type [this _conn _metadata _index]
     (tc/from-sql-date this))
   ;
   java.sql.Time
-  (from-sql-type [this conn metadata index]
+  (from-sql-type [this _conn _metadata _index]
     (org.joda.time.DateTime. this)))
-;
-
-; ; http://clojure.github.io/java.jdbc/#clojure.java.jdbc/IResultSetReadColumn
-; (extend-protocol jdbc/IResultSetReadColumn
-;   java.sql.Timestamp
-;   (result-set-read-column [v _2 _3]
-;     (tc/from-sql-time v))
-;   java.sql.Date
-;   (result-set-read-column [v _2 _3]
-;     (tc/from-sql-date v))
-;   java.sql.Time
-;   (result-set-read-column [v _2 _3]
-;     (org.joda.time.DateTime. v)))
-;
-; ; http://clojure.github.io/java.jdbc/#clojure.java.jdbc/ISQLValue
-; (extend-protocol jdbc/ISQLValue
-;   org.joda.time.DateTime
-;   (sql-value [v]
-;     (tc/to-sql-time v)))
-
-;;.

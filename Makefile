@@ -17,16 +17,7 @@ dev:
 	set -a && CONFIG_EDN=../conf/dev.edn && source ../conf/dev.env && clojure -M:dev:nrepl
 
 
-css-dev:
-	clojure -A:css -m make-css resources/public/incs/css/main.css pretty
-
-
-css:
-	@echo "css garden: css/main.css"
-	@clojure -A:css -m make-css resources/public/incs/css/main.css
-
-
-build: clean css
+build: clean
 	@clj -T:build uberjar
 
 

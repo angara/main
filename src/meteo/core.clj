@@ -1,8 +1,7 @@
 (ns meteo.core
   (:require
-    ; [clojure.string :as s]
     [clj-time.core :as tc]
-    [clj-time.coerce :refer [to-long]]
+    [clj-time.coerce :as tco]
     ;
     [ring.util.response :refer [redirect]]
     [compojure.core :refer [defroutes GET]]
@@ -17,9 +16,9 @@
     [meteo.graph  :refer  [t3-svg]]
     [meteo.brief  :refer  [index-brief]]
     ;
-    [misc.util    :refer  [RUS_MONTHS_FC]]
-    [html.frame   :refer  [render-layout]]))
-;=
+    [lib.rus-date :refer  [RUS_MONTHS_FC]]
+    [html.frame   :refer  [render-layout]]
+   ,))
 
 
 (def YEAR_0 2013)
@@ -32,7 +31,6 @@
 
 (defn st-url [st]
   (str ST_BASE_URL (:_id st)))
-;
 
 
 (defn st-page [{params :params :as req}]
@@ -76,7 +74,7 @@
                   "window.st_month=" month ";"
                   "window.st_year="  year  ";"
                   "window.tz_offset_millis=" TZ_OFFSET_MILLIS ";"
-                  "window.now_ms=" (to-long now) ";"]
+                  "window.now_ms=" (tco/to-long now) ";"]
                 ;
                 [:div
                   (if dead
@@ -133,8 +131,7 @@
                     [:div#st_graph.st-graph]]]])))))))
                     ;  [:div.loading "Загрузка графика ..."]]]]])))))))
                 ;; b-st
-    ;;
-;
+
 
 (defn index-page [req]
   (let [ids (st-param req)
@@ -162,9 +159,9 @@
       ;
       [:div.b-meteo
         [:script
-          "window.hourly_t0=new Date(" (to-long t0) ");"
-          "window.hourly_t1=new Date(" (to-long t1) ");"
-          "window.hourly_t0_utc=new Date(" (to-long t0-utc) ");"]
+          "window.hourly_t0=new Date(" (tco/to-long t0) ");"
+          "window.hourly_t1=new Date(" (tco/to-long t1) ");"
+          "window.hourly_t0_utc=new Date(" (tco/to-long t0-utc) ");"]
         ;
         (index-brief)
         ;
@@ -227,9 +224,7 @@
           [:small {:style "color:#777"}
             "Данные, приведенные на этой странице, не являются официальными"
             " и не могут быть использованы в качестве документальных."]]])))
-;
 
-;; ;; ;; ;; ;; ;; ;; ;; ;; ;;
 
 (defn graph-page [req]
   (render-layout req
@@ -242,9 +237,7 @@
       [:img {:src "graph/t3.svg?st=uiii" :style "width:60%; margin:0;"}]
       [:br]
       [:br]]))
-;
-  
-;; ;; ;; ;; ;; ;; ;; ;; ;; ;;
+
 
 (defroutes meteo-routes
   (GET "/"              [] index-page)
@@ -253,6 +246,3 @@
 
   (GET "/graph/t3.svg"  [] t3-svg)
   (GET "/st/:st"        [] st-page))
-;
-
-;;.

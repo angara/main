@@ -7,14 +7,8 @@
    ,))
 
 
-(defn read-build-info []
-  (let [props (doto (java.util.Properties.)
-                (.load (-> "build-info.properties" (io/resource) (io/input-stream))))]
-    (into {} (for [[k v] props] [(keyword k) v]))))
-
-
-(def build-info
-  (read-build-info))
+(defn build-info []
+  (-> "build-info.edn" (slurp) (edn/read-string)))
 
 
 (defn- deep-merge* [& maps]
@@ -35,7 +29,7 @@
 
 
 (defn base-config []
-  (-> "config.edn" io/resource slurp edn/read-string (assoc :build-info build-info)))
+  (-> "config.edn" io/resource slurp edn/read-string (assoc :build-info (build-info))))
 
 
 (defn env-config []

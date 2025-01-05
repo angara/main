@@ -8,9 +8,9 @@
   ,))
 
 
-(def APP_NAME "angara.main")
-(def VER_MAJOR 2)
-(def VER_MINOR 0)
+(def APP_NAME   "angara.main")
+(def VER_MAJOR  2)
+(def VER_MINOR  0)
 (def MAIN_CLASS 'app.main)
 
 (def JAR_NAME   "angara-main.jar")
@@ -20,7 +20,7 @@
 (def TARGET     "target")
 (def CLASSES    "target/classes")
 (def RESOURCES  "resources")
-(def BUILD_INFO "build-info.properties")
+(def BUILD_INFO "build-info.edn")
 
 
 (defn iso-now ^String []
@@ -45,14 +45,9 @@
 
 
 (defn write-build-info [build-info]
-  (let [out-file (io/file CLASSES BUILD_INFO)
-        props (java.util.Properties.)]
-    (doseq [[k v] build-info]
-      (.put props (name k) (str v)))
+  (let [out-file (io/file CLASSES BUILD_INFO)]
     (io/make-parents out-file)
-    (with-open [output (io/output-stream out-file)]
-      (.store props output "build-info"))
-    ,))
+    (spit out-file (pr-str build-info))))
 
 
 ;; https://clojure.org/guides/tools_build

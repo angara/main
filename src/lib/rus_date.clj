@@ -1,7 +1,7 @@
-(ns misc.util
+(ns lib.rus-date
   (:require
     [clj-time.core :as tc]))
-;
+
 
 (def RUS_MONTHS
   [
@@ -17,7 +17,7 @@
     "октябрь"
     "ноябрь"
     "декабрь"])
-;
+
 
 (def RUS_MONTHS_FC
   [
@@ -33,7 +33,7 @@
     "Октябрь"
     "Ноябрь"
     "Декабрь"])
-;
+
 
 (def RUS_DATE_MONTHS
   [
@@ -49,7 +49,7 @@
     "октября"
     "ноября"
     "декабря"])
-;
+
 
 (def RUS_DATE_MONTHS_FC
   [
@@ -65,7 +65,7 @@
     "Октября"
     "Ноября"
     "Декабря"])
-;
+
 
 (defn rus-date [date]
   (let [t (tc/to-time-zone date (tc/default-time-zone))]
