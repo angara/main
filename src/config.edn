@@ -15,7 +15,11 @@
 
     :meteo 
     {
-      :st_default [ "uiii" "irgp" "npsd" "olha" "olha2" "khomutovo"]}
+      :st_default [ "uiii" "irgp" "npsd" "olha" "olha2" "khomutovo"]
+      :meteo-api-url  "https://angara.net/meteo/api"
+      :meteo-api-auth "-"
+     
+     }
     
 
     :forum 
