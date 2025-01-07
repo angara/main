@@ -12,7 +12,10 @@
 (defn start []
   (let [cfg (cf/deep-merge (cf/base-config) (cf/env-config))]
     (-> cfg
-        (mnt/start-with-args))
+        (mnt/with-args)
+        (mnt/only #{#'cf/conf})
+        (mnt/start)
+        )
     )
   )
 
