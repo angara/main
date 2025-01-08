@@ -33,13 +33,6 @@
   (str ST_BASE_URL (:_id st)))
 
 
-
-(defn curr-temp [_]
-  (when-let [{last :last} (first (mdata/active-stations))]
-    (when-let [t (format-t "" (:t last) (:t_delta last))]
-      [:span.t t])))
-
-
 (defn st-page [{params :params :as req}]
   (let [st-id (-> params :st str)]
     (when-let [st (st-pub st-id)]  

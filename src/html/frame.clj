@@ -5,7 +5,7 @@
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [yandex-metrika mailru-top ya-rtb]]
     [html.search :refer [ya-site-form]]
-    [meteo.core :refer [curr-temp]]
+    [meteo.curr-temp :refer [curr-temp]]
    ,))
 
 
@@ -277,7 +277,7 @@
    :headers {"Content-Type" "text/html;charset=utf-8"}
    :body
       (layout req {:title "Страница не найдена"}
-        [:div.jumbotron
+        [:div.jumbotron {:style "padding: 6em 8em"}
           [:h2 "Страница по этому адресу отсутствует."]
           [:br]
           [:p "Попробуйте воспользоваться <a href='/search'>поиском</a>."]])})

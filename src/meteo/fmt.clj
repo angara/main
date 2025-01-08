@@ -14,35 +14,34 @@
                 (.length s)
                 (.length (second z))))
     s))
-;
+
 
 (defn strip-dot [v]
   (if (s/ends-with? v ".")
     (subs v 0 (-> v .length dec))
     v))
-;
+
 
 (defn nfix1 [x]
   (String/format Locale/ROOT "%.1f" (to-array [(float x)])))
-;
+
 
 (defn nfix2 [x]
   (String/format Locale/ROOT "%.2f" (to-array [(float x)])))
-;
+
 
 (defn nf1 [x]
   (try
     (-> x nfix1 strip-zeros strip-dot)
     (catch Exception 
       _ignore)))
-;
+
 
 (defn nf2 [x]
   (try
     (-> x nfix2 strip-zeros strip-dot)
     (catch Exception 
       _ignore)))
-;
 
 
 (defn wind-nesw [b]
@@ -52,7 +51,7 @@
       (int (Math/floor (mod (/ (+ b 22) 45) 8))))
     (catch Exception 
       _ignore)))
-;
+
 
 (defn format-w [pref w g b]
   (when w
@@ -67,17 +66,17 @@
       (if dir
         (str res ", " "<b>" dir "</b>")
         res))))
-;
+
 
 (defn format-h [pref h]
   (when h
     (str pref "<nobr><b>" (Math/round (float h)) "</b> %</nobr>")))
-;
+
 
 (defn format-p [pref p]
   (when p
     (str pref "<nobr><b>" (Math/round (/ p HPA_MMHG)) "</b> мм.рт.ст</nobr>")))
-;
+
 
 (defn format-t [pref t delta]
   (try
@@ -88,9 +87,9 @@
                         :else   ["zer" ""])
           [trc arr]   (when delta
                         (cond
-                          (> delta 1) ["pos" "&uarr;"]
-                          (< delta 1) ["neg" "&darr;"]
-                          :else       [""    "&nbsp;"]))]
+                          (> delta  0.8) ["pos" "&uarr;"]
+                          (< delta -0.8) ["neg" "&darr;"]
+                          :else          [""    "&nbsp;"]))]
       (list
         pref
         [:span {:class cls} sign [:b (Math/abs t)]]
@@ -99,7 +98,7 @@
       ;
     (catch Exception 
       _ignore)))
-;
+
 
 (defn format-wt [pref wt wl]
   (try
@@ -109,6 +108,4 @@
           (str ", <nobr>уровень <b>" (nf2 wl) "</b> м</nobr>"))))
     (catch Exception 
       _ignore)))
-;
 
-;;.
