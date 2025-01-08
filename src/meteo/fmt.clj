@@ -79,18 +79,18 @@
     (str pref "<nobr><b>" (Math/round (/ p HPA_MMHG)) "</b> мм.рт.ст</nobr>")))
 ;
 
-(defn format-t [pref t avg]
+(defn format-t [pref t delta]
   (try
     (let [t (Math/round (float t))
           [cls sign]  (cond
                         (< 0 t) ["pos" "+"]
                         (> 0 t) ["neg" "-"]
                         :else   ["zer" ""])
-          [trc arr]   (when avg
+          [trc arr]   (when delta
                         (cond
-                          (> t (+ avg 1)) ["pos" "&uarr;"]
-                          (< t (- avg 1)) ["neg" "&darr;"]
-                          :else           [""    "&nbsp;"]))]
+                          (> delta 1) ["pos" "&uarr;"]
+                          (< delta 1) ["neg" "&darr;"]
+                          :else       [""    "&nbsp;"]))]
       (list
         pref
         [:span {:class cls} sign [:b (Math/abs t)]]

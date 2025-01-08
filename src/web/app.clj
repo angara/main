@@ -6,7 +6,6 @@
     [compojure.route :as route]
     ;
     [app.config :refer [conf]]
-    [mlib.time :refer [now-ms]]
     [mlib.web.sess :refer [wrap-sess]] ; sid-resp]]
     [mlib.web.middleware :refer [middleware]]
     [mdb.user :refer [user-by-id sess-load FLDS_REQ_USER]]
@@ -80,9 +79,9 @@
 (defn wrap-slowreq [handler cnf]
   (let [ms (:ms cnf)]
     (fn [req]
-      (let [t0    (now-ms)
+      (let [t0    (System/currentTimeMillis)
             resp  (handler (assoc req :start-time t0))
-            dt    (- (now-ms) t0)]
+            dt    (- (System/currentTimeMillis) t0)]
         (when (< ms dt)
           (log! {:msg "slow request"
                  :data (-> req

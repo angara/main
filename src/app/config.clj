@@ -3,7 +3,8 @@
    [clojure.java.io :as io]
    [clojure.edn :as edn]
    [mount.core :refer [defstate args]]
-   ,))
+   [java-time.api :as jt]
+  ,))
 
 
 (defn build-info []
@@ -39,3 +40,7 @@
 
 (defstate conf
   :start (args))
+
+
+(defstate tz
+  :start (jt/zone-id (:tz conf)))

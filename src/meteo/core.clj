@@ -1,28 +1,29 @@
 (ns meteo.core
   (:require
+    [clojure.math :refer [round]]
     [clj-time.core :as tc]
     [clj-time.coerce :as tco]
     ;
     [ring.util.response :refer [redirect]]
-    [compojure.core :refer [defroutes GET]]
     ;
-    [app.config  :refer  [conf]]
-    [mlib.core    :refer  [hesc to-int]]
-    [mlib.time    :refer  [ddmmyyyy hhmm]]
+    [mlib.core :refer [hesc to-int]]
+    [mlib.time :refer [ddmmyyyy]]
+    [mlib.web.snippets :refer [ya-rtb]]   
     ;
-    [meteo.db     :refer  [st-ids st-find st-pub hourly-ts0 hourly-ts1]]
-    [meteo.fmt    :refer  [format-t format-h format-p format-w format-wt]]
-    [meteo.util   :refer  [st-param ST_MAX_NUM fresh]]
-    [meteo.brief  :refer  [index-brief]]
+    [meteo.db   :refer [st-pub hourly-ts0 hourly-ts1]]
+    [meteo.fmt  :refer [format-t format-h format-p format-w format-wt]]
+    [meteo.util :refer [fresh]]
+    [meteo.data :as mdata]
     ;
-    [lib.rus-date :refer  [RUS_MONTHS_FC]]
-    [html.frame   :refer  [render-layout]]
+    [lib.rus-date :refer [RUS_MONTHS_FC]]
+    [lib.time :refer [iso->local tf-hhmm]]
+    [html.frame :refer [render-layout]]
    ,))
 
 
 (def YEAR_0 2013)
 
-(def ST_DEAD_INTERVAL (tc/days 10))   ;; duplicated in brief
+(def ST_DEAD_INTERVAL (tc/days 10))
 (def HOURS_INTERVAL   (tc/hours 60))
 (def TZ_OFFSET_MILLIS (* 8 3600 1000))
 
@@ -30,6 +31,13 @@
 
 (defn st-url [st]
   (str ST_BASE_URL (:_id st)))
+
+
+
+(defn curr-temp [_]
+  (when-let [{last :last} (first (mdata/active-stations))]
+    (when-let [t (format-t "" (:t last) (:t_delta last))]
+      [:span.t t])))
 
 
 (defn st-page [{params :params :as req}]
@@ -57,7 +65,6 @@
           (redirect (str ST_BASE_URL st-id "?year=" year "&month=" month))
           ;;
           (let [last   (:last st)
-                trends (-> st :trends fresh)
                 dead   (not (fresh last))]
             ;
             (render-layout req
@@ -86,7 +93,7 @@
                       [:div.addr  (hesc a)])
                     (let [t (:ts last)]
                       [:div.date
-                        (ddmmyyyy t) " - " (hhmm t)])
+                        (ddmmyyyy t) " - " #_(hhmm t)]) ;; XXX: !!!
                     (when dead
                       [:div.dead-msg "Данные устарели!"])]
                   [:div.clearfix]
@@ -94,7 +101,7 @@
                     [:div.twph
                       [:div.t
                         (format-t "<span class='lbl'>Температура:</span> "
-                          (:t last) (-> trends :t :avg))]
+                          (:t last) (-> last :t_delta))]
                       [:div.w
                         (format-w "<span class='lbl'>Ветер:</span> "
                           (:w last) (:g last) (:b last))]
@@ -130,91 +137,55 @@
                     ;  [:div.loading "Загрузка графика ..."]]]]])))))))
                 ;; b-st
 
+; ; ; ; ; ; ; ; ;
+
+(defn- labeled-value [lbl val]
+  (when val
+    [:div.value.clearfix
+     [:div.col-sm-6.lbl lbl]
+     [:div.col-sm-6.val val]]))
+
+
+(defn format-station [{st :st title :title descr :descr
+                       last :last last_ts :last_ts
+                       lat :lat lon :lon elev :elev }]
+  (let [t-val (format-t nil (:t last) (:t_delat last))
+        w-val (format-w nil (:w last) (:g last) (:b last))
+        p-val (format-p nil (:p last))
+        h-val (format-h nil (:h last))
+        ts (iso->local last_ts)
+        a-title (str st (when (and lat lon) (str ": " lat "/" lon)))
+        ]
+    (when (or t-val w-val p-val h-val)
+      [:div.station
+       [:div.title 
+        [:a {:href (str ST_BASE_URL st) :title a-title} 
+         title " " [:i.fa.fa-bar-chart] [:div.hhmm (when ts (tf-hhmm ts))]]]
+       (labeled-value "температура" t-val)
+       (labeled-value "ветер"       w-val)
+       (labeled-value "давление"    p-val)
+       (labeled-value "влажность"   h-val)
+       [:div.descr descr (when elev (list " / " [:b (round elev)] " м"))]
+       [:div.clearfix]]
+      ,)))
+
 
 (defn index-page [req]
-  (let [ids (st-param req)
-        sts (into {}
-              (map
-                (fn [st] [(:_id st) st])
-                (st-ids ids)))
-        dead-time (tc/minus (tc/now) ST_DEAD_INTERVAL)
-        st-names (st-find
-                    {:pub 1 :ts {:$gte dead-time}}
-                    [:_id :title :descr :addr :ll])
-        now_tz (tc/to-time-zone (tc/now) (tc/time-zone-for-id (:tz conf)))
-        t1  (tc/plus (tc/floor now_tz tc/hour) (tc/hours 1))
-        t0  (tc/minus t1 HOURS_INTERVAL)
-        t0-utc (tc/from-time-zone t0 tc/utc)
-        idx (volatile! 0)]
-    ;;
-
+  (let [st-list (mdata/active-stations)]
     (render-layout req
       { :title "Погода в Иркутске и Прибайкалье в реальном времени"
         :topmenu :meteo
-        :css [ "/incs/highcharts/5.0.14/highcharts.css"]
-        :js  [ "/incs/highcharts/5.0.14/highcharts.js" "/incs/meteo/core.js"]}
-      ;
+        :css ["/incs/highcharts/5.0.14/highcharts.css"]
+        :js ["/incs/meteo/core.js"]}
       [:div.b-meteo
-        [:script
-          "window.hourly_t0=new Date(" (tco/to-long t0) ");"
-          "window.hourly_t1=new Date(" (tco/to-long t1) ");"
-          "window.hourly_t0_utc=new Date(" (tco/to-long t0-utc) ");"]
-        ;
-        (index-brief)
-        ;
-        [:div.row
-          (for [id ids
-                :let [st (get sts id)]
-                :when st]
-            (let [title   (:title st)
-                  descr   (:descr st (:addr st))
-                  last    (fresh (:last st))
-                  trends  (fresh (:trends st))]
-              ;
-              (list
-                (when (= 0 (mod @idx 2))
-                  [:div.clearfix])
-                ;
-                [:div.col-md-6
-                  [:div.b-card
-                    {:data-st (:_id st)}
-                    [:div.title
-                      {:title descr}
-                      [:a {:href (st-url st)}
-                        (hesc title)]]
-                    (if last
-                      (list
-                        [:div.t
-                          (format-t "" (:t last) (-> trends :t :avg))]
-                        [:div.wph
-                          [:div.w
-                            (format-w "Ветер: "
-                              (:w last) (:g last) (:b last))]
-                          [:div.p
-                            (format-p "Давление: " (:p last))]
-                          [:div.h
-                            (format-h "Влажность: " (:h last))]
-                          [:div.wt
-                            (format-wt "Температура воды: "
-                              (:wt last) (:wl last))]]
-                        [:div.clearfix])
-                      ;;
-                      [:div.nodata "Нет данных."])
-                    [:div.clearfix]
-                    [:div.graph
-                      {:id (str "graph_" (vswap! idx inc) "_" id)}
-                      [:div.loading "Загрузка графика ..."]]]])))]
-        ;
-        (when (< (count ids) ST_MAX_NUM)
-          [:div.col-sm-6.col-sm-offset-3.selector
-            [:div.form-inline
-              [:div.form-group
-                [:select#st_list.form-control
-                  (for [st st-names]
-                    [:option {:value (:_id st)} (hesc (:title st))])]
-                " &nbsp; "
-                [:button#btn_st_add.btn.btn-success {:type "button"}
-                  [:b "Добавить"]]]]])
+       [:div.b-meteo-brief
+        [:div.col-md-7.col-md-offset-1
+         (for [st st-list]
+           (format-station st))]
+        [:div.col-md-4 {:style "text-align: center"}
+         [:div {:style "width: 300px; height: 300px; margin: 12px 8px; display: inline-block; overflow: hidden;"}
+          (ya-rtb "R-A-1908-16" true)]]
+        [:div.clearfix]]
         ;;
         [:div.clearfix]
         [:div.text-center {:style "margin: 20px"}
@@ -222,7 +193,3 @@
             "Данные, приведенные на этой странице, не являются официальными"
             " и не могут быть использованы в качестве документальных."]]])))
 
-
-(defroutes meteo-routes
-  (GET "/"              [] index-page)
-  (GET "/st/:st"        [] st-page))

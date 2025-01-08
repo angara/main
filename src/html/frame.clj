@@ -5,7 +5,7 @@
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [yandex-metrika mailru-top ya-rtb]]
     [html.search :refer [ya-site-form]]
-    [meteo.curr :refer [curr-temp]]
+    [meteo.core :refer [curr-temp]]
    ,))
 
 
@@ -139,9 +139,9 @@
     {:id "calendar" :href "/calendar"   :menu "Календарь"}
     {:id "info"     :href "/info/"      :menu "Информация"}
     ;; Карты
-    {:id "text"     :href "/live/"      :menu "Статьи"}
+    {:id "text"     :href "/publ/"      :menu "Статьи"}
     {:id "tourserv" :href "/tourserv"   :menu "Турсервис"}
-    {:id "photo"    :href "/photo/"     :menu "Фото"}
+    ;; {:id "photo"    :href "/photo/"     :menu "Фото"}
     {:id "forum"    :href "/forum/"     :menu "Форум"}
     {:id "meteo"    :href "/meteo/"     :menu "Погода"  :ext curr-temp}])
 

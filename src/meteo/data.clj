@@ -8,9 +8,6 @@
    ,))
 
 
-(set! *warn-on-reflection* true)
-
-
 (defn get-json 
   ([url auth]
    (get-json url auth 5000))
@@ -21,29 +18,31 @@
        (try
          (json/read-value body json/keyword-keys-object-mapper)
          (catch Exception ex
-           (log! :warn ["get-json body parse:" url (ex-message ex)])
+           (log! :warn ["get-json body parse:" (ex-message ex) url])
            nil))
        (do 
          (if error
-           (log! :warn ["get-json error:" url error])
-           (log! :warn ["get-json:" url status body]))
+           (log! :warn ["get-json error:" (ex-message error) url])
+           (log! :warn ["get-json:" status body url]))
          nil
          ,)))))
 
 
-(defn active-stations []
+(defn active-stations-impl []
   (let [cf (-> conf :main :meteo)
-        url (str (:meteo-api-url cf) "/active-stations?last-hours=30")
+        url (str (:meteo-api-url cf) "/active-stations?lat=52.28&lon=104.28&last-hours=30")
         auth (:meteo-api-auth cf)]
     (:stations (get-json url auth))))
 
 
-(def active-stations-cached
-  (mem/ttl active-stations {} :ttl/threshold 10000))
+(def active-stations
+  (mem/ttl active-stations-impl {} :ttl/threshold 120000)) ;; 2 minutes
 
 
 (comment
   
-  (active-stations)
+  (count (active-stations-impl))
+
+  (count (active-stations))
 
   ,)
