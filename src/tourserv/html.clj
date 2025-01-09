@@ -4,17 +4,14 @@
     [mlib.core :refer [hesc]]
     [html.frame :refer [render-layout]]
     [tourserv.const :refer [TYPES TYPE_MAP TOWNS TOWN_MAP]]
-    [tourserv.db :refer [tourserv-by-type]]))
-;
+    [tourserv.db :refer [tourserv-by-type]]
+   ,))
 
-; (defn url-serv [type srv_id]
-;   (str "/tourserv/" type "#" srv_id))
-; ;
 
 (defn url-town [twn srv_id]
   (str "/tourserv/apart/" (name twn)
     (when srv_id (str "#" srv_id))))
-;
+
 
 (def APARTS_TOP_NUM 4)
 

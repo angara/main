@@ -135,15 +135,13 @@
 
 (def TOP_NAVS
   [
-    {:id "main"     :href "/"           :menu "Главная"}
-    {:id "calendar" :href "/calendar"   :menu "Календарь"}
-    {:id "info"     :href "/info/"      :menu "Информация"}
-    ;; Карты
-    {:id "text"     :href "/publ/"      :menu "Статьи"}
-    {:id "tourserv" :href "/tourserv"   :menu "Турсервис"}
-    ;; {:id "photo"    :href "/photo/"     :menu "Фото"}
-    {:id "forum"    :href "/forum/"     :menu "Форум"}
-    {:id "meteo"    :href "/meteo/"     :menu "Погода"  :ext curr-temp}])
+   {:id "main"     :href "/"           :menu "Главная"}
+   {:id "calendar" :href "/calendar"   :menu "Календарь"}
+   {:id "info"     :href "/info/"      :menu "Информация"}
+   {:id "text"     :href "/publ/"      :menu "Статьи"}
+   {:id "tourserv" :href "/tourserv"   :menu "Турсервис"}
+   {:id "forum"    :href "/forum/"     :menu "Форум"}
+   {:id "meteo"    :href "/meteo/"     :menu "Погода"  :ext curr-temp}])
 
 
 (defn topnav [req active]
@@ -166,8 +164,8 @@
           [:div.col-sm-4.text-left
              [:a {:href "//angara.net/about/"} "О сайте"]
              [:br]
-             [:a {:href "http://top.mail.ru/visits?id=474619" :target "_blank"}
-                 "Статистика"]]
+             [:a {:href "http://top.mail.ru/visits?id=474619" 
+                  :target "_blank"} "Статистика"]]
           ;
           [:div.col-sm-4.text-center]
           ;
@@ -245,10 +243,10 @@
     ; /html5
 
 
-(defn html5-resp [content]
-  {:status 200
-   :headers {"Content-Type" "text/html;charset=utf-8"}
-   :body (html5 content)})
+;; (defn html5-resp [content]
+;;   {:status 200
+;;    :headers {"Content-Type" "text/html;charset=utf-8"}
+;;    :body (html5 content)})
 
 
 (defn render-layout [req params & content]

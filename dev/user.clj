@@ -14,7 +14,7 @@
   (let [cfg (cf/deep-merge (cf/base-config) (cf/env-config))]
     (-> cfg
         (mnt/with-args)
-        #_(mnt/only #{#'cf/conf})
+        ;(mnt/only #{#'cf/conf #'cf/tz})
         (mnt/start)
         )
     ))

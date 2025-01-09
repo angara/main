@@ -6,7 +6,7 @@ VER_MINOR  = 0
 MAIN_CLASS = app.main
 
 JAR_NAME = angara-main.jar
-UBER_JAR = ${TARGET}/${JAR_NAME}
+UBER_JAR = target/${JAR_NAME}
 
 # # #
 PROD_HOST = angara

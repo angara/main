@@ -1,21 +1,31 @@
 (ns lib.time
+  (:import
+   [java.time LocalDateTime])
   (:require
    [java-time.api :as jt]
    [app.config :as config]
    ,))
 
 
-(defn iso->local [s]
+(defn iso->local ^LocalDateTime [s]
   (try
     (-> s (jt/instant) (jt/local-date-time config/tz))
-    (catch Exception _ignore)))
+    (catch Exception _ignore nil)))
+
+
+(defn local-now ^LocalDateTime []
+  (-> (jt/zoned-date-time config/tz) (jt/local-date-time)))
 
 
 (def tfmt_hhmm (jt/formatter "HH:mm"))
+(def tfmt_ddmmyyyy (jt/formatter "dd.MM.yyyy"))
 
 
 (defn tf-hhmm [dt]
   (jt/format tfmt_hhmm dt))
+
+(defn tf-ddmmyyyy [dt]
+  (jt/format tfmt_ddmmyyyy dt))
 
 
 (comment

@@ -1,9 +1,5 @@
 (ns mlib.core
-  (:require
-    [clojure.string :as s])
-  (:import
-    [java.security MessageDigest]
-   ,))
+  (:require [clojure.string :as s]))
 
 
 ;; TODO: replace with (parse-long)
@@ -26,68 +22,9 @@
       (catch Exception _ignore default))))
 
 
-;; -- patterns --
-
-(defn email?
-  [^String s]
-  (and
-    (string? s)
-    (<= (.length s) 80)
-    (re-matches #"(?i)([0-9a-z\_\.\-\+]+)@([0-9a-z\-]+\.)+([a-z]){2,}" s)
-    s))
-
-
-(defn phone?
-  "matches only +7 phones!"
-  [^String phone]
-  (and
-    (string? phone)
-    (re-matches #"\+7\d{10}" phone)
-    phone))
-
-
-;; -- string utils --
-
-(defn ^String str-trim [s]
-  (s/trim (str s)))
-;
-
-(defn ^String str-head
-  "Returns the first n characters of s."
-  [n ^String s]
-  (if (>= n (.length s)) s (.substring s 0 n)))
-;
-
-(defn ^String str-tail
-  "Returns the last n characters of s."
-  [n ^String s]
-  (if (< (count s) n) s (.substring s (- (count s) n))))
-
-
 (defn hesc
   "Replace special characters by HTML character entities."
   [text]
   (s/escape (str text)
     {\& "&amp;" \< "&lt;" \> "&gt;" \" "&quot;" \' "&apos;"}))
-
-;;;;;;  hashes  ;;;;;;
-
-(defn hexbyte [^Integer b]
-    (.substring (Integer/toString (+ 0x100 (bit-and 0xff b)) 16) 1))
-;
-
-(defn byte-array-hash
-  "calculate hash of byte array"
-  [hash-name barray]
-  (let [md (MessageDigest/getInstance hash-name)]
-    (.update md barray)
-    (.digest md)))
-;
-
-(defn calc-hash
-  "calculate hash byte array of utf string using hash-function"
-  [hash-name s]
-  (let [md (MessageDigest/getInstance hash-name)]
-    (.update md (.getBytes s "UTF-8"))
-    (.digest md)))
 
