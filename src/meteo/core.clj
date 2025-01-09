@@ -33,6 +33,15 @@
   (str ST_BASE_URL (:_id st)))
 
 
+(defn st-hourly [{:keys [st ts_beg ts_end]}]
+  (let [
+        
+        ]
+    
+    )
+  )
+
+
 (defn st-page [{params :params :as req}]
   (let [st-id (-> params :st str)]
     (when-let [st (st-pub st-id)]  
@@ -158,7 +167,7 @@
        (labeled-value "ветер"       w-val)
        (labeled-value "давление"    p-val)
        (labeled-value "влажность"   h-val)
-       [:div.descr descr (when elev (list " / " [:b (round elev)] " м"))]
+       [:div.descr descr (when elev (list " ^ " [:b (round elev)] "м"))]
        [:div.clearfix]]
       ,)))
 
@@ -168,8 +177,9 @@
     (render-layout req
       { :title "Погода в Иркутске и Прибайкалье в реальном времени"
         :topmenu :meteo
-        :css ["/incs/highcharts/5.0.14/highcharts.css"]
-        :js ["/incs/meteo/core.js"]}
+        ;; :css ["/incs/highcharts/5.0.14/highcharts.css"]
+        ;; :js ["/incs/meteo/core.js"]
+       }
       [:div.b-meteo
        [:div.b-meteo-brief
         [:div.col-md-7.col-md-offset-1

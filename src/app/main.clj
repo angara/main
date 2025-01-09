@@ -10,14 +10,13 @@
   
 
 (defn -main []
-  (log! "init...")
+  (log! ["init:" (cfg/build-info)])
   (try
     (-> 
      (cfg/deep-merge (cfg/base-config) (cfg/env-config))
      (start-with-args)
      (as-> $
-           (log! {:data {:states (:started $)}} "started"))
-     )
+           (log! ["started:" (str (:started $))])))
     (catch Exception ex
       (log! {:level :warn
              :error ex

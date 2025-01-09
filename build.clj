@@ -8,12 +8,12 @@
   ,))
 
 
-(def APP_NAME   "angara-main")
-(def VER_MAJOR  2)
-(def VER_MINOR  0)
-(def MAIN_CLASS 'app.main)
+(def APP_NAME   (System/getenv "APP_NAME"))
+(def VER_MAJOR  (System/getenv "VER_MAJOR"))
+(def VER_MINOR  (System/getenv "VER_MINOR"))
+(def MAIN_CLASS (System/getenv "MAIN_CLASS"))
 
-(def JAR_NAME   "angara-main.jar")
+(def JAR_NAME   (System/getenv "JAR_NAME"))
 
 (def CLJ_SRC    "src")
 (def JAVA_SRC   "java")
@@ -57,8 +57,7 @@
             :class-dir CLASSES
             :basis (or basis (b/create-basis {:project "deps.edn"}))
             :javac-opts ["-Xlint:-options"]
-            ; :javac-opts ["-source" "8" "-target" "8"]
-           }))
+            }))
 
 
 (defn uberjar [_]
@@ -66,8 +65,7 @@
         uber-file (io/file TARGET JAR_NAME)
         basis (b/create-basis {:project "deps.edn"})]
 
-    (println "building:" build-info) 
-
+    (println "build:" build-info) 
     (write-build-info build-info)
 
     ;; (javac {:basis basis})

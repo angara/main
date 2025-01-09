@@ -1,16 +1,20 @@
-# # #
-
-PROD_HOST	=	angara
-PROD_PATH	=	/app/main
-
-# # #
-
 .EXPORT_ALL_VARIABLES:
-.PHONY: build clean dev deploy
 
+APP_NAME   = angara-main
+VER_MAJOR  = 2
+VER_MINOR  = 0
+MAIN_CLASS = app.main
+
+JAR_NAME = angara-main.jar
+UBER_JAR = ${TARGET}/${JAR_NAME}
+
+# # #
+PROD_HOST = angara
+PROD_PATH = /app/main
+# # #
+
+.PHONY: build clean dev deploy
 SHELL = bash
-	
-UBER_JAR  = ${TARGET}/angara-main.jar
 
 
 dev:

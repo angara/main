@@ -45,26 +45,23 @@
 
 (defn make-routes []
   (routes
-    (GET     "/"              _ main-page)
-    ;
-    ;; (context "/api/meteo"     _ meteo-api-routes)
-    ;; (ANY     "/api/*"         _ api-404)
+    (GET "/"                    _ main-page) ;; draft!
     ;
     (GET "/meteo/"              [] meteo/index-page)
     (GET "/meteo/st/:st"        [] meteo/st-page)
-   
+    (GET "/meteo/st-hourly/:st" [] meteo/st-hourly)
     ;
-    (GET     "/search"        _ (redirect "/yasearch/"))
-    (GET     "/yasearch/"     _ ya-search)
+    (GET "/search"    _ (redirect "/yasearch/"))
+    (GET "/yasearch/" _ ya-search)
     ;
-    (context "/calendar"      _ calendar-routes)
-    (context "/forum/api"     _ forum-api-routes)
-    (context "/tourserv"      _ tourserv/routes)
+    (context "/calendar"  _ calendar-routes)
+    (context "/forum/api" _ forum-api-routes)
+    (context "/tourserv"  _ tourserv/routes)
     ;
     (route/resources "/" {:root "public"})
     ;
-    (GET "/*" _  not-found)
-    (ANY "/*" _  api-404)
+    (GET "/*" _ not-found)
+    (ANY "/*" _ api-404)
     ,))
 
 
