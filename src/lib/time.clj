@@ -1,10 +1,16 @@
 (ns lib.time
   (:import
-   [java.time LocalDateTime])
+   [java.time LocalDateTime Instant])
   (:require
    [java-time.api :as jt]
    [app.config :as config]
    ,))
+
+
+(defn iso->inst ^Instant [s]
+  (try 
+    (jt/instant s)
+    (catch Exception _ nil)))
 
 
 (defn iso->local ^LocalDateTime [s]

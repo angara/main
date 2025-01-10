@@ -5,7 +5,7 @@
     ;
    [ring.util.response :refer [redirect]]
     ;
-   [mlib.core :refer [to-int]]
+   [mlib.core :refer [to-int hesc]]
    [mlib.http :refer [json-resp json-err]]
    [mlib.web.snippets :refer [ya-rtb]]   
     ;
@@ -13,7 +13,7 @@
    [meteo.data :as mdata]
     ;
    [lib.rus-date :refer [RUS_MONTHS_FC]]
-   [lib.time :refer [iso->local local-now tf-hhmm tf-ddmmyyyy]]
+   [lib.time :refer [iso->local iso->inst local-now tf-hhmm tf-ddmmyyyy]]
    [html.frame :refer [render-layout]]
    ,))
 
@@ -25,22 +25,26 @@
 (def ST_BASE_URL "/meteo/st/")
 
 
-(defn fresh-ts? [ts]
+(defn fresh-local-ts? [ts]
   (when ts
     (jt/> ts (jt/minus (local-now) (jt/minutes 80)))))
 
+(defn not-dead-local-ts? [ts]
+  (when ts
+    (jt/> ts (jt/minus (local-now) (jt/minutes 240)))))
+
 ; ; ; ; ; ; ; ; ; ;
 
-(defn st-hourly [{:keys [st ts_beg ts_end]}]
+(defn st-hourly [{{:keys [st ts_beg ts_end]} :params}]
   (try
     (let [_ (when-not st (throw (Exception. (str "incorrect parameter st:" st))))
-          ts-beg (iso->local ts_beg)
+          ts-beg (iso->inst ts_beg)
           _ (when-not ts-beg (throw (Exception. (str "incorrect parameter ts_beg:" ts_beg))))
-          ts-end (iso->local ts_end)
+          ts-end (iso->inst ts_end)
           _ (when-not ts-end (throw (Exception. (str "incorrect parameter ts_end:" ts_end))))
           ts-beg (jt/truncate-to ts-beg :hours)
           ts-end (jt/truncate-to ts-end :hours)
-          hrs (jt/time-between ts-end ts-beg :hours)
+          hrs (jt/time-between ts-beg ts-end :hours)
           _ (when (or (< hrs 1) (> hrs 744))
               (throw (Exception. (str "incorrect ts hour range:" hrs))))
           ;
@@ -61,8 +65,11 @@
           mn  (-> params :month (to-int 0))
             ;
           year0 (some-> (:created_at st-info) (iso->local) (.getYear))
-          year1 (some-> (:closed_at  st-info) (iso->local) (.getYear))
-            ;
+          year1 (or
+                 (some-> (:closed_at st-info) (iso->local) (.getYear))
+                 (.getYear now)
+                 )
+          ;
           year  (if (= 0 yr) 
                   (.getYear now)
                   (max (or year0 YEAR_0) 
@@ -76,9 +83,9 @@
       (if (or (not= yr year) (not= mn month))
         (redirect (str ST_BASE_URL (:st st-info) "?year=" year "&month=" month))
           ;;
-        (let [last    (:last st-info)
-              last-ts (-> st-info :last_ts (iso->local))
-              dead   (not (fresh-ts? last-ts))]
+        (let [{:keys [title descr elev last last_ts]} st-info
+              last-ts (iso->local last_ts)
+              dead   (not (fresh-local-ts? last-ts))]
             ;
           (render-layout req
                          {:title (str "Погода - " (:title st-info))
@@ -96,8 +103,9 @@
                 ;
                           [:div {:class (if dead "b-st dead" "b-st")}
                            [:div.col-md-12
-                            [:div.title (:title st-info)]
-                            (when-let [d (:descr st-info)] [:div.descr d])
+                            [:div.title title]
+                            (when descr [:div.descr descr])
+                            (when elev [:div.elev "высота " [:b (round elev)] " м"])
                             (when last-ts
                               [:div.date (tf-ddmmyyyy last-ts) " - " (tf-hhmm last-ts)])
                             (when dead [:div.dead-msg "Данные устарели!"])]
@@ -106,12 +114,16 @@
 
                            [:div.col-md-7.col-md-offset-2
                             [:div.twph
-                             [:div.t (format-t "<span class='lbl'>Температура:</span> "
-                                               (:t last) (-> last :t_delta))]
-                             [:div.w (format-w "<span class='lbl'>Ветер:</span> "
-                                               (:w last) (:g last) (:b last))]
-                             [:div.p (format-p "<span class='lbl'>Давление:</span> " (:p last))]
-                             [:div.h (format-h "<span class='lbl'>Влажность:</span> " (:h last))]
+                             (when (not-dead-local-ts? (iso->local (:t_ts last)))
+                               [:div.t (format-t "<span class='lbl'>Температура:</span> "
+                                                 (:t last) (-> last :t_delta))])
+                             (when (not-dead-local-ts? (iso->local (:w_ts last)))
+                               [:div.w (format-w "<span class='lbl'>Ветер:</span> "
+                                                 (:w last) (:g last) (:b last))])
+                             (when (not-dead-local-ts? (iso->local (:p_ts last)))
+                               [:div.p (format-p "<span class='lbl'>Давление:</span> " (:p last))])
+                             (when (not-dead-local-ts? (iso->local (:h_ts last)))
+                               [:div.h (format-h "<span class='lbl'>Влажность:</span> " (:h last))])
                              ]]
                            [:div.col-md-3]
                     ;"right pane"]
@@ -159,12 +171,12 @@
       [:div.station
        [:div.title 
         [:a {:href (str ST_BASE_URL st) :title a-title} 
-         title " " [:i.fa.fa-bar-chart] [:div.hhmm (when ts (tf-hhmm ts))]]]
+         (hesc title) " " [:i.fa.fa-bar-chart] [:div.hhmm (when ts (tf-hhmm ts))]]]
        (labeled-value "температура" t-val)
        (labeled-value "ветер"       w-val)
        (labeled-value "давление"    p-val)
        (labeled-value "влажность"   h-val)
-       [:div.descr descr (when elev (list " ^ " [:b (round elev)] "м"))]
+       [:div.descr (hesc descr) (when elev (list " ^ " [:b (round elev)] "м"))]
        [:div.clearfix]]
       ,)))
 

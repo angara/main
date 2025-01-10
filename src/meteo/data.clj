@@ -53,7 +53,7 @@
   (mem/ttl st-info-impl {} :ttl/threshold 20000))  ;; 20 sec
 
 
-(defn st-hourly-impl [st ts-beg ts-end]
+(defn st-hourly-impl [st ts-beg ts-end] 
   (when st
     (let [cf (-> conf :main :meteo)
           url (str (:meteo-api-url cf) 
@@ -63,7 +63,7 @@
 
 
 (def st-hourly
-  (mem/ttl st-hourly-impl {} :ttl/threshold 80000))  ;; 80 sec
+  (mem/ttl st-hourly-impl {} :ttl/threshold 8))  ;; 80 sec XXX: 0000
 
 
 (comment

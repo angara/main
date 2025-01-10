@@ -2,7 +2,9 @@
   (:import
     [java.util Locale])
   (:require
-    [clojure.string :as s]))
+    [clojure.math :refer [round floor]]
+    [clojure.string :as s]
+   ,))
 
 
 (def HPA_MMHG 1.3332239)
@@ -48,7 +50,7 @@
   (try
     (get
       ["С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"]
-      (int (Math/floor (mod (/ (+ b 22) 45) 8))))
+      (int (floor (mod (/ (+ b 22) 45) 8))))
     (catch Exception 
       _ignore)))
 
@@ -70,12 +72,12 @@
 
 (defn format-h [pref h]
   (when h
-    (str pref "<nobr><b>" (Math/round (float h)) "</b> %</nobr>")))
+    (str pref "<nobr><b>" (round (float h)) "</b>%</nobr>")))
 
 
 (defn format-p [pref p]
   (when p
-    (str pref "<nobr><b>" (Math/round (/ p HPA_MMHG)) "</b> мм.рт.ст</nobr>")))
+    (str pref "<nobr><b>" (round (/ p HPA_MMHG)) "</b> мм.рт.ст</nobr>")))
 
 
 (defn format-t [pref t delta]
@@ -93,19 +95,9 @@
       (list
         pref
         [:span {:class cls} sign [:b (Math/abs t)]]
-        "&deg;"
+        " &deg;C" 
         [:span {:class (str "arr " trc)} arr]))
       ;
-    (catch Exception 
-      _ignore)))
-
-
-(defn format-wt [pref wt wl]
-  (try
-    (when wt
-      (str pref "<nobr><b>" (Math/round (float wt)) "</b>&deg;</nobr>"
-        (when wl
-          (str ", <nobr>уровень <b>" (nf2 wl) "</b> м</nobr>"))))
     (catch Exception 
       _ignore)))
 

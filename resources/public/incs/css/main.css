@@ -616,12 +616,14 @@ p.txt {
   text-align: center;
 }
 
-.b-meteo .b-st .addr {
-  font-size: 2rem;
+.b-meteo .b-st .elev {
+  font-size: 1.6rem;
+  color: #464;
   text-align: center;
 }
 
 .b-meteo .b-st .date {
+  margin-top: 4px;
   text-align: center;
 }
 
