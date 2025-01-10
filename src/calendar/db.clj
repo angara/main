@@ -1,4 +1,3 @@
-
 (ns calendar.db
   (:require
     [clj-time.core :as tc]
@@ -7,8 +6,9 @@
     [mount.core :refer [defstate]]
     ;
     [mlib.logger :refer [warn]]
-    [mdb.core :refer [dbc try-warn new_id oid]]))
-;
+    [mdb.core :refer [dbc try-warn new_id oid]]
+   ,))
+
 
 
 (def CALENDAR_COLL "calendar")
@@ -19,25 +19,24 @@
 (def STATUS_PUBL "publ")
 
 
-(def CALENDAR_STRUCT
-  [ :_id    "oid"
-    :uid    "uid"
-    :ct     "created"
-    :ts     "updated"
+;; (def CALENDAR_STRUCT
+;;   [ :_id    "oid"
+;;     :uid    "uid"
+;;     :ct     "created"
+;;     :ts     "updated"
 
-    :date   "event date"
-    :date_1 "optional end date"
+;;     :date   "event date"
+;;     :date_1 "optional end date"
 
-    :status ""    ;; :new :apply :publ :canc  :removed
+;;     :status ""    ;; :new :apply :publ :canc  :removed
 
-    :title  ""
-    :descr  ""
-    :thumb  ""    ;; thumbnail-100 uri
+;;     :title  ""
+;;     :descr  ""
+;;     :thumb  ""    ;; thumbnail-100 uri
 
-    :link   ""
+;;     :link   ""
 
-    :tags   []])
-;
+;;     :tags   []])
 
 
 (defn crec-by-id [id]
@@ -62,8 +61,10 @@
         (= 1)))))
 ;
 
+
 (defn crecs-by-uid [uid]
-  (try-warn (str "crecs-by-uid: " uid);
+  (try-warn (str "crecs-by-uid: " uid)
+    #_{:clj-kondo/ignore [:invalid-arity]}
     (mq/with-collection (dbc) CALENDAR_COLL
       (mq/find {:uid uid})
       (mq/sort {:date -1})
@@ -72,6 +73,7 @@
 
 (defn crecs-all []
   (try-warn "crecs-all:"
+    #_{:clj-kondo/ignore [:invalid-arity]}
     (mq/with-collection (dbc) CALENDAR_COLL
       (mq/find {})
       (mq/sort {:date -1})
@@ -81,11 +83,12 @@
 (defn crecs-publ []
   (let [start (tc/minus (tc/now) (tc/hours 20))]
     (try-warn "crecs-publ:"
+      #_{:clj-kondo/ignore [:invalid-arity]}        
       (mq/with-collection (dbc) CALENDAR_COLL
         (mq/find {:date {:$gte start} :status STATUS_PUBL})
         (mq/sort {:date 1})
         (mq/limit CRECS_FETCH_LIMIT)))))
-;
+
 
 ;;; ;;; ;;;
 
@@ -95,7 +98,7 @@
       (mc/insert (dbc) CALENDAR_COLL
         (assoc crec :_id _id))
       crec)))
-;
+
 
 
 (defn make-indexes [db]
@@ -107,12 +110,9 @@
     db
     (catch Exception e
       (warn "calendar-indexes:" e))))
-;
 
 
+#_{:ignore [:unused-public-var]}
 (defstate indexes
   :start
     (make-indexes (dbc)))
-;
-
-;;.

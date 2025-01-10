@@ -1,15 +1,10 @@
-
 (ns calendar.my
   (:require
-    [mlib.logger :refer [debug warn]]
-    ;[mlib.core :refer [hesc]]
-    [mlib.http :refer [json-resp]]
-    [mlib.time :refer [ddmmyyyy parse-ddmmyyyy]]
-    ;
-    ;[mdb.core :refer [oid]]
-    [html.frame :refer [render-layout]]
-    [calendar.db :refer [crecs-by-uid crec-by-id-uid crec-update]]))
-;
+   [mlib.http :refer [json-resp]]
+   [mlib.time :refer [ddmmyyyy parse-ddmmyyyy]]
+   [html.frame :refer [render-layout]]
+   [calendar.db :refer [crecs-by-uid crec-by-id-uid crec-update]]
+   ,))
 
 
 (defn my-page [req]

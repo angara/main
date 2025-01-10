@@ -1,5 +1,0 @@
-
-(ns notify.sql)
-
-
-;;.

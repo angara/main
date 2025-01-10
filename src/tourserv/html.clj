@@ -1,22 +1,17 @@
 (ns tourserv.html
   (:require
-    [mlib.config :refer [conf]]
+    [app.config :refer [conf]]
     [mlib.core :refer [hesc]]
-    ; [mlib.web.snippets :refer [ya-rtb]]
-    ;
     [html.frame :refer [render-layout]]
     [tourserv.const :refer [TYPES TYPE_MAP TOWNS TOWN_MAP]]
-    [tourserv.db :refer [tourserv-by-type]]))
-;
+    [tourserv.db :refer [tourserv-by-type]]
+   ,))
 
-; (defn url-serv [type srv_id]
-;   (str "/tourserv/" type "#" srv_id))
-; ;
 
 (defn url-town [twn srv_id]
   (str "/tourserv/apart/" (name twn)
     (when srv_id (str "#" srv_id))))
-;
+
 
 (def APARTS_TOP_NUM 4)
 
@@ -179,6 +174,8 @@
         ;   "<a href='/rest/pikcher/'>...&raquo;&raquo;</a></p>"]
         ; [:div.clearfix]
         ; [:hr]
+       
+       ;; 8 tr/yrar, 2024-02-22 - 2025-02-22
 
         [:div
           [:a {:href "/rest/hdaban/"} [:h4 "Турбаза Хамар-Дабан"]]

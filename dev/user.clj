@@ -1,31 +1,41 @@
-
 (ns user
   (:require
-    [clojure.tools.namespace.repl :as tnr]
-    [util :as util]
-    ;
-    [web.srv :refer [server]]))
-;
+    [portal.api :as portal]
+    [mount.core :as mnt]
+    [app.config :as cf]
+    [web.srv]
+   ,))
+
 
 (set! *warn-on-reflection* true)
 
-(def _void server)
 
-(defn restart []
-  (prn "restart")
-  (util/stop)
-  (util/start))
-;
+(defn start []
+  (let [cfg (cf/deep-merge (cf/base-config) (cf/env-config))]
+    (-> cfg
+        (mnt/with-args)
+        ;(mnt/only #{#'cf/conf #'cf/tz})
+        (mnt/start)
+        )
+    ))
 
-(defn reset []
-  (tnr/refresh :after 'user/restart))
-;
 
 (comment
 
-  (restart)
-  (reset)
+  (def p (portal/open {:launcher :vs-code})) ;; NOTE: portal extension required
+  (add-tap #'portal/submit)
     
-  ,)
-
-;;.
+  (portal/clear) ; Clear all values
+  
+  (prn @p) ; bring selected value back into repl
+  
+  (remove-tap #'portal/submit) ; Remove portal from tap> targetset
+  
+  (portal/close) ; Close the inspector when done
+  (portal/docs) ; View docs locally via Portal - jvm / node only
+  
+  (start)
+  (mnt/stop)
+  
+  ()
+  )

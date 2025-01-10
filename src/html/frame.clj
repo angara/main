@@ -1,33 +1,44 @@
 (ns html.frame
   (:require
     [hiccup.page :refer [html5]]
-    [mlib.config :refer [conf]]
+    [app.config :refer [conf]]
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [yandex-metrika mailru-top ya-rtb]]
-    [html.util :refer [glyphicon css-link script]]
     [html.search :refer [ya-site-form]]
-    [meteo.curr :refer [curr-temp]]))
-;
+    [meteo.curr-temp :refer [curr-temp]]
+   ,))
+
+
+(defn script [js-file]
+  [:script {:src js-file :type "text/javascript" :defer 1}])
+
+
+(defn css-link [css-file]
+  [:link {:href css-file :rel "stylesheet" :type "text/css"}])
+
+
+(defn glyphicon [nm]
+  [:span {:class (str "glyphicon glyphicon-" nm)}])
+
 
 (def INCS "/incs/")
 
 (defn inc-pfx [uri]
   (if (= (first uri) \/) (str uri) (str INCS uri)))
-;
+
 
 (defn login-url [& [redir]]
   (let [url (-> conf :urls :login)]
     (if redir
       (str url "?redir=" redir)
       url)))
-;
 
 
 (def DESCR
   (str "Активный отдых, спорт, туризм, путешествия, фото."
       " Новости экстремального спорта, календарь событий, фотографии."
       " Байкал и Прибайкалье. Прогноз погоды."))
-;
+
 
 (defn head-meta
   [req {:keys [title page-title og-title og-image og-url og-descr]}]
@@ -51,7 +62,6 @@
       [:meta {:property "og:url"    :content og-url}]
       [:meta {:property "og:description" :content ds}]
       [:link {:rel "shortcut icon" :href "//angara.net/favicon.ico"}])))
-;
 
 
 (def bootstrap-head
@@ -64,7 +74,6 @@
               :src  "//api.angara.net/incs/jquery/3.2.0/jquery.min.js"}]
     [:script {:type "text/javascript" :defer 1
               :src  "//api.angara.net/incs/bootstrap/3.3.7/js/bootstrap.min.js"}]))
-;
 
 ;;; ;;; ;;; ;;; ;;;
 
@@ -76,7 +85,7 @@
       "[\"\", \"-\"],"
       "[do_logout, \"Выйти\"]"
     "]"))
-;
+
 
 (defn user-block [user uri]
   (if user
@@ -99,7 +108,7 @@
       [:div.b-signin
         [:a.btn.btn-default {:href (login-url uri)}
           "Войти" (glyphicon "log-in marl-8")]])))
-;
+
 
 (defn topbar [req]
   (let [user (:user req)]
@@ -122,23 +131,18 @@
             (user-block user (:uri req))]
           ;
           [:div.clearfix]]]]))
-;
 
 
 (def TOP_NAVS
   [
-    {:id "main"     :href "/"           :menu "Главная"}
-    {:id "calendar" :href "/calendar"   :menu "Календарь"}
-    {:id "info"     :href "/info/"      :menu "Информация"}
-    ;; Карты
-    {:id "text"     :href "/live/"      :menu "Статьи"}
-    ;; {:id "shops"    :href "/shops/"     :menu "Магазины"}
-    {:id "tourserv" :href "/tourserv"   :menu "Турсервис"}
-    {:id "photo"    :href "/photo/"     :menu "Фото"}
-    {:id "forum"    :href "/forum/"     :menu "Форум"}
-    {:id "meteo"    :href "/meteo/"     :menu "Погода"  :ext curr-temp}])
+   {:id "main"     :href "/"           :menu "Главная"}
+   {:id "calendar" :href "/calendar"   :menu "Календарь"}
+   {:id "info"     :href "/info/"      :menu "Информация"}
+   {:id "text"     :href "/publ/"      :menu "Статьи"}
+   {:id "tourserv" :href "/tourserv"   :menu "Турсервис"}
+   {:id "forum"    :href "/forum/"     :menu "Форум"}
+   {:id "meteo"    :href "/meteo/"     :menu "Погода"  :ext curr-temp}])
 
-;
 
 (defn topnav [req active]
   (let [act (and active (name active))]
@@ -150,7 +154,7 @@
               [:a {:href (:href n)} (:menu n)]
               (when ext-fn
                 (ext-fn req))])]]]))
-;
+
 
 (defn footer [_req]
   [:div.b-footer
@@ -160,8 +164,8 @@
           [:div.col-sm-4.text-left
              [:a {:href "//angara.net/about/"} "О сайте"]
              [:br]
-             [:a {:href "http://top.mail.ru/visits?id=474619" :target "_blank"}
-                 "Статистика"]]
+             [:a {:href "http://top.mail.ru/visits?id=474619" 
+                  :target "_blank"} "Статистика"]]
           ;
           [:div.col-sm-4.text-center]
           ;
@@ -169,13 +173,13 @@
             [:div.copy
               [:br]
               [:a.copy-tm {:href "https://angara.net/"} "Angara.Net"]
-              " &copy; 2002-2023"]]
+              " &copy; 2002-2025"]]
           ;
           [:div.clearfix]]]]
     ;; counters
     (yandex-metrika (:yandex-metrika conf))
     (mailru-top (:mailru-top conf))])
-;
+
 
 (defn head [req {:keys [css js] :as params}]
   [:head
@@ -186,7 +190,6 @@
       (concat ["css/main.css"] css))
     (map #(script (inc-pfx %))
       (concat ["js/mlib.js" "js/site.js"] js))])
-;
 
 
 (defn layout
@@ -238,20 +241,19 @@
           ;
           (footer req)]])))
     ; /html5
-;
 
 
-(defn html5-resp [content]
-  {:status 200
-   :headers {"Content-Type" "text/html;charset=utf-8"}
-   :body (html5 content)})
-;
+;; (defn html5-resp [content]
+;;   {:status 200
+;;    :headers {"Content-Type" "text/html;charset=utf-8"}
+;;    :body (html5 content)})
+
 
 (defn render-layout [req params & content]
   {:status 200
    :headers {"Content-Type" "text/html;charset=utf-8"}
    :body (apply layout req params content)})
-;
+
 
 (defn no-access [req]
   {:status 403
@@ -266,7 +268,6 @@
             [:a {:href (-> conf :urls :login)} "входа на сайт"]
             "."]
           [:br]])})
-;
 
 
 (defn not-found [req]
@@ -274,11 +275,10 @@
    :headers {"Content-Type" "text/html;charset=utf-8"}
    :body
       (layout req {:title "Страница не найдена"}
-        [:div.jumbotron
+        [:div.jumbotron {:style "padding: 6em 8em"}
           [:h2 "Страница по этому адресу отсутствует."]
           [:br]
           [:p "Попробуйте воспользоваться <a href='/search'>поиском</a>."]])})
-;
 
 
 (defn error-page [req msg]
@@ -288,13 +288,10 @@
       (layout req {}
         [:div.jumbotron.error
           [:h1 msg]])})
-;
+
 
 (defn wrap-user-required [handler]
   (fn [req]
     (if (:user req)
       (handler req)
       (no-access req))))
-;
-
-;;.

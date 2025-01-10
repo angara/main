@@ -1,36 +1,23 @@
-;;;;
-;;  angara-main
-;;;;
-
 (ns web.app
   (:require
-    [mlib.logger :refer [debug info warn]]
+    [taoensso.telemere :refer [log!]]
     [ring.util.response :refer [redirect]]
     [compojure.core :refer [GET ANY context routes]]
     [compojure.route :as route]
-
-    ; [monger.collection :as mc]
-    ; [monger.operators :refer [$set $unset]]
-
-    [mlib.config :refer [conf]]
-;    [mlib.http :refer [json-resp text-resp]]
-    [mlib.time :refer [now-ms]]
+    ;
+    [app.config :refer [conf]]
     [mlib.web.sess :refer [wrap-sess]] ; sid-resp]]
     [mlib.web.middleware :refer [middleware]]
-
     [mdb.user :refer [user-by-id sess-load FLDS_REQ_USER]]
     [html.frame :refer [not-found render-layout]]
     [html.search :refer [ya-site-results]]
     [calendar.core :refer [calendar-routes]]
     [forum.core :refer [forum-api-routes]]
     [front.core :refer [main-page]]
-    [meteo.api :refer [meteo-api-routes]]
-    [meteo.core :refer [meteo-routes]]
-    [meteo.old-ws :as old-ws]
-    [misc.icestorm :as icestorm]
-    [photomap.core :as photomap]
-    [tourserv.core :as tourserv]))
-;
+    [meteo.core :as meteo]
+    [tourserv.core :as tourserv]
+  ,))
+
 
 ; (defn wrap-user-required [handler]
 ;   (fn [req]
@@ -58,29 +45,24 @@
 
 (defn make-routes []
   (routes
-    (GET     "/"              _ main-page)
+    (GET "/"                    _ main-page) ;; draft!
     ;
-    (context "/api/meteo"     _ meteo-api-routes)
-    (ANY     "/api/*"         _ api-404)
+    (GET "/meteo/"              [] meteo/index-page)
+    (GET "/meteo/st/:st"        [] meteo/st-page)
+    (GET "/meteo/st-hourly/:st" [] meteo/st-hourly)
     ;
-    (context "/meteo"         _ meteo-routes)
+    (GET "/search"    _ (redirect "/yasearch/"))
+    (GET "/yasearch/" _ ya-search)
     ;
-    (GET     "/search"        _ (redirect "/yasearch/"))
-    ;; (GET     "/yasearch"      _ search/yasearch)
-    (GET     "/yasearch/"     _ ya-search)
-
-    (context "/calendar"      _ calendar-routes)
-    (context "/forum/api"     _ forum-api-routes)
-    (context "/meteo/old-ws"  _ old-ws/routes)
-    (context "/icestorm"      _ icestorm/routes)
-    (context "/tourserv"      _ tourserv/routes)
-    (context "/photomap"      _ (photomap/make-routes))
-
+    (context "/calendar"  _ calendar-routes)
+    (context "/forum/api" _ forum-api-routes)
+    (context "/tourserv"  _ tourserv/routes)
+    ;
     (route/resources "/" {:root "public"})
-
-    (GET "/*" _  not-found)
-    (ANY "/*" _  api-404)))
-;
+    ;
+    (GET "/*" _ not-found)
+    (ANY "/*" _ api-404)
+    ,))
 
 
 (defn wrap-user [handler]
@@ -89,27 +71,28 @@
       (handler (assoc req :user
                   (user-by-id uid FLDS_REQ_USER)))
       (handler req))))
-;
 
 
 (defn wrap-slowreq [handler cnf]
   (let [ms (:ms cnf)]
     (fn [req]
-      (let [t0    (now-ms)
+      (let [t0    (System/currentTimeMillis)
             resp  (handler (assoc req :start-time t0))
-            dt    (- (now-ms) t0)]
+            dt    (- (System/currentTimeMillis) t0)]
         (when (< ms dt)
-          (info "slowreq:" dt (:remote-addr req)(:uri req)))
-        resp))))
-;
+          (log! {:msg "slow request"
+                 :data (-> req
+                           (select-keys [:remote-addr :uri])
+                           (assoc :duration dt))}))
+        resp))
+    ,))
+
 
 (defn app-handler []
   (->
     (make-routes)
     (wrap-user)
     (wrap-sess sess-load)
-    middleware
-    (wrap-slowreq (:slowreq conf))))
-;
-
-;;.
+    (middleware)
+    (wrap-slowreq (:slowreq conf))
+   ,))

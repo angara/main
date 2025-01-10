@@ -5,16 +5,15 @@
     [hiccup.core :refer [html]]
     [ring.util.response :refer [header]]
     ;
-    [mlib.logger :refer [debug warn]]
+    [mlib.logger :refer [warn]]
     [mlib.core :refer [hesc]]
     [mlib.http :refer [html-resp]]
     [mlib.time :refer [ddmmyyyy]]
-    ; [mlib.web.snippets :refer [ya-rtb]]
     ;
     [html.frame :refer [render-layout]]
-    [misc.util :refer [rus-date]]
-    [calendar.db :refer [crecs-all crecs-publ]]))
-;
+    [lib.rus-date :refer [rus-date]]
+    [calendar.db :refer [crecs-all crecs-publ]]
+   ,))
 
 
 (def FRONT_BLOCK_LIMIT 5)

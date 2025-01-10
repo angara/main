@@ -3,9 +3,8 @@
 //
 
 $(function() {
-  var METEO_HOURLY = "//api.angara.net/meteo/st/hourly?st=";
+  var METEO_HOURLY = "/meteo/st-hourly/";
   var HPA_MMHG = 1.3332239;
-
 
   var DIV_ID = "st_graph";
 
@@ -17,11 +16,11 @@ $(function() {
     var t1 = new Date( ((month == 12)? Date.UTC(1+year, 0, 1): Date.UTC(year,month,1)) - tz_ofs );
 
     $.getJSON(
-      METEO_HOURLY+st+"&t0="+t0.toISOString()+"&t1="+t1.toISOString(),
+      METEO_HOURLY+st+"?&ts_beg="+t0.toISOString()+"&ts_end="+t1.toISOString(),
       function(resp) {
-        if(resp.ok) {
-          cb(Date.UTC(year, month-1, 1), resp.series[st]);
-        }; // no else
+        if(resp.series) {
+          cb(Date.UTC(year, month-1, 1), resp);
+        };
       }
     );
   }
@@ -29,26 +28,39 @@ $(function() {
 
   function graph_month(t0_ms, data)
   {
-    var t_series = [], p_series = [], h_series = [], w_series = [];
-    
-        for(var i in data) {
-          var d = data[i];
-          // t:
-          if(d && d.t) { t_series.push(Math.round(d.t.avg)); }
-          else { t_series.push(null); }
-          // p:
-          if(d && d.p) { p_series.push(Math.round(d.p.avg / HPA_MMHG)); }
-          else { p_series.push(null); }
-          // h:
-          if(d && d.h) { h_series.push(Math.round(d.h.avg)); }
-          else { h_series.push(null); }
-          // w:
-          if(d && d.w) { w_series.push(Math.round(d.w.avg)); }
-          else { w_series.push(null); }
+    var t_series = data.series.t || [], 
+        p_series = data.series.p || [], 
+        w_series = data.series.w || []
+        ;
+
+        for(let i=0; i < t_series.length; i++) {
+          if(t_series[i]) {
+            t_series[i] = Math.round(t_series[i]);
+          }
         }
     
-        var chart = 
-          Highcharts.chart(DIV_ID, {
+        for(let i=0; i < p_series.length; i++) {
+          if(p_series[i]) {
+            p_series[i] = Math.round(p_series[i] / HPA_MMHG);
+          }
+        }
+
+        for(let i=0; i < w_series.length; i++) {
+          if(w_series[i]) {
+            w_series[i] = Math.round(w_series[i]);
+          }
+        }
+
+        let p_max = Math.max(...p_series);
+        if(p_max && p_max > 100) {
+          p_max = Math.ceil(p_max/50) * 50;
+        }
+        else {
+          p_max = 750;
+        }
+        let p_min = p_max - 150;
+
+        var chart = Highcharts.chart(DIV_ID, {
             title: { text: "" },
             legend: { enabled: true },
             chart: { 
@@ -106,15 +118,15 @@ $(function() {
                 max: 50
               },
               {
-                  gridLineWidth: 0,
-                  title: { enabled: false },
-                  labels: {
-                      format: '{value} мм',
-                      style: { color:  "#b72" }
-                  },
-                  min: 600,
-                  max: 800,
-                  opposite: true
+                gridLineWidth: 0,
+                title: { enabled: false },
+                labels: {
+                  format: '{value} мм',
+                  style: { color: "#2a2" }
+                },
+                min: p_min, 
+                max: p_max,
+                opposite: true
               },
               {
                 // h
@@ -133,7 +145,7 @@ $(function() {
                   style: { color: "#24b" }
                 },
                 min: 0,
-                max: 24
+                max: 20
               }
             ],
             //
@@ -165,18 +177,9 @@ $(function() {
                   yAxis: 1,
                   data: p_series,
                   zIndex: 10,
-                  color: "#ea2",
+                  color: "#2c4",
                   marker: { radius: 3 },
                   tooltip: { valueSuffix: ' мм.рст' }
-              },
-              {
-                name: "Влажность",
-                type: 'spline',
-                data: h_series,
-                color: "#4c6",
-                marker: { radius: 3 },
-                yAxis: 2,
-                tooltip: { valueSuffix: ' %' }
               },
               {
                 name: "Ветер",
@@ -261,5 +264,3 @@ $(function() {
   set_active_year_month();
 
 });
-
-//.

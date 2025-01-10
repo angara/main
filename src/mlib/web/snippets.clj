@@ -1,16 +1,13 @@
-
 (ns mlib.web.snippets)
 
 ; (defn identicon [u s]
 ;     (str "http://www.gravatar.com/avatar/" (digest/md5 (str u)) "?d=identicon&s=" s))
 
 
-(def one-pix-src
-  "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=")
+(def one-pix-src "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=")
 
-(def one-pix-img
-  [:img {:src one-pix-src}])
-;
+(def one-pix-img [:img {:src one-pix-src}])
+
 
 (defn analytics [id]
   (str
@@ -22,7 +19,7 @@
     "ga('create','" id "','auto');"
     "ga('send','pageview');"
     "</script>\n"))
-;
+
 
 (defn yandex-metrika [id]
   (str
@@ -51,7 +48,6 @@
     "</script>"
     "<noscript><div><img src='https://mc.yandex.ru/watch/" id "'"
     " style='position:absolute; left:-9999px;' alt='' /></div></noscript>\n"))
-;
 
 
 (defn mailru-top [id]
@@ -68,7 +64,7 @@ if(w.opera == '[object Opera]'){d.addEventListener('DOMContentLoaded',f,false);}
 <img src='//top-fwz1.mail.ru/counter?id=" id ";js=na'
   style='border:0;' height='1' width='1' alt='Рейтинг@Mail.ru' /></div></noscript>
 "))
-;
+
 
 (defn ya-direct [div_id client stat type limit]
   (str "
@@ -108,6 +104,7 @@ if(w.opera == '[object Opera]'){d.addEventListener('DOMContentLoaded',f,false);}
 </script>
 "))
 
+
 (defn ya-rtb [blk horizontal?]
   (str "
 <div id='yandex_rtb_" blk "' class='yandex-adaptive'></div>
@@ -132,4 +129,3 @@ if(w.opera == '[object Opera]'){d.addEventListener('DOMContentLoaded',f,false);}
 </script>
 "))
 
-;;.
