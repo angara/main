@@ -1,6 +1,0 @@
-#!/bin/bash
-
-ssh -fNT -L 5516:localhost:5516 www@ex1
-ssh -fNT -L 22022:localhost:27017 www@ex1
-
-#

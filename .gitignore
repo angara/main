@@ -56,7 +56,6 @@
 __pycache__/
 
 ## allow 
-!.clj-kondo/
 !.git*
 !.github/
 !.dockerignore

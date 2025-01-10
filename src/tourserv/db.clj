@@ -6,43 +6,43 @@
     [mount.core :refer [defstate]]
     ;
     [mlib.logger :refer [warn]]
-    ;[mlib.config :refer [conf]]
     [mdb.core :refer [dbc try-warn]]))
 ;
 
 
 (def TOURSERV_COLL "tourserv")
 
-(def TOURSERV_STRUCT
-  [ :_id    "oid"
-    :uid    "uid"
-    :ct     "created"
-    :ts     "updated"
-    ;
-    :type   #{"auto" "equip" "apart" "guide"}
-    :town   "Baikalsk"
-    :addr   "Gagarina 100"
-    :title  "serv title"
-    :descr  "serv descr"
-    :link   "website"
-    :payload "number of seats in auto"
-    :price   "from - to (rub)"
-    ;
-    ;; set of flags
-    :flags  ["rawhtml"]    ; rawhtml - omit hesc
-    ;
-    :email ""
-    :phone ""
-    :person "person name"
-    ;
-    :note   "internal info"])
-;
+;; (def TOURSERV_STRUCT
+;;   [ :_id    "oid"
+;;     :uid    "uid"
+;;     :ct     "created"
+;;     :ts     "updated"
+;;     ;
+;;     :type   #{"auto" "equip" "apart" "guide"}
+;;     :town   "Baikalsk"
+;;     :addr   "Gagarina 100"
+;;     :title  "serv title"
+;;     :descr  "serv descr"
+;;     :link   "website"
+;;     :payload "number of seats in auto"
+;;     :price   "from - to (rub)"
+;;     ;
+;;     ;; set of flags
+;;     :flags  ["rawhtml"]    ; rawhtml - omit hesc
+;;     ;
+;;     :email ""
+;;     :phone ""
+;;     :person "person name"
+;;     ;
+;;     :note   "internal info"])
+
 
 ;;; ;;; ;;; ;;;
 
 (defn tourserv-by-uid [uid]
   (try-warn
     (str "tourserv-by-uid: " uid)
+    #_{:clj-kondo/ignore [:invalid-arity]}
     (mq/with-collection (dbc) TOURSERV_COLL
       (mq/find {:uid uid})
       (mq/sort {:title 1}))))
@@ -51,6 +51,7 @@
 (defn tourserv-by-type [type & [town]]
   (try-warn
     (str "tourserv-by-type: " type)
+    #_{:clj-kondo/ignore [:invalid-arity]}
     (mq/with-collection (dbc) TOURSERV_COLL
       (mq/find
         (if town
@@ -83,18 +84,3 @@
 (defstate indexes
   :start
     (make-indexes (dbc)))
-;
-
-;;.
-
-
-;;; services.yaml converter ;;;
-; (defn yaml-edn [y]
-;   (let [t (dissoc (assoc y :town (:group y))
-;             :id :group :rating :update :updated :nick :icq :skype :orig)]
-;     (into {} (filter #(second %) t)))
-; ;
-;
-;   (map
-;     (comp insert yaml-edn)
-;     (yaml/parse-string (slurp "../wrk/services.yaml"))))

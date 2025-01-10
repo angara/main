@@ -9,7 +9,6 @@
     [java.util Date]
     [org.bson.types ObjectId]
     [com.mongodb WriteConcern]))
-;
 
 ;;; ;;; ;;; ;;; ;;;
 
@@ -65,15 +64,6 @@
 
 (extend-protocol ConvertFromDBObject
   java.util.Date
-  (from-db-object [^java.util.Date input keywordize]
+  (from-db-object [^java.util.Date input _keywordize]
     (java.time.LocalDateTime/ofInstant (.toInstant input) (ZoneId/systemDefault))))
   
-
-; (cheshire.generate/add-encoder ObjectId
-;   (fn [^ObjectId oid ^com.fasterxml.jackson.core.json.WriterBasedJsonGenerator generator]
-;     (.writeString generator (.toString oid))))
-; (cheshire.generate/add-encoder BSONTimestamp
-;   (fn [^BSONTimestamp ts ^com.fasterxml.jackson.core.json.WriterBasedJsonGenerator generator]
-;     (cheshire.generate/encode-map {:time (.getTime ts) :inc (.getInc ts)} generator)))  
-
-;;.
