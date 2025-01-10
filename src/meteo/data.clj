@@ -32,7 +32,7 @@
 
 (defn active-stations-impl []
   (let [cf (-> conf :main :meteo)
-        url (str (:meteo-api-url cf) "/active-stations?lat=52.28&lon=104.28&last-hours=24")
+        url (str (:meteo-api-url cf) "/active-stations?lat=52.28&lon=104.28&last-hours=20")
         auth (:meteo-api-auth cf)]
     (:stations (get-json url auth))))
 
