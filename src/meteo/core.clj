@@ -201,8 +201,10 @@
         ;;
         [:div.clearfix]
         [:div.text-center {:style "font-size: 120%;"}
-         "Данные на карте: "
-         [:a {:target "_blank" :href "https://meteo38.ru/map"} "meteo38.ru/map"]]
+         "Данные на карте: " [:a {:target "_blank" :href "https://meteo38.ru/map"} "meteo38.ru/map"]
+         [:br]
+         "Бот в Телеграм: " [:a {:target "_blank" :href "https://t.me/meteo38bot"} "@meteo38bot"]
+         ]
         [:div.text-center {:style "margin: 20px"}
           [:small {:style "color:#777"}
             "Данные, приведенные на этой странице, не являются официальными"

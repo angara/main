@@ -28,8 +28,8 @@
   (String/format Locale/ROOT "%.1f" (to-array [(float x)])))
 
 
-(defn nfix2 [x]
-  (String/format Locale/ROOT "%.2f" (to-array [(float x)])))
+;; (defn nfix2 [x]
+;;   (String/format Locale/ROOT "%.2f" (to-array [(float x)])))
 
 
 (defn nf1 [x]
@@ -39,11 +39,11 @@
       _ignore)))
 
 
-(defn nf2 [x]
-  (try
-    (-> x nfix2 strip-zeros strip-dot)
-    (catch Exception 
-      _ignore)))
+;; (defn nf2 [x]
+;;   (try
+;;     (-> x nfix2 strip-zeros strip-dot)
+;;     (catch Exception 
+;;       _ignore)))
 
 
 (defn wind-nesw [b]
