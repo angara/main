@@ -27,7 +27,7 @@ build: clean
 
 deploy:
 	chmod g+r ${UBER_JAR}
-	scp ${UBER_JAR} ${PROD_HOST}:${PROD_PATH}
+	rsync -v -P ${UBER_JAR} ${PROD_HOST}:${PROD_PATH}/
 
 
 clean:

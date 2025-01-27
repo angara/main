@@ -118,8 +118,13 @@
                                [:div.t (format-t "<span class='lbl'>Температура:</span> "
                                                  (:t last) (-> last :t_delta))])
                              (when (not-dead-local-ts? (iso->local (:w_ts last)))
-                               [:div.w (format-w "<span class='lbl'>Ветер:</span> "
-                                                 (:w last) (:g last) (:b last))])
+                               (let [show-g (not-dead-local-ts? (iso->local (:g_ts last)))]
+                                 [:div.w (format-w "<span class='lbl'>Ветер:</span> "
+                                                   (:w last) 
+                                                   (when show-g (:g last)) 
+                                                   (:b last))])
+                               
+                               )
                              (when (not-dead-local-ts? (iso->local (:p_ts last)))
                                [:div.p (format-p "<span class='lbl'>Давление:</span> " (:p last))])
                              (when (not-dead-local-ts? (iso->local (:h_ts last)))
@@ -160,8 +165,10 @@
 (defn format-station [{st :st title :title descr :descr
                        last :last last_ts :last_ts
                        lat :lat lon :lon elev :elev }]
-  (let [t-val (format-t nil (:t last) (:t_delta last))
-        w-val (format-w nil (:w last) (:g last) (:b last))
+  (let [g (when (not-dead-local-ts? (iso->local (:g_ts last)))
+            (:g last))
+        t-val (format-t nil (:t last) (:t_delta last))
+        w-val (format-w nil (:w last) g (:b last))
         p-val (format-p nil (:p last))
         h-val (format-h nil (:h last))
         ts (iso->local last_ts)

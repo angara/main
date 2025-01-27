@@ -87,16 +87,18 @@
                         (< 0 t) ["pos" "+"]
                         (> 0 t) ["neg" "-"]
                         :else   ["zer" ""])
-          [trc arr]   (when delta
+          [trc arr]   (if delta
                         (cond
                           (> delta  0.8) ["pos" "&uarr;"]
                           (< delta -0.8) ["neg" "&darr;"]
-                          :else          [""    "&nbsp;"]))]
+                          :else          [""    "&nbsp;"])
+                        ["" "&nbsp;"])]
       (list
-        pref
-        [:span {:class cls} sign [:b (Math/abs t)]]
-        " &deg;C" 
-        [:span {:class (str "arr " trc)} arr]))
+       pref
+       [:span {:class cls} sign [:b (Math/abs t)]]
+       [:span {:class (str "arr " trc)} arr]
+       "&deg;C" 
+       ))
       ;
     (catch Exception 
       _ignore)))

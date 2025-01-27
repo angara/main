@@ -22,7 +22,7 @@
 
 (comment
 
-  (def p (portal/open {:launcher :vs-code})) ;; NOTE: portal extension required
+  (def p (portal/open))
   (add-tap #'portal/submit)
     
   (portal/clear) ; Clear all values
