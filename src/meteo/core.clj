@@ -160,7 +160,7 @@
 (defn format-station [{st :st title :title descr :descr
                        last :last last_ts :last_ts
                        lat :lat lon :lon elev :elev }]
-  (let [t-val (format-t nil (:t last) (:t_delat last))
+  (let [t-val (format-t nil (:t last) (:t_delta last))
         w-val (format-w nil (:w last) (:g last) (:b last))
         p-val (format-p nil (:p last))
         h-val (format-h nil (:h last))
