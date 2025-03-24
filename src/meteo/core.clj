@@ -83,7 +83,8 @@
       (if (or (not= yr year) (not= mn month))
         (redirect (str ST_BASE_URL (:st st-info) "?year=" year "&month=" month))
           ;;
-        (let [{:keys [title descr elev last last_ts]} st-info
+        (let [{:keys [title descr elev last last_ts note]} st-info
+              link (:link note)
               last-ts (iso->local last_ts)
               dead   (not (fresh-local-ts? last-ts))]
             ;
@@ -103,7 +104,10 @@
                 ;
                           [:div {:class (if dead "b-st dead" "b-st")}
                            [:div.col-md-12
-                            [:div.title title]
+                            [:div.title 
+                             (if link
+                               [:a {:href link} title]
+                               title)]
                             (when descr [:div.descr descr])
                             (when elev [:div.elev "высота " [:b (round elev)] " м"])
                             (when last-ts
