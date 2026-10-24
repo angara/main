@@ -173,7 +173,7 @@
             [:div.copy
               [:br]
               [:a.copy-tm {:href "https://angara.net/"} "Angara.Net"]
-              " &copy; 2002-2025"]]
+              " &copy; 2002-2026"]]
           ;
           [:div.clearfix]]]]
     ;; counters
