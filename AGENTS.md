@@ -9,7 +9,8 @@ PostgreSQL (clojure.jdbc + hikari + honeysql), telemere (логирование)
 
 ```
 make dev          # nREPL для разработки (CONFIG_EDN=../conf/dev.edn)
-make build        # uberjar -> target/angara-main.jar (AOT, проверяет компиляцию)
+make css          # tailwind -> resources/public/webapp/assets/main.css (npx)
+make build        # css + uberjar -> target/angara-main.jar (AOT, проверяет компиляцию)
 make deploy       # rsync jar на прод angara:/app/main
 clj-kondo --lint src   # линтер (бинарник в ~/.local/bin)
 ```
@@ -38,6 +39,9 @@ angara-@main` (на сервере юниты называются `angara-@<и�
 - `src/auth/`, `src/me/` — логин/регистрация/сброс пароля, профиль
 - `src/calendar/`, `src/meteo/`, `src/tourserv/`, `src/forum/`, `src/front/` —
   разделы сайта
+- `src/angara/webapp/` — форум-фронтенд из angara/webapp (reitit:
+  /forum/groups|group|topic), next.jdbc+honey.sql 2 на общем пуле sql.conn;
+  статика resources/public/webapp/assets, css собирается npm-шагом (tailwind/ в корне)
 - `src/mdb/` — MongoDB: коннект (mdb.core), сессии (mdb.sess), пользователи
   (mdb.user); `src/sql/` — PostgreSQL (sql.user синхронизирует psql-копию
   пользователей для старого JSP-форума)

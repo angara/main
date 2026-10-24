@@ -42,6 +42,12 @@
   (jdbc/connection ds))
 
 
+(defn datasource []
+  ;; for next.jdbc users outside this ns (mount defstate var must not
+  ;; be deref'd externally)
+  ds)
+
+
 ;;; ;;; ;;; ;;;
 
 ;; java.time adapters (jdbc 4.2: pgjdbc takes LocalDate/LocalDateTime natively,

@@ -16,6 +16,8 @@
     [html.search :refer [ya-site-results]]
     [calendar.core :refer [calendar-routes]]
     [forum.core :refer [forum-api-routes]]
+    [angara.webapp.app.routes :as webapp]
+    [angara.webapp.app.middleware :refer [wrap-resp-exceptions]]
     [front.core :refer [main-page]]
     [auth.core :refer [auth-routes]]
     [me.core :refer [me-routes]]
@@ -48,6 +50,11 @@
     (ya-site-results)))
 ;
 
+
+(def webapp-forum
+  (-> (webapp/make-handler)
+      (wrap-resp-exceptions)))
+;
 (defn make-routes []
   (routes
     (GET "/"                    _ main-page) ;; draft!
@@ -61,6 +68,13 @@
     ;
     (context "/calendar"  _ calendar-routes)
     (context "/forum/api" _ forum-api-routes)
+    ;
+    ;; angara/webapp module: forum groups/topics (reitit handler)
+    (GET "/forum/groups"    _ webapp-forum)
+    (GET "/forum/group/"   _ (redirect "/forum/groups"))
+    (context "/forum/group" _ (ANY "/:group_id" _ webapp-forum))
+    (context "/forum/topic" _ (ANY "/:topic_id" _ webapp-forum))
+    ;
     (context "/tourserv"  _ tourserv/routes)
     ;
     (context "/auth" _ auth-routes)
