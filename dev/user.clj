@@ -3,7 +3,12 @@
     [portal.api :as portal]
     [mount.core :as mnt]
     [app.config :as cf]
+    [mlib.http.client :as http-client]
+    [mlib.tgapi :as tg]
     [web.srv]
+    [notify.process.inbound]
+    [notify.process.worker]
+    [notify.forum.task]
    ,))
 
 
@@ -12,6 +17,9 @@
 
 (defn start []
   (let [cfg (cf/deep-merge (cf/base-config) (cf/env-config))]
+    (tg/set-http-client!
+      (http-client/make-http-client
+        {:proxy-url (some-> cfg :notify :telegram :http-proxy)}))
     (-> cfg
         (mnt/with-args)
         ;(mnt/only #{#'cf/conf #'cf/tz})

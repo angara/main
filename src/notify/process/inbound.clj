@@ -1,0 +1,136 @@
+(ns notify.process.inbound
+  (:require
+   [mount.core :refer [defstate]]
+   [taoensso.telemere :refer [log!]]
+   ;
+   [mlib.thread :refer [start-loop stop-loop]]
+   [mlib.core :refer [now-ms]]
+   [app.config :refer [conf]]
+   [notify.const :as C :refer [REDIS_RECONNECT_DELAY]]
+   [notify.redis.core :refer [connect fetch-event]]
+   [mdb.notify :refer [new-job]]
+   [sql.notify :refer [topic-unread-watch]]
+   [notify.process.user :as user]
+   [notify.sender.telegram :refer [firehose]]
+   ,))
+
+
+;; ;; ;; ;; ;; private message ;; ;; ;; ;; ;;
+
+(defn hide-text [s]
+  (str "[Private text: " (count s) " chars]"))
+
+
+(defn private-message [event]
+  (firehose (update-in event [:private_message :text] hide-text))
+  (let [msg (:private_message event)]
+    (new-job
+      (now-ms)
+      { :type C/EVENT_TYPE_PRIVATE_MESSAGE
+        :mail_id (:id msg)
+        :from_id (:user_id msg)
+        :user_id (:to_id msg)})))
+
+
+;; ;; ;; ;; ;; forum message ;; ;; ;; ;; ;;
+
+(defn forum-message [event]
+  (firehose event)
+
+  (let [topic-id (get-in event [:forum_message :topic_id])
+        subs (topic-unread-watch topic-id)]
+    (doseq [s subs]
+      (new-job
+        (now-ms)
+        { :type C/EVENT_TYPE_FORUM_MESSAGE
+          :topic_id topic-id
+          :user_id (str (:uid s))}))))
+
+
+(defn forum-topic [event]
+  (log! ["forum-topic:" (dissoc (:forum_topic event) :text)])
+  (firehose event))
+
+
+(defn forum-moder [event]
+  (log! ["forum-moder:" event])
+  (firehose event))
+
+
+;; ;; ;; ;; ;; ;; ;; ;; ;;
+
+(defn- fixup-forum-msg [event]
+  (-> event
+    (assoc
+      :type C/EVENT_TYPE_FORUM_MESSAGE
+      :forum_message (:forum_msg event))
+    (dissoc :forum_msg)))
+
+
+(defn dispatch [event]
+  (when event
+    (condp = (:type event)
+      C/EVENT_TYPE_FORUM_MSG       (-> event fixup-forum-msg forum-message)
+      ;;
+      C/EVENT_TYPE_FORUM_MESSAGE   (forum-message event)
+      C/EVENT_TYPE_FORUM_TOPIC     (forum-topic   event)
+      C/EVENT_TYPE_FORUM_MODER     (forum-moder   event)
+      C/EVENT_TYPE_PRIVATE_MESSAGE (private-message event)
+      C/EVENT_TYPE_USER_REGISTER   (user/register event)
+      C/EVENT_TYPE_USER_LOGIN      (user/login    event)
+      (do
+        (log! :warn ["unexpected event:" event])
+        (firehose event)))))
+
+
+(defn reconnect-redis [state']
+  (try
+    (when-let [r (:redis @state')]
+      (swap! state' assoc :redis nil)
+      (.close r))
+    (let [redis (connect (-> conf :redis :url))]
+      (swap! state' assoc :redis redis)
+      redis)
+    (catch Exception ex
+      (log! :warn ["reconnect-redis: catch" (.getMessage ex)]))))
+
+
+(defn feeder-init [state']
+  (log! ["feeder-init"])
+  ;; never throw: redis outage must not take the whole app down,
+  ;; the loop keeps retrying via reconnect-redis
+  (when-not (reconnect-redis state')
+    (log! :warn ["redis connection failed, will retry"])))
+
+
+(defn try-fetch-event [state']
+  (try
+    (fetch-event (:redis @state'))
+    (catch Exception ex
+      (log! :warn ["try-fetch-event:" (.getMessage ex)])
+      (Thread/sleep REDIS_RECONNECT_DELAY)
+      (reconnect-redis state')
+      nil)))
+
+
+(defn feeder-step [state']
+  (try
+    (when-let [event (try-fetch-event state')]
+      (dispatch event))
+    (catch Exception ex
+      (log! :warn ["feeder-step:" (.getMessage ex)]))))
+
+
+(defn feeder-cleanup [state ex]
+  (log! ["feeder-cleanup:" state ex]))
+
+
+(defstate feeder
+  :start
+  (if (-> conf :redis :url)
+    (start-loop feeder-init feeder-step feeder-cleanup)
+    (do
+      (log! :warn ["feeder not started: no :redis :url in config"])
+      false))
+  :stop
+  (stop-loop feeder))
