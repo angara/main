@@ -32,27 +32,27 @@
   (try (tf/parse tf-ddmmyyyy (str s)) (catch Exception _ignore)))
 
 (defn hhmm [date]
-  (if date (try (tf/unparse tf-hhmm date) (catch Exception _ignore))))
+  (when date (try (tf/unparse tf-hhmm date) (catch Exception _ignore))))
 
 (defn hhmmss [date]
-  (if date (try (tf/unparse tf-hhmmss date) (catch Exception _ignore))))
+  (when date (try (tf/unparse tf-hhmmss date) (catch Exception _ignore))))
 
 (defn ddmmyy [date]
-  (if date (try (tf/unparse tf-ddmmyy date) (catch Exception _ignore))))
+  (when date (try (tf/unparse tf-ddmmyy date) (catch Exception _ignore))))
 
 (defn ddmmyyyy [date]
-  (if date (try (tf/unparse tf-ddmmyyyy date) (catch Exception _ignore))))
+  (when date (try (tf/unparse tf-ddmmyyyy date) (catch Exception _ignore))))
 
 (defn ddmmyy-hhmm [date]
-  (if date (try (tf/unparse tf-ddmmyy-hhmm date) (catch Exception _ignore))))
+  (when date (try (tf/unparse tf-ddmmyy-hhmm date) (catch Exception _ignore))))
 
 (defn ddmmyy-hhmmss [date]
-  (if date (try (tf/unparse tf-ddmmyy-hhmmss date) (catch Exception _ignore))))
+  (when date (try (tf/unparse tf-ddmmyy-hhmmss date) (catch Exception _ignore))))
 
 (defn iso-date [date]
-  (if date (try (tf/unparse tf-yyyymmdd date) (catch Exception _ignore))))
+  (when date (try (tf/unparse tf-yyyymmdd date) (catch Exception _ignore))))
 
 (defn iso-datetime [ts]
-  (if ts (try (tf/unparse tf-iso-datetime ts) (catch Exception _ignore))))
+  (when ts (try (tf/unparse tf-iso-datetime ts) (catch Exception _ignore))))
 
 ;;.

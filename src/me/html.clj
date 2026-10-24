@@ -4,7 +4,7 @@
     [html.frame :refer [layout]]))
 
 
-(defn tabs [{user :user} curr]
+(defn tabs [{user :user} _curr]
   (let [userpage (str "https://angara.net/user/" (:username user) "/")]
     [:ul.nav.nav-tabs
      [:li {:role :presentation :class :active}

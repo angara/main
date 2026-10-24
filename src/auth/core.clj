@@ -1,6 +1,6 @@
 (ns auth.core
   (:require
-    [compojure.core :refer [ANY GET POST defroutes routes context]]
+    [compojure.core :refer [GET POST defroutes routes context]]
     [auth.html :refer [login-form register-form]]
     [auth.login :refer [do-login]]
     [auth.logout :refer [logout]]

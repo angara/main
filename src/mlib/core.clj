@@ -17,41 +17,41 @@
 
 
 ;; TODO: replace with (parse-long)
-(defn ^Integer to-int
+(defn to-int
   "returns nil or default on failure"
-  ( [s]
+  ( ^Integer [s]
     (to-int s nil))
-  ( [s default]
+  ( ^Integer [s default]
     (try
       (if (string? s) (Integer/parseInt s) (int s))
       (catch Exception _ignore default))))
 
 
-(defn ^Integer to-long
+(defn to-long
   "returns nil or default on failure"
-  ( [s]
+  ( ^Integer [s]
     (to-long s nil))
-  ( [s default]
+  ( ^Integer [s default]
     (try
       (if (string? s) (Long/parseLong s) (long s))
       (catch Exception _ignore default))))
 
 
-(defn ^Float to-float
+(defn to-float
   "returns nil or default on failure"
-  ( [s]
+  ( ^Float [s]
     (to-float s nil))
-  ( [s default]
+  ( ^Float [s default]
     (try
       (if (string? s) (Float/parseFloat s) (float s))
       (catch Exception _ignore default))))
 
 
-(defn ^Double to-double
+(defn to-double
   "returns nil or default on failure"
-  ( [s]
+  ( ^Double [s]
     (to-double s nil))
-  ( [s default]
+  ( ^Double [s default]
     (try
       (if (string? s) (Double/parseDouble s) (double s))
       (catch Exception _ignore default))))
@@ -59,8 +59,8 @@
 
 (defn urand-bytes [n]
   (with-open [in (io/input-stream (io/file "/dev/urandom"))]
-    (let [buf (byte-array n)
-          nrd (.read in buf)]
+    (let [buf (byte-array n)]
+      (.read in buf)
       buf)))
 
 
@@ -103,19 +103,19 @@
 
 ;; -- string utils --
 
-(defn ^String str-trim [s]
+(defn str-trim ^String [s]
   (s/trim (str s)))
 
 
-(defn ^String str-head
+(defn str-head
   "Returns the first n characters of s."
-  [n ^String s]
+  ^String [n ^String s]
   (if (>= n (.length s)) s (.substring s 0 n)))
 
 
-(defn ^String str-tail
+(defn str-tail
   "Returns the last n characters of s."
-  [n ^String s]
+  ^String [n ^String s]
   (if (< (count s) n) s (.substring s (- (count s) n))))
 
 
@@ -136,7 +136,7 @@
 
 ;;;;;;  hashes  ;;;;;;
 
-(defn ^String hexbyte [^Integer b]
+(defn hexbyte ^String [^Integer b]
     (.substring (Integer/toString (+ 0x100 (bit-and 0xff b)) 16) 1))
 
 
@@ -156,21 +156,21 @@
     (.digest md)))
 
 
-(defn ^String md5
+(defn md5
   "returns md5 lowercase string calculated on utf-8 bytes of input"
-  [^String s]
+  ^String [^String s]
   (apply str (map hexbyte (calc-hash "MD5" s))))
 
 
-(defn ^String sha1
+(defn sha1
   "returns sha1 lowercase string calculated on utf-8 bytes of input"
-  [^String s]
+  ^String [^String s]
   (apply str (map hexbyte (calc-hash "SHA-1" s))))
 
 
-(defn ^String sha256
+(defn sha256
   "returns sha256 lowercase string calculated on utf-8 bytes of input"
-  [^String s]
+  ^String [^String s]
   (apply str (map hexbyte (calc-hash "SHA-256" s))))
 
 

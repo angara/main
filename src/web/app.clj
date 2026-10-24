@@ -3,7 +3,7 @@
     [taoensso.telemere :refer [log!]]
     [clj-time.core :as tc]
     [ring.util.response :refer [redirect]]
-    [compojure.core :refer [GET ANY POST context routes wrap-routes]]
+    [compojure.core :refer [GET ANY context routes wrap-routes]]
     [compojure.route :as route]
     ;
     [app.config :refer [conf]]

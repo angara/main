@@ -5,48 +5,47 @@
 
 
 (defn login-form [req]
-  (let [redir (-> req :params :redir not-empty)]
-    (layout
-      (assoc req :user false)
-      {:title "Вход на сайт"
-       :page-title "Вход на сайт"
-       :js  ["/incs/auth/login.js"]}
+  (layout
+    (assoc req :user false)
+    {:title "Вход на сайт"
+     :page-title "Вход на сайт"
+     :js  ["/incs/auth/login.js"]}
 
-      [:div.container
-       [:div.b-login.col-md-6.col-md-offset-3
-        [:br]
-        [:form
-         [:div.form-group
-          [:label {:for "email"} "E-mail"]
-          [:input#email.form-control
-           {:type "text" :placeholder "Электронная почта или псевдоним"}]]
-         [:div.form-group
-          [:label {:for "pass"} "Пароль"]
-          [:input#pass.form-control
-           {:type "password" :placeholder ""}]]
-         [:div.form-group.checkbox
-          [:label {:for "remember"}
-           [:input#remember {:type "checkbox" :checked true}]
-           " Запомнить"]]
-         [:div.form-group.row
-          [:div.col-sm-5
-           {:style "margin-top: 14px;"}
-           [:button#login.btn.btn-primary.btn-block
-            {:type "submit"}
-            "Войти на сайт"]]
-          [:div.col-sm-5.pull-right
-           {:style "margin-top: 14px;"}
-           [:a.btn.btn-default.btn-block
-            {:href (-> conf :urls :auth_reset)}
-            "Восстановить пароль"]]
-          [:div.clearfix]
-          [:div#msg.msg.msg_err.text-center
-           {:style "margin-top: 8px;"}
-           "&nbsp;"]
-          [:div.text-center
-           {:style "font-size: 120%; margin-top: 8px;"}
-           [:a {:href (-> conf :urls :register)} "Регистрация ..."]]]]
-        [:div.clearfix]]])))
+    [:div.container
+     [:div.b-login.col-md-6.col-md-offset-3
+      [:br]
+      [:form
+       [:div.form-group
+        [:label {:for "email"} "E-mail"]
+        [:input#email.form-control
+         {:type "text" :placeholder "Электронная почта или псевдоним"}]]
+       [:div.form-group
+        [:label {:for "pass"} "Пароль"]
+        [:input#pass.form-control
+         {:type "password" :placeholder ""}]]
+       [:div.form-group.checkbox
+        [:label {:for "remember"}
+         [:input#remember {:type "checkbox" :checked true}]
+         " Запомнить"]]
+       [:div.form-group.row
+        [:div.col-sm-5
+         {:style "margin-top: 14px;"}
+         [:button#login.btn.btn-primary.btn-block
+          {:type "submit"}
+          "Войти на сайт"]]
+        [:div.col-sm-5.pull-right
+         {:style "margin-top: 14px;"}
+         [:a.btn.btn-default.btn-block
+          {:href (-> conf :urls :auth_reset)}
+          "Восстановить пароль"]]
+        [:div.clearfix]
+        [:div#msg.msg.msg_err.text-center
+         {:style "margin-top: 8px;"}
+         "&nbsp;"]
+        [:div.text-center
+         {:style "font-size: 120%; margin-top: 8px;"}
+         [:a {:href (-> conf :urls :register)} "Регистрация ..."]]]]
+      [:div.clearfix]]]))
 
 
 (defn register-form [req]

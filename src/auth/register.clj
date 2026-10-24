@@ -53,7 +53,7 @@
       {::err "Неверно введен Город" :fld :town})))
 
 
-(defn register [{params :params :as req}]
+(defn register [{params :params}]
   (let [data
         (reduce
           (fn [data validator]

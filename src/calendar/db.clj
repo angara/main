@@ -64,7 +64,6 @@
 
 (defn crecs-by-uid [uid]
   (try-warn (str "crecs-by-uid: " uid)
-    #_{:clj-kondo/ignore [:invalid-arity]}
     (mq/with-collection (dbc) CALENDAR_COLL
       (mq/find {:uid uid})
       (mq/sort {:date -1})
@@ -73,7 +72,6 @@
 
 (defn crecs-all []
   (try-warn "crecs-all:"
-    #_{:clj-kondo/ignore [:invalid-arity]}
     (mq/with-collection (dbc) CALENDAR_COLL
       (mq/find {})
       (mq/sort {:date -1})
@@ -83,7 +81,6 @@
 (defn crecs-publ []
   (let [start (tc/minus (tc/now) (tc/hours 20))]
     (try-warn "crecs-publ:"
-      #_{:clj-kondo/ignore [:invalid-arity]}        
       (mq/with-collection (dbc) CALENDAR_COLL
         (mq/find {:date {:$gte start} :status STATUS_PUBL})
         (mq/sort {:date 1})

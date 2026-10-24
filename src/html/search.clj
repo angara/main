@@ -69,7 +69,7 @@
 
 
 (defn ya-site-results []
-  (str "
+  "
 <div id='ya-site-results'
   style='margin-right: 6px; min-height: 250px;'
   onclick=\"return {
@@ -92,7 +92,7 @@
   })
 })(window,document,'yandex_site_callbacks');
 </script>
-"))
+")
 
 
 ;;.

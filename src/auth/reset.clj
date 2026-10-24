@@ -2,13 +2,13 @@
   (:require
     [taoensso.telemere :refer [log!]]
     [clj-time.core :as tc]
-    [mlib.core :refer [email? urand32]]
+    [mlib.core :refer [urand32]]
     [app.config :refer [conf]]
-    [mlib.http :refer [json-resp json-err]]
+    [mlib.http :refer [json-resp]]
     [mlib.mail :refer [send-mail]]
     [mdb.sess :refer [clear-uid-sess]]
     [mdb.user :refer [user-update user-by-auth]]
-    [auth.util :refer [em-norm un-norm migrate-user]]
+    [auth.util :refer [em-norm migrate-user]]
     [auth.bcrypt :refer [hash-pass]]
     [sql.user :refer [active-user-by-email]]
     [html.frame :refer [layout]]))

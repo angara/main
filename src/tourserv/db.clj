@@ -42,7 +42,6 @@
 (defn tourserv-by-uid [uid]
   (try-warn
     (str "tourserv-by-uid: " uid)
-    #_{:clj-kondo/ignore [:invalid-arity]}
     (mq/with-collection (dbc) TOURSERV_COLL
       (mq/find {:uid uid})
       (mq/sort {:title 1}))))
@@ -51,7 +50,6 @@
 (defn tourserv-by-type [type & [town]]
   (try-warn
     (str "tourserv-by-type: " type)
-    #_{:clj-kondo/ignore [:invalid-arity]}
     (mq/with-collection (dbc) TOURSERV_COLL
       (mq/find
         (if town
