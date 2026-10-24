@@ -2,7 +2,8 @@
   (:require
     [taoensso.telemere :refer [log!]]
     [clojure.core.cache :as cache]
-    [clj-time.core :as tc]
+    [java-time.api :as jt]
+    [tick.core :as t]
     [mount.core :refer [defstate]]
     [monger.collection :as mc]
     [mlib.core :refer [urand-bytes hexbyte]]
@@ -29,7 +30,7 @@
       (log! :warn ["create-indexes:" ex]))))
 
 
-(def ATIME_INTERVAL (tc/seconds 10))
+(def ATIME_INTERVAL (t/of-seconds 10))
 
 (def SESS_CACHE_TTL 10000)  ;; 10 sec
 
@@ -48,7 +49,7 @@
 
 
 (defn sess-new [data]
-  (let [now (tc/now)]
+  (let [now (t/date-time)]
     (try
       (mc/insert-and-return (dbc) SESS
                             (assoc data
@@ -89,10 +90,10 @@
                 (swap! *sess-cache #(cache/miss % sid s))
                 (swap! *sess-cache #(cache/evict % sid)))
               s))]
-      (when (tc/before?
-             (:ts sess (tc/date-time 1970 1 1))
-             (tc/ago ATIME_INTERVAL))
-        (sess-update sid {:ts (tc/now)}))
+      (when (t/<
+             (:ts sess (jt/local-date-time 1970 1 1))
+             (t/<< (t/date-time) ATIME_INTERVAL))
+        (sess-update sid {:ts (t/date-time)}))
       sess)))
 
 

@@ -1,7 +1,7 @@
 (ns auth.login
   (:require
     [taoensso.telemere :refer [log!]]
-    [clj-time.core :as tc]
+    [tick.core :as t]
     [app.config :refer [conf]]
     [mlib.web.sess :refer [sid-resp]]
     [mlib.http :refer [json-resp]]
@@ -17,7 +17,7 @@
 
 
 (defn new-session [user tmp ip]
-  (let [data {:uid (:id user) :ts (tc/now) :ip ip}]
+  (let [data {:uid (:id user) :ts (t/date-time) :ip ip}]
     (sess-new
       (if tmp
         (assoc data :tmp (int 1))

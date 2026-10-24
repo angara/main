@@ -2,7 +2,7 @@
 (ns forum.db
   (:require
     [clojure.string :as s]
-    [clj-time.core :as tc]
+    [tick.core :as t]
     [honeysql.helpers :as h]
     ;
     [mlib.core :refer [to-int]]
@@ -152,7 +152,7 @@
                   :tid    tid 
                   :msgid  0 
                   :watch  watch
-                  :last_post_time (tc/now)}])
+                  :last_post_time (t/date-time)}])
       (exec)
       (= 1))))
 ;

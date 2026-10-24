@@ -2,15 +2,16 @@
   (:require
     [mount.core :refer [defstate]]
     [monger.json]
-    [monger.joda-time]
     [monger.core :as mg]
     [monger.collection :as mc]
+    [monger.conversion :refer [ConvertToDBObject ConvertFromDBObject to-db-object]]
     [taoensso.telemere :refer [log!]]
     [app.config :refer [conf]])
   (:import
     [org.bson.types ObjectId]
     [com.mongodb WriteConcern]
-    [org.joda.time DateTimeZone]
+    (java.time LocalDateTime ZonedDateTime ZoneId)
+    (java.util Date TimeZone)
    ,))
 
 
@@ -28,8 +29,27 @@
 
 
 
+;; java.time <-> BSON Date conversion (replaces monger.joda-time).
+;; Read direction is global: every Date field comes back as LocalDateTime
+;; in the default zone (== conf :tz == Asia/Irkutsk).
+
+(extend-protocol ConvertToDBObject
+  LocalDateTime
+  (to-db-object [^LocalDateTime input]
+    (to-db-object (Date/from (.toInstant (.atZone input (ZoneId/systemDefault))))))
+  ZonedDateTime
+  (to-db-object [^ZonedDateTime input]
+    (to-db-object (Date/from (.toInstant input)))))
+
+(extend-protocol ConvertFromDBObject
+  java.util.Date
+  (from-db-object [^Date input _keywordize]
+    (LocalDateTime/ofInstant (.toInstant input) (ZoneId/systemDefault))))
+
+
+
 (defn connect [cnf]
-  (-> (:tz conf "Asia/Irkutsk") DateTimeZone/forID DateTimeZone/setDefault)
+  (TimeZone/setDefault (TimeZone/getTimeZone (or (:tz conf) "Asia/Irkutsk")))
   (let [mdb (mg/connect-via-uri (:url cnf))]
     (mg/set-default-write-concern! WriteConcern/FSYNC_SAFE)
     mdb))

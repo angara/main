@@ -2,7 +2,7 @@
 (ns calendar.core
   (:require
     [clojure.java.shell :refer [sh]]
-    [clj-time.core :as tc]
+    [tick.core :as t]
     [compojure.core :refer [defroutes GET POST]]  ;context ANY
     ;
     [app.config :refer [conf]]
@@ -21,7 +21,7 @@
 
 (def URL_CALENDAR_MY "/calendar/my")
 
-(def FRESH_TOPIC_AGE (tc/days 30))
+(def FRESH_TOPIC_AGE (t/of-days 30))
 
 
 (defn thumb-100 [orig dest]
@@ -74,10 +74,10 @@
 
 (defn add-tinfo [uid tinfo]
   (when-let [crec (tinfo-calendar tinfo)]
-    (let [now   (tc/now)
+    (let [now   (t/date-time)
           crec  (assoc crec
                   :uid uid :ct now :ts now
-                  :date (tc/plus now (tc/days 1))    ;; lookup date in descr
+                  :date (t/>> now (t/of-days 1))    ;; lookup date in descr
                   :status nil)]
       (add-crec crec))))
 ;
@@ -99,9 +99,9 @@
       false
 
       ;; no old topics
-      (tc/before?
+      (t/<
         (:created topic)
-        (tc/minus (tc/now) FRESH_TOPIC_AGE))
+        (t/<< (t/date-time) FRESH_TOPIC_AGE))
       false
 
       ;; only by owner owner

@@ -1,7 +1,8 @@
 (ns web.app
   (:require
     [taoensso.telemere :refer [log!]]
-    [clj-time.core :as tc]
+    [java-time.api :as jt]
+    [tick.core :as t]
     [ring.util.response :refer [redirect]]
     [compojure.core :refer [GET ANY context routes wrap-routes]]
     [compojure.route :as route]
@@ -78,14 +79,14 @@
     ,))
 
 
-(def USER_ATIME_INTERVAL (tc/seconds 10))
+(def USER_ATIME_INTERVAL (t/of-seconds 10))
 
 
 (defn update-user-atime [user]
   (try
-    (let [atime (:atime user (tc/date-time 1970 1 1))]
-      (when (tc/before? atime (tc/ago USER_ATIME_INTERVAL))
-        (user-update (:id user) {:atime (tc/now)})))
+    (let [atime (:atime user (jt/local-date-time 1970 1 1))]
+      (when (t/< atime (t/<< (t/date-time) USER_ATIME_INTERVAL))
+        (user-update (:id user) {:atime (t/date-time)})))
     (catch Exception e
       (log! :warn ["update-user-atime:" (:id user) e]))))
 

@@ -1,6 +1,6 @@
 (ns calendar.db
   (:require
-    [clj-time.core :as tc]
+    [tick.core :as t]
     [monger.collection :as mc]
     [monger.query :as mq]
     [mount.core :refer [defstate]]
@@ -79,7 +79,7 @@
 ;
 
 (defn crecs-publ []
-  (let [start (tc/minus (tc/now) (tc/hours 20))]
+  (let [start (t/<< (t/date-time) (t/of-hours 20))]
     (try-warn "crecs-publ:"
       (mq/with-collection (dbc) CALENDAR_COLL
         (mq/find {:date {:$gte start} :status STATUS_PUBL})

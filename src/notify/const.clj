@@ -1,6 +1,6 @@
 (ns notify.const
   (:require
-    [java-time.api :as jt]))
+    [tick.core :as t]))
   
 ;; global constants
 
@@ -28,7 +28,7 @@
 (def EVENT_TYPE_USER_LOGIN        "user_login")
 
 
-(def USER_ONLINE_INTERVAL (jt/seconds 200))
+(def USER_ONLINE_INTERVAL (t/of-seconds 200))
 (def ONLINE_USER_NOTIFY_DELAY_MS (* 240 1000))
 
 ;;.

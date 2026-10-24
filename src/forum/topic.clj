@@ -1,7 +1,7 @@
 (ns forum.topic
   (:require
     [clojure.string :as s]
-    [clj-time.core :as tc]
+    [tick.core :as t]
     [honeysql.helpers :as h]
     [compojure.core :refer [GET POST defroutes]]
     ;
@@ -16,7 +16,7 @@
 
 
 (def ROLE_FORUM \F)
-(def FORUM_EDIT_AGE (tc/days 60))
+(def FORUM_EDIT_AGE (t/of-days 60))
 
 (def FIRST_CHARS
   (set "0123456789\"ABCDEFGHIJKLMNOPQRSTUVWXYZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"))
@@ -97,7 +97,7 @@
             (update-title tid title
               [:= :owner uid]
               [:= :closed false]
-              [:> :created (tc/minus (tc/now) FORUM_EDIT_AGE)]))
+              [:> :created (t/<< (t/date-time) FORUM_EDIT_AGE)]))
           ;
           {:err :bad_data :msg "Недопустимый текст заголовока."})))))
 

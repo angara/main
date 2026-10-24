@@ -1,32 +1,16 @@
 (ns mdb.notify
   "notify_user job queue in mongodb (merged from angara/notify)."
   (:require
-    [java-time.api :as jt]
+    [tick.core :as t]
     [mount.core :refer [defstate]]
     [monger.collection :as mc]
     [monger.query :as mq]
-    [monger.conversion :refer [ConvertToDBObject to-db-object]]
     ;
     [mlib.core :refer [now-ms]]
     [mdb.core :refer [dbc id_id]]
     ,)
   (:import
-    (java.time LocalDateTime ZonedDateTime ZoneId)
-    (java.util Date)
     (org.bson.types ObjectId)))
-
-
-;; query params may be java.time; convert to Date for monger.
-;; read direction is NOT extended on purpose: monger.joda-time owns
-;; ConvertFromDBObject (java.util.Date -> joda) for the rest of the app.
-
-(extend-protocol ConvertToDBObject
-  LocalDateTime
-  (to-db-object [^LocalDateTime input]
-    (to-db-object (Date/from (.toInstant (.atZone input (ZoneId/systemDefault))))))
-  ZonedDateTime
-  (to-db-object [^ZonedDateTime input]
-    (to-db-object (Date/from (.toInstant input)))))
 
 
 (def USER "user")
@@ -67,7 +51,7 @@
 
 
 (defn user-online? [id active-duration]
-  (let [atime (jt/minus (jt/local-date-time) active-duration)]
+  (let [atime (t/<< (t/date-time) active-duration)]
     (mc/find-one-as-map (dbc) USER
       { :_id id
         :atime {:$gte atime}}
