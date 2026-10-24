@@ -1,7 +1,7 @@
 
 (ns calendar.html
   (:require
-    [clj-time.core :as tc]
+    [tick.core :as t]
     [hiccup.core :refer [html]]
     [ring.util.response :refer [header]]
     ;
@@ -21,7 +21,7 @@
 
 (defn get-month [cr]
   (try
-    (-> cr :date tc/month)
+    (-> cr :date t/month t/int)
     (catch Exception e
       (warn "crec:" (:_id cr) (.getMessage e)))))
 ;

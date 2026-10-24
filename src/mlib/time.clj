@@ -1,58 +1,66 @@
 
 (ns mlib.time
-  (:require
-    [clj-time.core :as t]
-    [clj-time.format :as tf]))
-;
+  (:import
+    (java.time LocalDate LocalDateTime)
+    (java.time.format DateTimeFormatter)))
+
 
 (defn now-ms [] (System/currentTimeMillis))
 (defn now-date [] (java.util.Date.))
 
-(def tf-hhmm     (tf/formatter "HH:mm" (t/default-time-zone)))
-(def tf-hhmmss   (tf/formatter "HH:mm:ss" (t/default-time-zone)))
+;; DateTimeFormatter is immutable/thread-safe; patterns are wall-clock
+;; (LocalDateTime in the default zone, same semantics as the joda version).
+;; Parsers return LocalDateTime at start of day — same as joda date-only parse.
 
-(def tf-ddmmyy   (tf/formatter "dd.MM.yy" (t/default-time-zone)))
-(def tf-ddmmyyyy (tf/formatter "dd.MM.yyyy" (t/default-time-zone)))
-(def tf-yyyymmdd (tf/formatter "yyyy-MM-dd" (t/default-time-zone)))
+(def tf-hhmm     (DateTimeFormatter/ofPattern "HH:mm"))
+(def tf-hhmmss   (DateTimeFormatter/ofPattern "HH:mm:ss"))
 
-(def tf-ddmmyy-hhmm (tf/formatter "dd.MM.yy HH:mm" (t/default-time-zone)))
-(def tf-ddmmyy-hhmmss (tf/formatter "dd.MM.yy HH:mm:ss" (t/default-time-zone)))
+(def tf-ddmmyy   (DateTimeFormatter/ofPattern "dd.MM.yy"))
+(def tf-ddmmyyyy (DateTimeFormatter/ofPattern "dd.MM.yyyy"))
+(def tf-yyyymmdd (DateTimeFormatter/ofPattern "yyyy-MM-dd"))
 
-(def tf-yymmdd-hhmmss (tf/formatter "yyMMdd-HHmmss" (t/default-time-zone)))
-(def tf-yyyymmdd-hhmmss (tf/formatter "yyyyMMdd-HHmmss" (t/default-time-zone)))
-(def tf-iso-datetime (tf/formatter "yyyy-MM-dd HH:mm:ss" (t/default-time-zone)))
+(def tf-ddmmyy-hhmm   (DateTimeFormatter/ofPattern "dd.MM.yy HH:mm"))
+(def tf-ddmmyy-hhmmss (DateTimeFormatter/ofPattern "dd.MM.yy HH:mm:ss"))
+
+(def tf-yymmdd-hhmmss   (DateTimeFormatter/ofPattern "yyMMdd-HHmmss"))
+(def tf-yyyymmdd-hhmmss (DateTimeFormatter/ofPattern "yyyyMMdd-HHmmss"))
+(def tf-iso-datetime    (DateTimeFormatter/ofPattern "yyyy-MM-dd HH:mm:ss"))
+
+
+(defn- parse-date ^LocalDateTime [^DateTimeFormatter fmt ^String s]
+  (try
+    (.atStartOfDay (LocalDate/parse s fmt))
+    (catch Exception _ignore nil)))
+
 
 (defn parse-yyyymmdd [s]
-  (try (tf/parse tf-yyyymmdd (str s)) (catch Exception _ignore)))
+  (parse-date tf-yyyymmdd (str s)))
+
 
 (defn parse-ddmmyy [s]
-  (try (tf/parse tf-ddmmyy (str s)) (catch Exception _ignore)))
+  (parse-date tf-ddmmyy (str s)))
+
 
 (defn parse-ddmmyyyy [s]
-  (try (tf/parse tf-ddmmyyyy (str s)) (catch Exception _ignore)))
+  (parse-date tf-ddmmyyyy (str s)))
 
-(defn hhmm [date]
-  (when date (try (tf/unparse tf-hhmm date) (catch Exception _ignore))))
 
-(defn hhmmss [date]
-  (when date (try (tf/unparse tf-hhmmss date) (catch Exception _ignore))))
+(defn- fmt [^DateTimeFormatter f date]
+  (when date (try (.format f date) (catch Exception _ignore nil))))
 
-(defn ddmmyy [date]
-  (when date (try (tf/unparse tf-ddmmyy date) (catch Exception _ignore))))
 
-(defn ddmmyyyy [date]
-  (when date (try (tf/unparse tf-ddmmyyyy date) (catch Exception _ignore))))
+(defn hhmm [date]      (fmt tf-hhmm date))
+(defn hhmmss [date]    (fmt tf-hhmmss date))
+(defn ddmmyy [date]    (fmt tf-ddmmyy date))
+(defn ddmmyyyy [date]  (fmt tf-ddmmyyyy date))
 
-(defn ddmmyy-hhmm [date]
-  (when date (try (tf/unparse tf-ddmmyy-hhmm date) (catch Exception _ignore))))
-
-(defn ddmmyy-hhmmss [date]
-  (when date (try (tf/unparse tf-ddmmyy-hhmmss date) (catch Exception _ignore))))
+(defn ddmmyy-hhmm [date]   (fmt tf-ddmmyy-hhmm date))
+(defn ddmmyy-hhmmss [date] (fmt tf-ddmmyy-hhmmss date))
 
 (defn iso-date [date]
-  (when date (try (tf/unparse tf-yyyymmdd date) (catch Exception _ignore))))
+  (fmt tf-yyyymmdd date))
 
 (defn iso-datetime [ts]
-  (when ts (try (tf/unparse tf-iso-datetime ts) (catch Exception _ignore))))
+  (fmt tf-iso-datetime ts))
 
 ;;.

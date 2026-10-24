@@ -1,7 +1,7 @@
 (ns auth.reset
   (:require
     [taoensso.telemere :refer [log!]]
-    [clj-time.core :as tc]
+    [tick.core :as t]
     [mlib.core :refer [urand32]]
     [app.config :refer [conf]]
     [mlib.http :refer [json-resp]]
@@ -73,7 +73,7 @@
     (log! ["auth/reset:" uid email code])
     (and
       (send-mail email subj text)
-      (user-update uid {:passcode code :ts (tc/now)}))))
+      (user-update uid {:passcode code :ts (t/date-time)}))))
 
 
 (defn load-user [eml]
@@ -114,7 +114,7 @@
         (do
           (clear-uid-sess uid)
           (if (user-update uid
-                           {:passhash (hash-pass pass) :passcode nil :ts (tc/now)})
+                           {:passhash (hash-pass pass) :passcode nil :ts (t/date-time)})
             (json-resp {:ok 1 :redir redir :msg "Пароль установлен."})
             (json-resp {:err "sys" :msg "Ошибка при установке пароля."})))
         (json-resp

@@ -1,7 +1,7 @@
 (ns mdb.user
   (:require
     [mlib.logger :refer [warn]]
-    [clj-time.core :as tc]
+    [tick.core :as t]
     [mount.core :refer [defstate]]
     [monger.collection :as mc]
     ;
@@ -57,7 +57,7 @@
 
 (defn user-create [id data]
   (try
-    (let [now (tc/now)]
+    (let [now (t/date-time)]
       (mc/insert (dbc) user-coll
         (merge {:_id id :ct now :atime now :ts now} data))
       (assoc data :id id))

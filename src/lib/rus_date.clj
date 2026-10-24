@@ -1,6 +1,6 @@
 (ns lib.rus-date
   (:require
-    [clj-time.core :as tc]))
+    [tick.core :as t]))
 
 
 (def RUS_MONTHS
@@ -68,7 +68,7 @@
 
 
 (defn rus-date [date]
-  (let [t (tc/to-time-zone date (tc/default-time-zone))]
-    [ (str (tc/day t))
-      (get RUS_DATE_MONTHS (dec (tc/month t)))
-      (str (tc/year t))]))
+  (when date
+    [(str (t/day-of-month date))
+     (get RUS_DATE_MONTHS (dec (t/int (t/month date))))
+     (str (t/int (t/year date)))]))

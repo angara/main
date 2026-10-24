@@ -1,12 +1,14 @@
 (ns sql.conn
   (:require
-    [clj-time.coerce :as tc]
     [jdbc.core :as jdbc]
     [jdbc.proto :refer [ISQLType ISQLResultSetReadColumn]]
     [hikari-cp.core :refer [make-datasource]]
     [mount.core :refer [defstate]]
     [app.config :refer [conf]]
-   ,))
+   ,)
+  (:import
+    (java.sql Timestamp)
+    (java.time Instant LocalDateTime ZoneId)))
 
 
 ;; https://github.com/tomekw/hikari-cp/
@@ -42,27 +44,36 @@
 
 ;;; ;;; ;;; ;;;
 
+;; java.time adapters (jdbc 4.2: pgjdbc takes LocalDate/LocalDateTime natively,
+;; but NOT Instant — go through Timestamp). Reads come back as java.time too.
+
+(defn- ldt->timestamp ^Timestamp [^LocalDateTime ldt]
+  (Timestamp/from (.toInstant (.atZone ldt (ZoneId/systemDefault)))))
+
+
 (extend-protocol ISQLType
-  ;
-  org.joda.time.DateTime
+  LocalDateTime
   (as-sql-type [this _conn]
-    (tc/to-sql-time this))
-  ;
-  (set-stmt-parameter! [this _conn stmt index]
-    (.setTimestamp stmt index
-      (tc/to-sql-time this))))
+    (ldt->timestamp this))
+  (set-stmt-parameter! [this _conn ^java.sql.PreparedStatement stmt ^Long index]
+    (.setTimestamp stmt index (ldt->timestamp this)))
+
+  Instant
+  (as-sql-type [this _conn]
+    (Timestamp/from this))
+  (set-stmt-parameter! [this _conn ^java.sql.PreparedStatement stmt ^Long index]
+    (.setTimestamp stmt index (Timestamp/from this))))
 
 
 (extend-protocol ISQLResultSetReadColumn
-  ;
   java.sql.Timestamp
   (from-sql-type [this _conn _metadata _index]
-    (tc/from-sql-time this))
+    (LocalDateTime/ofInstant (.toInstant this) (ZoneId/systemDefault)))
   ;
   java.sql.Date
   (from-sql-type [this _conn _metadata _index]
-    (tc/from-sql-date this))
+    (.toLocalDate this))
   ;
   java.sql.Time
   (from-sql-type [this _conn _metadata _index]
-    (org.joda.time.DateTime. this)))
+    (.toLocalTime this)))
