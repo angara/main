@@ -1,31 +1,35 @@
 (ns web.app
   (:require
     [taoensso.telemere :refer [log!]]
+    [clj-time.core :as tc]
     [ring.util.response :refer [redirect]]
-    [compojure.core :refer [GET ANY context routes]]
+    [compojure.core :refer [GET ANY POST context routes wrap-routes]]
     [compojure.route :as route]
     ;
     [app.config :refer [conf]]
-    [mlib.web.sess :refer [wrap-sess]] ; sid-resp]]
+    [mlib.web.sess :refer [wrap-sess]]
     [mlib.web.middleware :refer [middleware]]
-    [mdb.user :refer [user-by-id sess-load FLDS_REQ_USER]]
+    [mdb.user :refer [user-by-id user-update FLDS_REQ_USER]]
+    [mdb.sess :refer [sess-load]]
     [html.frame :refer [not-found render-layout]]
     [html.search :refer [ya-site-results]]
     [calendar.core :refer [calendar-routes]]
     [forum.core :refer [forum-api-routes]]
     [front.core :refer [main-page]]
+    [auth.core :refer [auth-routes]]
+    [me.core :refer [me-routes]]
     [meteo.core :as meteo]
     [tourserv.core :as tourserv]
   ,))
 
 
-; (defn wrap-user-required [handler]
-;   (fn [req]
-;     (if (:user req)
-;       (handler req)
-;       (redirect
-;         (str (-> conf :urls :login) "?redir=" (:uri req))))))
-; ;
+(defn wrap-user-required [handler]
+  (fn [req]
+    (if (:user req)
+      (handler req)
+      (redirect
+        (str (-> conf :urls :login) "?redir=" (:uri req))))))
+;
 
 
 (defn api-404 [_req]
@@ -58,6 +62,15 @@
     (context "/forum/api" _ forum-api-routes)
     (context "/tourserv"  _ tourserv/routes)
     ;
+    (context "/auth" _ auth-routes)
+    ;
+    (GET "/me"  [] (redirect "/me/"))
+    (context "/me" [] (wrap-routes me-routes wrap-user-required))
+    ;
+    ;; was angara/usr module placeholder page
+    (GET "/usr"  [] (redirect "/"))
+    (GET "/usr/" [] (redirect "/"))
+    ;
     (route/resources "/" {:root "public"})
     ;
     (GET "/*" _ not-found)
@@ -65,12 +78,32 @@
     ,))
 
 
+(def USER_ATIME_INTERVAL (tc/seconds 10))
+
+
+(defn update-user-atime [user]
+  (try
+    (let [atime (:atime user (tc/date-time 1970 1 1))]
+      (when (tc/before? atime (tc/ago USER_ATIME_INTERVAL))
+        (user-update (:id user) {:atime (tc/now)})))
+    (catch Exception e
+      (log! :warn ["update-user-atime:" (:id user) e]))))
+
+
 (defn wrap-user [handler]
   (fn [req]
-    (if-let [uid (-> req :sess :uid str not-empty)]
-      (handler (assoc req :user
-                  (user-by-id uid FLDS_REQ_USER)))
-      (handler req))))
+    (let [uid (-> req :sess :uid str not-empty)]
+      (if-let [user (and uid (user-by-id uid FLDS_REQ_USER))]
+        (do
+          (update-user-atime user)
+          (handler (assoc req :user user)))
+        (handler req)))))
+
+
+(defn wrap-real-ip [handler]
+  (fn [req]
+    (let [ip (get-in req [:headers "x-real-ip"])]
+      (handler (assoc req :real-ip ip)))))
 
 
 (defn wrap-slowreq [handler cnf]
@@ -93,6 +126,7 @@
     (make-routes)
     (wrap-user)
     (wrap-sess sess-load)
+    (wrap-real-ip)
     (middleware)
     (wrap-slowreq (:slowreq conf))
    ,))
