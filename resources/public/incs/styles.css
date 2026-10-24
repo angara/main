@@ -1,0 +1,41 @@
+.msg {
+  color: #888;
+  padding: 2px;
+}
+
+.msg_ok {
+  color: #0a0;
+  font-weight: bold;
+}
+
+.msg_err {
+  color: #a00;
+  font-weight: bold;
+}
+
+.header {
+  margin-bottom: 8px;
+  padding: 4px 12px;
+  border-bottom: 1px solid #ddd;
+  background-color: #f4f4f4;
+}
+
+.content .form-group label {
+  color: #555;
+}
+
+.b-auth {
+  margin-bottom: 12px;
+}
+
+.b-login {
+  margin-bottom: 12px;
+}
+
+.b-register {
+  margin-bottom: 12px;
+}
+
+.b-me {
+  margin: 1rem auto;
+}

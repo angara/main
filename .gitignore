@@ -65,3 +65,6 @@ __pycache__/
 !yarn.lock
 
 #.
+
+## jBCrypt (precompiled, required on classpath)
+!src/org/mindrot/jbcrypt/*.class

@@ -1,7 +1,4 @@
-(ns mlib.web.sess
-  (:require
-    [ring.util.response :refer [get-header set-cookie]]
-   ,))
+(ns mlib.web.sess)
 
 
 (def SESS_COOKIE "sid")

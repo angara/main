@@ -14,7 +14,6 @@
   ([url auth timeout]
    (let [hdrs (when auth {"Authorization" auth})
          {:keys [status body error]} 
-         #_{:clj-kondo/ignore [:unresolved-var]}
          (deref (http/get url {:headers hdrs :timeout timeout}))]
      (if (= 200 status) 
        (try

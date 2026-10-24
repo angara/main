@@ -1,64 +1,38 @@
 (ns mdb.user
   (:require
     [mlib.logger :refer [warn]]
-    [clojure.core.cache :as cache]
+    [clj-time.core :as tc]
+    [mount.core :refer [defstate]]
     [monger.collection :as mc]
     ;
-    [mlib.random :refer [urand64]]
-    [mdb.core :refer [dbc id_id]]
+    [mdb.core :refer [dbc id_id next-sn]]
    ,))
 
 
-(def sess-coll     "sess")
-(def user-coll     "user")
+(def user-coll "user")
+(def UID_SEQ  "uid")
+
+;; db.seq.insert({_id:"uid",n:100000})
 
 
 (def FLDS_REQ_USER
-  [:username :email :first_name :last_name :upic :admin])
-
-;;; sess
-
-(defn new-sid []
-  (format "%d.%d" (System/currentTimeMillis) (urand64)))
+  [:username :email :first_name :last_name :upic :allow :deny :admin])
 
 
-(def sess-cache
-  (atom (cache/ttl-cache-factory {} :ttl 10000)))
-
-(defn sess-load-mdb [sid]
+(defn create-indexes [db]
   (try
-    (mc/find-one-as-map (dbc) sess-coll {:_id sid})
-    (catch Exception e (warn "sess-load-mdb:" e))))
-
-
-(defn sess-load [sid]
-  (when sid
-    (if-let [s (cache/lookup @sess-cache sid)]
-      (do
-        (swap! sess-cache #(cache/hit % sid))
-        s)
-      (let [s (sess-load-mdb sid)]
-        (if s
-          (swap! sess-cache #(cache/miss % sid s))
-          (swap! sess-cache #(cache/evict % sid)))
-        s))))
-
-
-(defn sess-update [sid data]
-  (swap! sess-cache #(cache/evict % sid))
-  (try
-    (= 1 (.getN (mc/update-by-id (dbc) sess-coll sid {:$set data})))
-    (catch Exception e (warn "sess-update:" e))))
-;
-
-(defn sess-new [data]
-  (let [data (assoc data :_id (new-sid))]
-    (try
-      (mc/insert-and-return (dbc) sess-coll data)
-      (catch Exception e (warn "sess-new:" e)))))
+    (mc/create-index db user-coll
+      (array-map :auth 1)
+      { :unique true
+        :partialFilterExpression {:auth {:$exists true}}})
+    (catch Exception e (warn "create-indexes:" e))))
 
 
 ;;; user
+
+(defn new-uid []
+  (next-sn UID_SEQ))
+
 
 (defn user-by-id [uid flds]
   (when uid
@@ -81,9 +55,12 @@
       (catch Exception e (warn "db/user-by-auth:" e)))))
 
 
-(defn user-create [data]
+(defn user-create [id data]
   (try
-    (mc/insert-and-return (dbc) user-coll data)
+    (let [now (tc/now)]
+      (mc/insert (dbc) user-coll
+        (merge {:_id id :ct now :atime now :ts now} data))
+      (assoc data :id id))
     (catch Exception e (warn "db/user-create:" e))))
 
 
@@ -92,16 +69,21 @@
     (= 1 (.getN (mc/update-by-id (dbc) user-coll uid {:$set fset})))
     (catch Exception e (warn "db/user-update:" e))))
 
+
+(defstate indexes
+  :start (create-indexes (dbc)))
+
+
 ;  _id
-;  auth ["fb:123456...", ... ]
-;  fb {
-;    "id":"10152555555555555"
-;    "first_name":"fname"
-;    "last_name":"lastlast"
-;    "name":"first last"
-;    "gender":"male"
-;    "link":"https://www.facebook.com/app_scoped_user_id/101525555555555555555/"
-;    "locale":"en_US"
-;    "timezone":8
-;    "verified":true
-;  }
+;  auth ["un:login-lower" "em:email-norm" "vk:123" "fb:456"]  ;; indexed unique
+;  email "user@host.dom"
+;  username "nick name / login"
+;  passhash "bcrypt"
+;  passcode "password reset code"
+;  first_name "name"
+;  last_name "family"
+;  about "user note"
+;  upic "upic url 100 px"
+;  allow {}
+;  deny {}
+;  admin ["bb"]

@@ -40,8 +40,22 @@
     :logout     "https://angara.net/auth/logout"
     :auth_reset "https://angara.net/auth/reset"
     :register   "https://angara.net/auth/register"}
-  ;  
-            
+  ;
+
+  :auth {:cookie-domain "angara.net"}
+
+  :sendmail
+  {
+    :smtp
+    { :host "smtp.yandex.com"
+      :ssl  true
+      :port 465
+      :user "noreply@angara.net"
+      :pass "__PASSWORD__"}
+    ;
+    :envel
+    { :from "Angara.Net <noreply@angara.net>"}}
+
   ;; ;; ;; ;; ;; ;; ;; ;; ;;
 
   ; :mdb-angara { :uri "mongodb://localhost:22022/angara"}

@@ -1,6 +1,11 @@
 
 # Angara.Net: main page app
 
+Includes functionality of the former angara/usr module (auth, /me profile),
+merged 2026-10: single process, single jar, single Jetty.
+
+Not transferred from usr: VK/FB social login, csrf middleware.
+
 
 На Angara.Net запускается в тестовом режиме Календарь событий.
 В него можно добавлять свои мероприятия:
