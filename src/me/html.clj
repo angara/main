@@ -1,5 +1,6 @@
 (ns me.html
   (:require
+    [mlib.core :refer [hesc]]
     [mdb.user :refer [user-by-id]]
     [html.frame :refer [layout]]))
 
@@ -19,11 +20,11 @@
   [:div.form-horizontal.b-me_info
    [:div.form-group
     [:label.control-label.col-sm-2 "E-mail:"]
-    [:div.form-control-static (:email user)]]
+    [:div.form-control-static (hesc (:email user))]]
 
    [:div.form-group
     [:label.control-label.col-sm-2 "Псевдоним:"]
-    [:div.form-control-static (:username user)]]
+    [:div.form-control-static (hesc (:username user))]]
 
    [:div.form-group {:data-fld "first_name"} ;.has-error
     [:label.control-label.col-sm-2 {:for "first_name"} "Имя:"]

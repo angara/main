@@ -2,6 +2,7 @@
   (:require
     [hiccup.page :refer [html5]]
     [app.config :refer [conf]]
+    [mlib.core :refer [hesc]]
     [mlib.http :refer [make-url]]
     [mlib.web.snippets :refer [yandex-metrika mailru-top ya-rtb]]
     [html.search :refer [ya-site-form]]
@@ -97,7 +98,7 @@
             [:i.fa.fa-fw.fa-caret-down]]
           [:div.name
             [:a {:href "/me/" :title (str (:username user) ": " nm)}
-              [:b (:username user)] [:br] nm]]]
+              [:b (hesc (:username user))] [:br] (hesc nm)]]]
         [:script
           "$(function(){"
             "$('#topbar_user')"
