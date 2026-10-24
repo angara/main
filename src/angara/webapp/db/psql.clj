@@ -24,10 +24,9 @@
 
 
 (defn exec! [stmt]
-  ;; mount defstate must be derefed outside its namespace
-  (execute! @sql-conn/ds stmt EXEC_OPTS))
+  (execute! (sql-conn/datasource) stmt EXEC_OPTS))
 
 
 (defn exec-one! [stmt]
   (first
-    (execute! @sql-conn/ds stmt EXEC_OPTS)))
+    (execute! (sql-conn/datasource) stmt EXEC_OPTS)))
