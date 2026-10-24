@@ -103,7 +103,7 @@
         [:div.grow [:br]]
         [:div.mx-1.flex.items-center.text-end.text-sm
          [:a.font-semibold.text-sky-500 {:href "https://angara.net/"} "Angara.Net"] 
-         [:span.text-gray-400.ml-1.italic " © 2002-2023"]]
+         [:span.text-gray-400.ml-1.italic " © 2002-2026"]]
         ]
        ]
       ;; metrics
