@@ -2,7 +2,7 @@
 
 APP_NAME   = angara-main
 VER_MAJOR  = 2
-VER_MINOR  = 0
+VER_MINOR  = 1
 MAIN_CLASS = app.main
 
 JAR_NAME = angara-main.jar
