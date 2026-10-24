@@ -37,6 +37,10 @@
       (catch Exception _ignore default))))
 
 
+(defn now-ms []
+  (System/currentTimeMillis))
+
+
 (defn to-float
   "returns nil or default on failure"
   ( ^Float [s]

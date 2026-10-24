@@ -44,6 +44,22 @@
 
   :auth {:cookie-domain "angara.net"}
 
+  ;; merged from angara/notify; real values come from the runtime CONFIG_EDN.
+  ;; :forumnews / :forumphotos sections absent => tasks stay disabled.
+  :notify
+  {
+    :telegram
+    {
+      :apikey "174999999:XXXXXXXXXXXX"
+      :timeout 5000
+      :retry 3
+      ;; :http-proxy "http://host:port"
+      }
+
+    :firehose {:channel -1000000000000}
+    }
+  ;; :redis {:url "redis://host:6379/0"}  ;; absent => feeder stays disabled
+
   :sendmail
   {
     :smtp
