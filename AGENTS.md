@@ -9,7 +9,8 @@ PostgreSQL (clojure.jdbc + hikari + honeysql), telemere (логирование)
 
 ```
 make dev          # nREPL для разработки (CONFIG_EDN=../conf/dev.edn)
-make build        # uberjar -> target/angara-main.jar (AOT, проверяет компиляцию)
+make css          # tailwind -> resources/public/webapp/assets/main.css (npx)
+make build        # css + uberjar -> target/angara-main.jar (AOT, проверяет компиляцию)
 make deploy       # rsync jar на прод angara:/app/main
 clj-kondo --lint src   # линтер (бинарник в ~/.local/bin)
 ```
