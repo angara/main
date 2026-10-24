@@ -2,7 +2,7 @@
 
 APP_NAME   = angara-main
 VER_MAJOR  = 2
-VER_MINOR  = 1
+VER_MINOR  = 2
 MAIN_CLASS = app.main
 
 JAR_NAME = angara-main.jar
@@ -21,7 +21,10 @@ dev:
 	set -a && CONFIG_EDN=../conf/dev.edn && clojure -M:dev:nrepl
 
 
-build: clean
+css:
+	npx tailwindcss -i tailwind/main.css -o resources/public/webapp/assets/main.css --minify
+
+build: css clean
 	@clj -T:build uberjar
 
 
