@@ -4,6 +4,8 @@
     [monger.json]
     [monger.joda-time]
     [monger.core :as mg]
+    [monger.collection :as mc]
+    [taoensso.telemere :refer [log!]]
     [app.config :refer [conf]])
   (:import
     [org.bson.types ObjectId]
@@ -54,6 +56,23 @@
 
 (defn dbc []
   (:db mdb))
+
+
+(def SEQ "seq")
+
+
+(defn next-sn
+  "next serial number from mongodb sequence collection"
+  [sn]
+  (try
+    (->
+     (mc/find-and-modify (dbc) SEQ
+                         {:_id (name sn)}
+                         {"$inc" {:n (int 1)}}
+                         {:return-new true :upsert true})
+     (:n) (str))
+    (catch Exception ex
+      (log! :warn ["db/next-sn:" ex]))))
 
 ;;; ;;; ;;; ;;; ;;;
 
