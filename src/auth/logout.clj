@@ -1,7 +1,7 @@
 (ns auth.logout
   (:require
     [mlib.http :refer [json-resp]]
-    [mdb.sess :refer [clear-sess]]))
+    [sql.sess :refer [clear-sess]]))
 
 
 (defn logout [req]

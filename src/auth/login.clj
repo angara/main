@@ -7,7 +7,7 @@
     [mlib.http :refer [json-resp]]
     [auth.util :refer [req-ip migrate-user em-norm un-norm]]
     [auth.bcrypt :refer [check-pass]]
-    [mdb.sess :refer [sess-new]]
+    [sql.sess :refer [sess-new]]
     [sql.user :refer [user-by-auth sql-user-by-emlg]]))
 
 

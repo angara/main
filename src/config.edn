@@ -74,11 +74,7 @@
 
   ;; ;; ;; ;; ;; ;; ;; ;; ;;
 
-  ; :mdb-angara { :uri "mongodb://localhost:22022/angara"}
-  ; :mdb-meteo  { :uri "mongodb://localhost:22022/meteo"}
-
-  :mdb-angara { :uri ""} ;; !!!
-  :mdb-meteo  { :uri ""} ;; !!!
+  ;; ;; ;; ;; ;; ;; ;; ;; ;;
 
   ;; https://github.com/brettwooldridge/HikariCP
   :psql 
