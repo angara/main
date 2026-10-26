@@ -11,7 +11,7 @@
     [mlib.web.sess :refer [wrap-sess]]
     [mlib.web.middleware :refer [middleware]]
     [sql.user :refer [user-by-id user-update FLDS_REQ_USER]]
-    [mdb.sess :refer [sess-load]]
+    [sql.sess :refer [sess-load]]
     [html.frame :refer [not-found render-layout]]
     [html.search :refer [ya-site-results]]
     [calendar.core :refer [calendar-routes]]

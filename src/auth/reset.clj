@@ -6,7 +6,7 @@
     [app.config :refer [conf]]
     [mlib.http :refer [json-resp]]
     [mlib.mail :refer [send-mail]]
-    [mdb.sess :refer [clear-uid-sess]]
+    [sql.sess :refer [clear-uid-sess]]
     [sql.user :refer [user-update user-by-auth active-user-by-email]]
     [auth.util :refer [em-norm migrate-user]]
     [auth.bcrypt :refer [hash-pass]]

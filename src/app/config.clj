@@ -4,7 +4,9 @@
    [clojure.edn :as edn]
    [mount.core :refer [defstate args]]
    [java-time.api :as jt]
-  ,))
+  ,)
+  (:import
+   (java.util TimeZone)))
 
 
 (defn build-info []
@@ -43,4 +45,9 @@
 
 
 (defstate tz
-  :start (jt/zone-id (:tz conf)))
+  :start
+  ;; JVM default zone drives LocalDateTime <-> Timestamp conversion in
+  ;; sql.conn (was set in mdb.core/connect before the mongo removal)
+  (let [z (or (:tz conf) "Asia/Irkutsk")]
+    (TimeZone/setDefault (TimeZone/getTimeZone z))
+    (jt/zone-id z)))
