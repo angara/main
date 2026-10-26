@@ -8,8 +8,7 @@
    [app.config :refer [conf]]
    [notify.const :as C :refer [REDIS_RECONNECT_DELAY]]
    [notify.redis.core :refer [connect fetch-event]]
-   [mdb.notify :refer [new-job]]
-   [sql.notify :refer [topic-unread-watch]]
+   [sql.notify :refer [topic-unread-watch new-job]]
    [notify.process.user :as user]
    [notify.sender.telegram :refer [firehose]]
    ,))

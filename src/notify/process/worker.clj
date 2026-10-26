@@ -11,8 +11,9 @@
                          EVENT_TYPE_PRIVATE_MESSAGE
                          USER_ONLINE_INTERVAL
                          ONLINE_USER_NOTIFY_DELAY_MS]]
-   [mdb.notify :refer [new-job peek-job select-job finish-job get-user user-online?]]
-   [sql.notify :refer [user-unread-topic get-mail mail-read?]]
+   [mdb.notify :refer [get-user user-online?]]
+   [sql.notify :refer [user-unread-topic get-mail mail-read?
+                       new-job peek-job select-job finish-job]]
    ,))
 
 
@@ -94,9 +95,9 @@
 
 (defn worker-step [_]
   (try
-    (if-let [job (select-job {})]
+    (if-let [job (select-job)]
       (do-job job)
-      (let [next-job (peek-job {})
+      (let [next-job (peek-job)
             sleep (- (now-ms) (or (:inst next-job) 0))]
         (Thread/sleep (min WORKER_SLEEP_MS (max 0 sleep)))))
     (catch Exception ex
