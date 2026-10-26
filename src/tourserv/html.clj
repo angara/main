@@ -4,7 +4,7 @@
     [mlib.core :refer [hesc]]
     [html.frame :refer [render-layout]]
     [tourserv.const :refer [TYPES TYPE_MAP TOWNS TOWN_MAP]]
-    [tourserv.db :refer [tourserv-by-type]]
+    [sql.tourserv :refer [tourserv-by-type]]
    ,))
 
 

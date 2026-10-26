@@ -1,11 +1,13 @@
 (ns sql.notify
-  "forum/mail queries for notifications (merged from angara/notify,
-   ported from next.jdbc to the app clojure.jdbc stack)."
+  "forum/mail queries and the notify_user job queue (merged from
+   angara/notify, ported from next.jdbc to the app clojure.jdbc stack).
+   Job queue migrated from mongodb to pg table notify_user (2026-10-26)."
   (:require
     [honeysql.helpers :as h]
     ;
+    [jsonista.core :as json]
     [jdbc.core :as jdbc]
-    [mlib.core :refer [to-long]]
+    [mlib.core :refer [to-long now-ms hexbyte urand-bytes]]
     [sql.conn :refer [dbc]]
     [sql.core :refer [fetch fetch-one]]
     ,))
@@ -124,3 +126,68 @@
       (exec-raw)
       (first)
       (:s)))
+
+
+;; ;; ;; ;; ;; ;; ;; ;; ;;
+;;    notify_user job queue (was mongodb collection, 2026-10-26)
+
+(def WAIT    "wait")
+(def PROCESS "process")
+
+
+(defn- new-job-id []
+  ;; 24-hex string, same shape the mongo ObjectId had
+  (apply str (map hexbyte (urand-bytes 12))))
+
+
+(defn- jsonb->clj [v]
+  (when v
+    (json/read-value
+      (if (instance? org.postgresql.util.PGobject v)
+        (.getValue ^org.postgresql.util.PGobject v)
+        (str v))
+      json/keyword-keys-object-mapper)))
+
+
+(defn- row->job [r]
+  (when r
+    (assoc (jsonb->clj (:data r))
+           :id (:id r)
+           :inst (:inst r))))
+
+
+(defn new-job [time-ms job-data]
+  (let [id (new-job-id)]
+    (exec-raw
+      ["insert into notify_user (id, ct, inst, status, data) values (?,?,?,?,?::jsonb)"
+       id (now-ms) (long time-ms) WAIT (json/write-value job-data)])
+    (assoc job-data :id id :inst time-ms)))
+
+
+(defn peek-job []
+  ;; earliest waiting job, without claiming it
+  (->
+    (with-open [conn (dbc)]
+      (jdbc/fetch conn
+        ["select id, inst from notify_user where status = ? order by inst asc limit 1"
+         WAIT]))
+    (first)))
+
+
+(defn select-job []
+  ;; atomically claim the earliest waiting job
+  (->
+    (with-open [conn (dbc)]
+      (jdbc/fetch conn
+        [(str "update notify_user set status = ?, ts = ?"
+              "  where id = (select id from notify_user where status = ?"
+              "              order by inst asc limit 1 for update skip locked)"
+              "    and status = ?"
+              "  returning id, inst, data")
+         PROCESS (now-ms) WAIT WAIT]))
+    (first)
+    (row->job)))
+
+
+(defn finish-job [id]
+  (exec-raw ["delete from notify_user where id = ?" (str id)]))
