@@ -3,7 +3,7 @@
    [mlib.http :refer [json-resp]]
    [mlib.time :refer [ddmmyyyy parse-ddmmyyyy]]
    [html.frame :refer [render-layout]]
-   [calendar.db :refer [crecs-by-uid crec-by-id-uid crec-update]]
+   [sql.calendar :refer [crecs-by-uid crec-by-id-uid crec-update]]
    ,))
 
 
