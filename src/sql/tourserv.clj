@@ -5,7 +5,6 @@
     [honeysql.helpers :as h]
     ;
     [mlib.core :refer [to-int]]
-    [mlib.logger :refer [warn]]
     [sql.core :refer [fetch]]
    ,))
 

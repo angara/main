@@ -2,8 +2,9 @@
 
 Clojure-приложение главной части angara.net: сайт (meteo, календарь, turserv,
 API форума, поиск), аутентификация и профиль пользователя (модуль usr влит
-2026-10). Стек: deps.edn, mount, Jetty/Ring/Compojure, Hiccup, MongoDB (monger),
-PostgreSQL (clojure.jdbc + hikari + honeysql), telemere (логирование).
+2026-10). Стек: deps.edn, mount, Jetty/Ring/Compojure, Hiccup, PostgreSQL
+(clojure.jdbc + hikari + honeysql), telemere (логирование). MongoDB остался
+только для сессий (mdb.sess, этап 4 плана mongo->pg).
 
 ## Команды
 
@@ -42,9 +43,10 @@ angara-@main` (на сервере юниты называются `angara-@<и�
 - `src/angara/webapp/` — форум-фронтенд из angara/webapp (reitit:
   /forum/groups|group|topic), next.jdbc+honey.sql 2 на общем пуле sql.conn;
   статика resources/public/webapp/assets, css собирается npm-шагом (tailwind/ в корне)
-- `src/mdb/` — MongoDB: коннект (mdb.core), сессии (mdb.sess), пользователи
-  (mdb.user); `src/sql/` — PostgreSQL (sql.user синхронизирует psql-копию
-  пользователей для старого JSP-форума)
+- `src/mdb/` — MongoDB (только сессии: mdb.sess + коннект mdb.core);
+  `src/sql/` — PostgreSQL: sql.user (мастер-хранилище пользователей +
+  user_auth, с 2026-10-26, было в mongo), sql.calendar, sql.tourserv,
+  sql.notify (форум/почта + очередь уведомлений)
 - `src/mlib/` — общие утилиты (web-сессии через cookie `sid`, middleware,
   mail, time)
 - `src/org/mindrot/jbcrypt/` — jBCrypt (precompiled class, не удалять
@@ -52,5 +54,7 @@ angara-@main` (на сервере юниты называются `angara-@<и�
 - `resources/public/` — статика из jar (раздаётся `route/resources "/"`),
   включая бывшую статику usr (`public/usr/inc`)
 
-Сессии: один cookie `sid`, Mongo-коллекция `sess`; юзер — коллекция `user`
-(строковые uid). CSRF-обвязки и соцвхода VK/FB нет (убраны при слиянии usr).
+Сессии: один cookie `sid`, Mongo-коллекция `sess` (перенос на pg — этап 4
+плана mongo->pg, см. ../../docs/mongo-to-postgres-migration.md); пользователи —
+таблица pg `users` (uid integer) + ключи входа в `user_auth`; в map'ах кода
+`:id` — строковый uid, `:username` = колонка login. Соцвхода VK/FB нет.

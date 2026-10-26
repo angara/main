@@ -3,7 +3,7 @@
     [clojure.string :as s]
     [compojure.core :refer [GET POST defroutes]]
     [taoensso.telemere :refer [log!]]
-    [mlib.core :refer [str-head cap-first to-int]]
+    [mlib.core :refer [str-head cap-first]]
     [mlib.http :refer [json-resp]]
     [sql.user :refer [user-by-id user-update]]
     [auth.util :refer [norm-first_name norm-last_name]]

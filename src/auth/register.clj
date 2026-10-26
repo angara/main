@@ -73,11 +73,10 @@
                (user-create (new-uid)
                             (assoc data :auth [(em-norm (:email data))
                                                (un-norm (:username data))]))]
-        (do
-          (json-resp
-            {:ok 1
-             :uid (:id user)
-             :email (:email user)}))
+        (json-resp
+          {:ok 1
+           :uid (:id user)
+           :email (:email user)})
         ;
         (json-resp {:err :db :msg "Ошибка при регистрации пользователя"})))))
 ;

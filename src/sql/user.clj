@@ -48,8 +48,8 @@
 
 ;;; ;;; ;;; ;;;
 
-(defn user-by-id [uid flds]
-  ;; flds kept for signature parity; the row is tiny, always fetch all
+(defn user-by-id [uid _flds]
+  ;; _flds kept for signature parity; the row is tiny, always fetch all
   (try
     (row->user
       (fetch-one
@@ -60,7 +60,7 @@
       (warn "user-by-id:" uid e))))
 
 
-(defn users-by-ids [uids flds]
+(defn users-by-ids [uids _flds]
   (when-let [uv (not-empty (vec uids))]
     (try
       (map row->user
