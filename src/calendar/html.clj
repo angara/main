@@ -12,7 +12,7 @@
     ;
     [html.frame :refer [render-layout]]
     [lib.rus-date :refer [rus-date]]
-    [calendar.db :refer [crecs-all crecs-publ]]
+    [sql.calendar :refer [crecs-all crecs-publ]]
    ,))
 
 

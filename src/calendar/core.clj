@@ -11,7 +11,7 @@
     ;
     [html.frame :refer [wrap-user-required]]
     [web.middleware :refer [wrap-throttle]]
-    [calendar.db :refer [add-crec]]
+    [sql.calendar :refer [add-crec]]
     [calendar.html :refer [index-page all-page front-block]]
     [calendar.my :refer [my-page my-update]]
     [forum.db :refer
