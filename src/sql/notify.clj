@@ -160,7 +160,7 @@
   (let [id (new-job-id)]
     (exec-raw
       ["insert into notify_user (id, ct, inst, status, data) values (?,?,?,?,?::jsonb)"
-       id (now-ms) (long time-ms) WAIT (json/write-value job-data)])
+       id (now-ms) (long time-ms) WAIT (json/write-value-as-string job-data)])
     (assoc job-data :id id :inst time-ms)))
 
 
