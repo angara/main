@@ -8,8 +8,7 @@
     [auth.util :refer [req-ip migrate-user em-norm un-norm]]
     [auth.bcrypt :refer [check-pass]]
     [mdb.sess :refer [sess-new]]
-    [mdb.user :refer [user-by-auth]]
-    [sql.user :refer [sql-user-by-emlg]]))
+    [sql.user :refer [user-by-auth sql-user-by-emlg]]))
 
 
 (defn jerr [code msg]

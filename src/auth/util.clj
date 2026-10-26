@@ -1,9 +1,11 @@
 (ns auth.util
   (:require
     [clojure.string :refer [split trim lower-case] :as s]
+    [taoensso.telemere :refer [log!]]
     [mlib.core :refer [email? cap-first]]
     [auth.bcrypt :refer [hash-pass]]
-    [mdb.user :refer [user-create]]))
+    [sql.user :refer [user-by-auth user-update add-auth-key]]
+    ,))
 
 
 (defn req-ip [req]
@@ -78,18 +80,25 @@
 
 
 (defn migrate-user [sql-user]
-  (let [uid (str (:uid sql-user))
+  ;; legacy webapp row (plain-text password, no user_auth keys):
+  ;; activate it for the new auth, entirely in postgres
+  (let [uid (:uid sql-user)
         un (norm-username (:login sql-user))
         em (norm-email (:email sql-user))
-        auth [(when un (str "un:" un))
-              (when em (str "em:" em))]
-        user
-        {:auth (vec (remove nil? auth))
+        auth (vec (remove nil? [(when un (str "un:" un))
+                                (when em (str "em:" em))]))
+        passhash (or (:passhash sql-user)
+                     (hash-pass (:password sql-user)))]
+    (when (and passhash
+               (user-update uid {:passhash passhash}))
+      (doseq [a auth]
+        (add-auth-key uid a))
+      (if (every? #(= (str uid) (:id (user-by-auth % nil))) auth)
+        {:id (str uid)
          :email (:email sql-user)
          :username (:login sql-user)
-         :passhash (hash-pass (:password sql-user))
-         :first_name (:name sql-user)
-         :last_name (:surname sql-user)
-         :ct (:created sql-user)
-         :about (:note sql-user)}]
-    (user-create uid user)))
+         :passhash passhash}
+        ;;
+        (do
+          (log! :warn ["migrate-user: auth key conflict, uid" uid])
+          nil)))))

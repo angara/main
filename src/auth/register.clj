@@ -7,8 +7,7 @@
     [auth.util :refer
      [norm-email norm-username em-norm un-norm
       norm-first_name norm-last_name]]
-    [mdb.user :refer [user-by-auth new-uid user-create]]
-    [sql.user :refer [sql-user-by-emlg create-sql-user]]))
+    [sql.user :refer [user-by-auth new-uid user-create sql-user-by-emlg]]))
 
 
 (defn validate-email [params]
@@ -75,13 +74,6 @@
                             (assoc data :auth [(em-norm (:email data))
                                                (un-norm (:username data))]))]
         (do
-          (create-sql-user
-            (:id user)
-            (:username user)
-            (:email user)
-            (:first_name user)
-            (:last_name  user))
-          ;
           (json-resp
             {:ok 1
              :uid (:id user)

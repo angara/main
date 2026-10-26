@@ -10,7 +10,7 @@
     [app.config :refer [conf]]
     [mlib.web.sess :refer [wrap-sess]]
     [mlib.web.middleware :refer [middleware]]
-    [mdb.user :refer [user-by-id user-update FLDS_REQ_USER]]
+    [sql.user :refer [user-by-id user-update FLDS_REQ_USER]]
     [mdb.sess :refer [sess-load]]
     [html.frame :refer [not-found render-layout]]
     [html.search :refer [ya-site-results]]

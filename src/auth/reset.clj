@@ -7,7 +7,7 @@
     [mlib.http :refer [json-resp]]
     [mlib.mail :refer [send-mail]]
     [mdb.sess :refer [clear-uid-sess]]
-    [mdb.user :refer [user-update user-by-auth]]
+    [sql.user :refer [user-update user-by-auth]]
     [auth.util :refer [em-norm migrate-user]]
     [auth.bcrypt :refer [hash-pass]]
     [sql.user :refer [active-user-by-email]]

@@ -11,7 +11,7 @@
                          EVENT_TYPE_PRIVATE_MESSAGE
                          USER_ONLINE_INTERVAL
                          ONLINE_USER_NOTIFY_DELAY_MS]]
-   [mdb.notify :refer [get-user user-online?]]
+   [sql.user :refer [user-by-id user-online?]]
    [sql.notify :refer [user-unread-topic get-mail mail-read?
                        new-job peek-job select-job finish-job]]
    ,))
@@ -49,7 +49,7 @@
         (+ (now-ms) ONLINE_USER_NOTIFY_DELAY_MS)
         (update job :deferred (fnil inc 0)))
       ;;
-      (let [user (get-user user-id)]
+      (let [user (user-by-id user-id nil)]
         ;; NOTE: check notification type
         (send-topic-notify user topic)))))
 
@@ -62,8 +62,8 @@
           (+ (now-ms) ONLINE_USER_NOTIFY_DELAY_MS)
           (update job :deferred (fnil inc 0)))
         ;;
-        (let [user (get-user user-id)
-              from (get-user from-id)]
+        (let [user (user-by-id user-id nil)
+              from (user-by-id from-id nil)]
           (send-private-notify user from mail))))
     ;;
     (log! :warn ["private-message: mail message missing" mail-id])))
