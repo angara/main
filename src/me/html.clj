@@ -1,7 +1,7 @@
 (ns me.html
   (:require
     [mlib.core :refer [hesc]]
-    [mdb.user :refer [user-by-id]]
+    [sql.user :refer [user-by-id]]
     [html.frame :refer [layout]]))
 
 

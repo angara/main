@@ -5,8 +5,7 @@
     [taoensso.telemere :refer [log!]]
     [mlib.core :refer [str-head cap-first to-int]]
     [mlib.http :refer [json-resp]]
-    [mdb.user :refer [user-by-id user-update]]
-    [sql.user :refer [update-sql-user]]
+    [sql.user :refer [user-by-id user-update]]
     [auth.util :refer [norm-first_name norm-last_name]]
     [me.html :refer [home]]))
 
@@ -43,15 +42,8 @@
 
 
 (defn update-user [user data]
-  (and
-    (user-update
-      (:id user) data)
-    (update-sql-user
-      (to-int (:id user))
-      (get data :first_name (:first_name user))
-      (get data :last_name  (:last_name  user))
-      (get data :town  (:town  user))
-      (get data :about (:about user)))))
+  (user-update
+    (:id user) data))
 
 
 (defn update-field [req]
