@@ -12,19 +12,28 @@
 
 
 ;; https://github.com/tomekw/hikari-cp/
+;;
+;; pool size: the site runs ~150 concurrent Tomcat threads and the webapp
+;; serves forum/api traffic, so a 10-connection pool starves under load
+;; ("Connection is not available, request timed out after 30000ms").
+;; pg max_connections is 60, so 20 stays well inside the budget.
+(def ^:private hikari-opts
+  { :maximum-pool-size  20
+    :minimum-idle       5
+    :connection-timeout 30000
+    :idle-timeout       600000
+    :max-lifetime       1800000
+    })
+
 (comment
   (make-datasource
-         {:connection-timeout 30000
-          :idle-timeout 600000
-          :max-lifetime 1800000
-          :minimum-idle 10
-          :maximum-pool-size  10
-          :adapter "postgresql"
-          :username "username"
-          :password "password"
-          :database-name "database"
-          :server-name "localhost"
-          :port-number 5432}))
+         (merge hikari-opts
+                { :adapter "postgresql"
+                  :username "username"
+                  :password "password"
+                  :database-name "database"
+                  :server-name "localhost"
+                  :port-number 5432})))
 
   ; (with-open [conn (jdbc/connection ds)]
   ;   (do-stuff conn)))
@@ -33,7 +42,7 @@
 
 (defstate ds
   :start
-    (make-datasource (:psql conf))
+    (make-datasource (merge hikari-opts (:psql conf)))
   :stop
     (.close ds))
 
