@@ -58,7 +58,6 @@
 
     :firehose {:channel -1000000000000}
     }
-  ;; :redis {:url "redis://host:6379/0"}  ;; absent => feeder stays disabled
 
   :sendmail
   {

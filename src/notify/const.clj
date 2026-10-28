@@ -4,17 +4,7 @@
   
 ;; global constants
 
-(def REDIS_CONNECT_TIMEOUT 5000)
-(def REDIS_RECONNECT_DELAY 5000)
 (def WORKER_RETRY_DELAY    5000)
-
-;; redis keys:
-
-(def EVENT_QUEUE      "event_queue")
-(def EVENT_QUEUE_SEQ  "event_queue_seq")
-
-(def DEFERRED_QUEUE   "notify_deferred_queue")
-(def USER_QUEUE       "notify_user:")           ;; "notify_user:<uid>"
 
 (def EVENT_TYPE_FORUM_TOPIC       "forum_topic")
 (def EVENT_TYPE_FORUM_MESSAGE     "forum_message")

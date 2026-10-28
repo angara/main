@@ -54,4 +54,5 @@
           html (format-event event)]
       (send-message cfg chan html))
     (catch Exception ex
-      (log! ["firehose:" ex (ex-data ex)]))))
+      (log! ["firehose:" ex (ex-data ex)])
+      (throw ex))))

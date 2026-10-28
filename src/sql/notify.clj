@@ -156,11 +156,15 @@
            :inst (:inst r))))
 
 
+(def ^:dynamic *job-conn* nil)
+
 (defn new-job [time-ms job-data]
   (let [id (new-job-id)]
-    (exec-raw
-      ["insert into notify_user (id, ct, inst, status, data) values (?,?,?,?,?::jsonb)"
-       id (now-ms) (long time-ms) WAIT (json/write-value-as-string job-data)])
+    (let [query ["insert into notify_user (id, ct, inst, status, data) values (?,?,?,?,?::jsonb)"
+                 id (now-ms) (long time-ms) WAIT (json/write-value-as-string job-data)]]
+      (if *job-conn*
+        (jdbc/execute *job-conn* query)
+        (exec-raw query)))
     (assoc job-data :id id :inst time-ms)))
 
 

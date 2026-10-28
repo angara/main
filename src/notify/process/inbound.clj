@@ -5,9 +5,8 @@
    ;
    [mlib.thread :refer [start-loop stop-loop]]
    [mlib.core :refer [now-ms]]
-   [app.config :refer [conf]]
-   [notify.const :as C :refer [REDIS_RECONNECT_DELAY]]
-   [notify.redis.core :refer [connect fetch-event]]
+    [notify.const :as C]
+    [sql.notify-event :as events]
    [sql.notify :refer [topic-unread-watch new-job]]
    [notify.process.user :as user]
    [notify.sender.telegram :refer [firehose]]
@@ -82,42 +81,21 @@
         (firehose event)))))
 
 
-(defn reconnect-redis [state']
+(defn feeder-init [_]
+  (log! ["notify_event feeder started"]))
+
+(defn feeder-step [_]
   (try
-    (when-let [r (:redis @state')]
-      (swap! state' assoc :redis nil)
-      (.close r))
-    (let [redis (connect (-> conf :redis :url))]
-      (swap! state' assoc :redis redis)
-      redis)
+    (if-let [row (events/claim)]
+      (try
+        (events/process! row dispatch)
+        (catch Exception ex
+          (events/retry! row ex)
+          (log! :warn ["notify_event failed" (:id row) (.getMessage ex)])))
+      (Thread/sleep 2000))
     (catch Exception ex
-      (log! :warn ["reconnect-redis: catch" (.getMessage ex)]))))
-
-
-(defn feeder-init [state']
-  (log! ["feeder-init"])
-  ;; never throw: redis outage must not take the whole app down,
-  ;; the loop keeps retrying via reconnect-redis
-  (when-not (reconnect-redis state')
-    (log! :warn ["redis connection failed, will retry"])))
-
-
-(defn try-fetch-event [state']
-  (try
-    (fetch-event (:redis @state'))
-    (catch Exception ex
-      (log! :warn ["try-fetch-event:" (.getMessage ex)])
-      (Thread/sleep REDIS_RECONNECT_DELAY)
-      (reconnect-redis state')
-      nil)))
-
-
-(defn feeder-step [state']
-  (try
-    (when-let [event (try-fetch-event state')]
-      (dispatch event))
-    (catch Exception ex
-      (log! :warn ["feeder-step:" (.getMessage ex)]))))
+      (log! :warn ["feeder-step:" (.getMessage ex)])
+      (Thread/sleep 5000))))
 
 
 (defn feeder-cleanup [state ex]
@@ -126,10 +104,6 @@
 
 (defstate feeder
   :start
-  (if (-> conf :redis :url)
-    (start-loop feeder-init feeder-step feeder-cleanup)
-    (do
-      (log! :warn ["feeder not started: no :redis :url in config"])
-      false))
+  (start-loop feeder-init feeder-step feeder-cleanup)
   :stop
   (stop-loop feeder))
