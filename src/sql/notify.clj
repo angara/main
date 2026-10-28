@@ -1,12 +1,12 @@
 (ns sql.notify
   "forum/mail queries and the notify_user job queue (merged from
-   angara/notify, ported from next.jdbc to the app clojure.jdbc stack).
+   angara/notify, using the shared next.jdbc stack).
    Job queue migrated from mongodb to pg table notify_user (2026-10-26)."
   (:require
     [honeysql.helpers :as h]
     ;
     [jsonista.core :as json]
-    [jdbc.core :as jdbc]
+    [sql.jdbc :as jdbc]
     [mlib.core :refer [to-long now-ms hexbyte urand-bytes]]
     [sql.conn :refer [dbc]]
     [sql.core :refer [fetch fetch-one]]

@@ -8,7 +8,7 @@
     [tick.core :as t]
     [honeysql.helpers :as h]
     ;
-    [jdbc.core :as jdbc]
+    [sql.jdbc :as jdbc]
     [mlib.core :refer [to-int]]
     [mlib.logger :refer [warn]]
     [sql.conn :refer [dbc]]

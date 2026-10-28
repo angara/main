@@ -3,7 +3,7 @@
 Clojure-приложение главной части angara.net: сайт (meteo, календарь, turserv,
 API форума, поиск), аутентификация и профиль пользователя (модуль usr влит
 2026-10). Стек: deps.edn, mount, Jetty/Ring/Compojure, Hiccup, PostgreSQL
-(clojure.jdbc + hikari + honeysql), telemere (логирование). MongoDB остался
+(next.jdbc + hikari + honeysql), telemere (логирование). MongoDB остался
 только для сессий (mdb.sess, этап 4 плана mongo->pg).
 
 ## Команды

@@ -1,7 +1,8 @@
 (ns sql.notify-event
   "Durable inbound queue. The attempt number fences expired workers."
   (:require
-    [jdbc.core :as jdbc]
+    [next.jdbc :as next-jdbc]
+    [sql.jdbc :as jdbc]
     [jsonista.core :as json]
     [sql.conn :refer [dbc]]
     [sql.notify :as notify]))
@@ -24,14 +25,14 @@
 
 (defn process! [{:keys [id attempts] :as row} dispatch]
   (with-open [conn (dbc)]
-    (jdbc/atomic conn
+    (next-jdbc/with-transaction [tx conn]
       ;; Lock before dispatch: another worker cannot reclaim during processing.
-      (when (jdbc/fetch-one conn
+      (when (jdbc/fetch-one tx
               ["select id from notify_event where id=? and status='process' and attempts=? for update"
                id attempts])
-        (binding [notify/*job-conn* conn]
+        (binding [notify/*job-conn* tx]
           (dispatch (event-data row)))
-        (jdbc/execute conn
+        (jdbc/execute tx
           ["update notify_event set status='done', data='{}'::jsonb, processed_at=current_timestamp, locked_until=null, last_error=null where id=?"
            id])))))
 

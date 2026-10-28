@@ -3,7 +3,7 @@
   (:require
     [clojure.string :as s]
     [mlib.logger :refer [warn]]
-    [jdbc.core :as jdbc]
+    [sql.jdbc :as jdbc]
     [honeysql.core :as sql]
     [sql.conn :refer [dbc]]))
 ;
@@ -130,7 +130,7 @@
 (defn create-table [struct]
   (with-open [conn (dbc)]
     (jdbc/execute conn
-      (create-table-sql struct))
+      [(create-table-sql struct)])
     ;
     (let [ord (atom 0)
           next-ord #(swap! ord inc)
@@ -138,17 +138,17 @@
       ;
       (doseq [idx (:unique struct)]
         (jdbc/execute conn
-          (create-index-sql "unique" tbl idx (next-ord))))
+          [(create-index-sql "unique" tbl idx (next-ord))]))
       ;
       (doseq [idx (:indexes struct)]
         (jdbc/execute conn
-          (create-index-sql "" tbl idx (next-ord)))))))
+          [(create-index-sql "" tbl idx (next-ord))])))))
   ;
 ;
 
 (defn drop-table [struct]
   (with-open [conn (dbc)]
-    (jdbc/execute conn (str "drop table " (:table struct)))))
+    (jdbc/execute conn [(str "drop table " (:table struct))])))
 ;
 
 ;;.

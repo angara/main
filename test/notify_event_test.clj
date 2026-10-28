@@ -2,7 +2,7 @@
   (:require
     [clojure.test :refer [deftest is run-tests use-fixtures]]
     [clojure.string :as str]
-    [jdbc.core :as jdbc]
+    [sql.jdbc :as jdbc]
     [mount.core :as mount]
     [app.config :as config]
     [sql.conn :as conn]
@@ -10,10 +10,10 @@
     [sql.notify-event :as events]))
 
 (defn query [sql]
-  (with-open [db (conn/dbc)] (jdbc/fetch db sql)))
+  (with-open [db (conn/dbc)] (jdbc/fetch db [sql])))
 
 (defn execute [sql]
-  (with-open [db (conn/dbc)] (jdbc/execute db sql)))
+  (with-open [db (conn/dbc)] (jdbc/execute db [sql])))
 
 (use-fixtures :each
   (fn [test-fn]
@@ -67,6 +67,14 @@
       (is (= "process" (:status (first (query "select status from notify_event")))))
       (events/process! new (fn [_] nil))
       (is (= "done" (:status (first (query "select status from notify_event"))))))))
+
+(deftest concurrent-claim
+  (let [ids (set [(enqueue) (enqueue)])
+        gate (promise)
+        workers (repeatedly 2 #(future @gate (events/claim)))
+        workers (vec workers)]
+    (deliver gate true)
+    (is (= ids (set (map (comp :id deref) workers))))))
 
 (defn -main []
   (mount/start-with-args

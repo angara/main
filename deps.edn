@@ -33,7 +33,6 @@
          joda-time/joda-time       {:mvn/version "2.12.7"}
 
          org.postgresql/postgresql {:mvn/version "42.7.14"}
-         funcool/clojure.jdbc      {:mvn/version "0.9.0"}
          hikari-cp/hikari-cp       {:mvn/version "4.1.0"}
          honeysql/honeysql         {:mvn/version "1.0.461"}
 
