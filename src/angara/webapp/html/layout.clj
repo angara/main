@@ -7,9 +7,10 @@
 
 (defn render-page [head body]
    (html doctype-html 
-         [:html 
+          [:html {:data-theme "light" :style "color-scheme: light; background-color: #fff;"}
            [:head head] 
-           [:body.min-h-screen.flex.flex-col 
+            [:body.min-h-screen.flex.flex-col
+             {:style "background-color: #fff; color: #1f2937;"}
             body]]))
 
 
