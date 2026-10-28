@@ -136,6 +136,17 @@
     ,))
 
 
+(defn wrap-sql-errors [handler]
+  (fn [req]
+    (try
+      (handler req)
+      (catch java.sql.SQLException ex
+        ;; PostgreSQL error messages may contain submitted values/secrets.
+        (log! :warn ["database request failed" {:sql-state (.getSQLState ex)}])
+        {:status 503
+         :headers {"Content-Type" "text/plain; charset=utf-8"}
+         :body "Ошибка работы с базой данных. Попробуйте позже."}))))
+
 (defn app-handler []
   (->
     (make-routes)
@@ -144,4 +155,5 @@
     (wrap-real-ip)
     (middleware)
     (wrap-slowreq (:slowreq conf))
+    (wrap-sql-errors)
    ,))

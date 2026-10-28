@@ -7,12 +7,12 @@
     [clojure.string :as s]
     [tick.core :as t]
     [honeysql.helpers :as h]
+    [next.jdbc :as next-jdbc]
     ;
     [sql.jdbc :as jdbc]
     [mlib.core :refer [to-int]]
-    [mlib.logger :refer [warn]]
     [sql.conn :refer [dbc]]
-    [sql.core :refer [fetch fetch-one exec]]
+    [sql.core :refer [fetch fetch-one exec exec-on!]]
    ,))
 
 
@@ -50,26 +50,20 @@
 
 (defn user-by-id [uid _flds]
   ;; _flds kept for signature parity; the row is tiny, always fetch all
-  (try
-    (row->user
-      (fetch-one
-        (->
-          SELECT_USER
-          (h/merge-where [:= :uid (to-int uid)]))))
-    (catch Exception e
-      (warn "user-by-id:" uid e))))
+  (row->user
+    (fetch-one
+      (->
+        SELECT_USER
+        (h/merge-where [:= :uid (to-int uid)])))))
 
 
 (defn users-by-ids [uids _flds]
   (when-let [uv (not-empty (vec uids))]
-    (try
-      (map row->user
-        (fetch
-          (->
-            SELECT_USER
-            (h/merge-where [:in :uid (map to-int uv)]))))
-      (catch Exception e
-        (warn "users-by-ids:" e)))))
+    (map row->user
+      (fetch
+        (->
+          SELECT_USER
+          (h/merge-where [:in :uid (map to-int uv)]))))))
 
 
 (defn user-by-auth [auth flds]
@@ -77,43 +71,32 @@
   (when-let [a (not-empty (str auth))]
     (let [[t v] (s/split a #":" 2)]
       (when (and t (not-empty v))
-        (try
-          (->
-            (fetch-one
-              (-> (h/select :user_id)
-                  (h/from :user_auth)
-                  (h/where
-                    [:= :auth_type t]
-                    [:= :auth_id v])))
-            (:user_id)
-            (user-by-id flds))
-          (catch Exception e
-            (warn "user-by-auth:" a e)))))))
+        (->
+          (fetch-one
+            (-> (h/select :user_id)
+                (h/from :user_auth)
+                (h/where
+                  [:= :auth_type t]
+                  [:= :auth_id v])))
+          (:user_id)
+          (user-by-id flds))))))
 
 
 (defn user-online? [id active-duration]
-  (try
-    (fetch-one
-      (->
-        (h/select :uid)
-        (h/from :users)
-        (h/merge-where
-          [:= :uid (to-int id)]
-          [:>= :atime (t/<< (t/date-time) active-duration)])))
-    (catch Exception e
-      (warn "user-online?:" id e))))
+  (fetch-one
+    (->
+      (h/select :uid)
+      (h/from :users)
+      (h/merge-where
+        [:= :uid (to-int id)]
+        [:>= :atime (t/<< (t/date-time) active-duration)]))))
 
 
 ;;; ;;; ;;; ;;;
 
 (defn new-uid []
-  (try
-    (:nextval
-      (first
-        (with-open [conn (dbc)]
-          (jdbc/fetch conn ["select nextval('users_uid_seq')"]))))
-    (catch Exception e
-      (warn "new-uid:" e))))
+  (with-open [conn (dbc)]
+    (:nextval (jdbc/fetch-one conn ["select nextval('users_uid_seq')"]))))
 
 
 (def FSET_COLS
@@ -123,27 +106,27 @@
 
 
 (defn user-update [uid fset]
-  (try
-    (= 1
-      (exec
-        (->
-          (h/update :users)
-          (h/sset
-            (into {}
-              (map (fn [[k v]] [(or (FSET_COLS k) k) v]))
-              fset))
-          (h/where [:= :uid (to-int uid)]))))
-    (catch Exception e
-      (warn "user-update:" uid e))))
+  (= 1
+    (exec
+      (->
+        (h/update :users)
+        (h/sset
+          (into {}
+            (map (fn [[k v]] [(or (FSET_COLS k) k) v]))
+            fset))
+        (h/where [:= :uid (to-int uid)])))))
 
+
+(defn- add-auth-key-on! [conn uid key-str]
+  (let [[t v] (s/split key-str #":" 2)]
+    (jdbc/execute conn
+      [(str "insert into user_auth (auth_type, auth_id, user_id) values (?,?,?)"
+            " on conflict (auth_type, auth_id) do nothing")
+       t v (str uid)])))
 
 (defn add-auth-key [uid key-str]
-  (let [[t v] (s/split key-str #":" 2)]
-    (with-open [conn (dbc)]
-      (jdbc/execute conn
-        [(str "insert into user_auth (auth_type, auth_id, user_id) values (?,?,?)"
-              " on conflict (auth_type, auth_id) do nothing")
-         t v (str uid)]))))
+  (with-open [conn (dbc)]
+    (add-auth-key-on! conn uid key-str)))
 
 
 (defn user-create [id data]
@@ -165,13 +148,12 @@
          :passcode (:passcode data)
          :upic (:upic data)
          :ts (or (:ts data) now)}]
-    (try
-      (exec {:insert-into :users :values [row]})
-      (doseq [a (:auth data)]
-        (add-auth-key uid a))
-      (assoc data :id id)
-      (catch Exception e
-        (warn "user-create:" id e)))))
+    (with-open [conn (dbc)]
+      (next-jdbc/with-transaction [tx conn]
+        (exec-on! tx {:insert-into :users :values [row]})
+        (doseq [a (:auth data)]
+          (add-auth-key-on! tx uid a))))
+    (assoc data :id id)))
 
 
 ;;; ;;; ;;; ;;;

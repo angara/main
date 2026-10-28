@@ -25,6 +25,8 @@
   (fn [req]
     (try
       (handler req)
+      (catch java.sql.SQLException ex
+        (throw ex))
       (catch Exception ex
         (let [data (ex-data ex)]
           (if (get data EXCEPTION_RESPONSE_KEY)
@@ -40,6 +42,8 @@
   (fn [req]
     (try
       (handler req)
+      (catch java.sql.SQLException ex
+        (throw ex))
       (catch Throwable ex
         (let [data (ex-data ex)
               message (ex-message ex)]

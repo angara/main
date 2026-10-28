@@ -127,6 +127,8 @@
       (if lrs
         (json-resp {:ok 1 :lrs lrs}) 
         (json-resp 400 {:err :dberr :msg "Ошибка выборки данных."})))
+    (catch java.sql.SQLException err
+      (throw err))
     (catch Exception err
       (warn "get-lastreads:" {:user user :params params :err err})
       (json-resp 400 {:err :bad_request :msg "Ошибка при обработке запроса."}))))
@@ -142,6 +144,8 @@
                     :watch (->> tid (get-lastread uid) :watch)})
         (json-resp 400 
           {:err :bad_request :msg "uid and tid required"})))
+    (catch java.sql.SQLException err
+      (throw err))
     (catch Exception err
       (warn "get-watch:" {:user user :params params :err err})
       (json-resp 400 {:err :bad_request :msg "Ошибка при обработке запроса."}))))
@@ -158,6 +162,8 @@
           (if (insert-watch uid tid watch)
             (json-resp {:ok 1 :act "watch-inserted" :tid tid :watch watch})
             (json-resp 400 {:err :bad_request :msg "unable to set watch"})))))
+    (catch java.sql.SQLException err
+      (throw err))
     (catch Exception err
       (warn "set-watch:" {:user user :params params :err err})
       (json-resp 400 {:err :bad_request :msg "Ошибка при обработке запроса."}))))

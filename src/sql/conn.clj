@@ -13,7 +13,8 @@
 ;; pool size: the site runs ~150 concurrent Tomcat threads and the webapp
 ;; serves forum/api traffic, so a 10-connection pool starves under load
 ;; ("Connection is not available, request timed out after 30000ms").
-;; pg max_connections is 60, so 20 stays well inside the budget.
+;; Connection budget: main 20 + Tomcat 20 out of pg max_connections=60;
+;; leave the remainder for other clients, maintenance and reserved slots.
 (def ^:private hikari-opts
   { :maximum-pool-size  20
     :minimum-idle       5

@@ -3,8 +3,6 @@
    Rows are shaped like the old mongo documents: :_id = sid,
    :uid as string, :_csrf; java (AuthFilter) updates ts/ip columns."
   (:require
-    [taoensso.telemere :refer [log!]]
-    ;
     [clojure.core.cache :as cache]
     [tick.core :as t]
     [java-time.api :as jt]
@@ -52,49 +50,40 @@
 (defn sess-new [data]
   (let [sid (new-sid)
         csrf (new-csrf)]
-    (try
-      (exec
-        { :insert-into :sess
-          :values
-          [{ :sid  sid
-             :uid  (to-int (:uid data))
-             :ct   (t/date-time)
-             :ts   (t/date-time)
-             :ip   (:ip data)
-             :tmp  (boolean (:tmp data))
-             :csrf csrf
-             ,}]})
-      (assoc data :_id sid :_csrf csrf)
-      (catch Exception ex
-        (log! :warn ["sess-new:" ex])))))
+    (exec
+      { :insert-into :sess
+        :values
+        [{ :sid  sid
+           :uid  (to-int (:uid data))
+           :ct   (t/date-time)
+           :ts   (t/date-time)
+           :ip   (:ip data)
+           :tmp  (boolean (:tmp data))
+           :csrf csrf
+           ,}]})
+    (assoc data :_id sid :_csrf csrf)))
 
 
 (defn sess-update [sid data]
   (swap! *sess-cache #(cache/evict % sid))
-  (try
-    (= 1
-      (exec
-        (->
-          (h/update :sess)
-          (h/sset
-            (into {}
-              (map (fn [[k v]] [(or (SESS_COLS_MAP k) k) v]))
-              data))
-          (h/where [:= :sid (str sid)]))))
-    (catch Exception ex
-      (log! :warn ["sess-update:" sid ex]))))
+  (= 1
+    (exec
+      (->
+        (h/update :sess)
+        (h/sset
+          (into {}
+            (map (fn [[k v]] [(or (SESS_COLS_MAP k) k) v]))
+            data))
+        (h/where [:= :sid (str sid)])))))
 
 
 (defn- sess-load-pg [sid]
-  (try
-    (row->sess
-      (fetch-one
-        (->
-          (h/select :*)
-          (h/from :sess)
-          (h/where [:= :sid (str sid)]))))
-    (catch Exception ex
-      (log! :warn ["sess-load-pg:" sid ex]))))
+  (row->sess
+    (fetch-one
+      (->
+        (h/select :*)
+        (h/from :sess)
+        (h/where [:= :sid (str sid)])))))
 
 
 (defn sess-load [sid]
@@ -117,23 +106,17 @@
 
 
 (defn clear-sess [sid]
-  (try
-    (swap! *sess-cache #(cache/evict % sid))
-    (= 1
-      (exec
-        (->
-          (h/delete-from :sess)
-          (h/where [:= :sid (str sid)]))))
-    (catch Exception ex
-      (log! :warn ["clear-sess:" sid ex]))))
+  (swap! *sess-cache #(cache/evict % sid))
+  (= 1
+    (exec
+      (->
+        (h/delete-from :sess)
+        (h/where [:= :sid (str sid)])))))
 
 
 (defn clear-uid-sess [uid]
   ;; cached sessions not handled!
-  (try
-    (exec
-      (->
-        (h/delete-from :sess)
-        (h/where [:= :uid (to-int uid)])))
-    (catch Exception ex
-      (log! :warn ["clear-uid-sess:" uid ex]))))
+  (exec
+    (->
+      (h/delete-from :sess)
+      (h/where [:= :uid (to-int uid)]))))
