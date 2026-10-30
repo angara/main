@@ -6,6 +6,23 @@ merged 2026-10: single process, single jar, single Jetty.
 
 Not transferred from usr: VK/FB social login, csrf middleware.
 
+Избранные метеостанции: для вошедших пользователей на `/meteo/` доступен
+переключатель `☆` / `★` справа от времени. Коды станций сохраняются массивом
+JSONB в `users.meteo_favorites`. При следующей загрузке страницы сервер ставит
+избранные станции первыми, сохраняя исходный порядок внутри обеих групп.
+Отметка сохраняется и при временном отсутствии станции в списке активных.
+`POST /meteo/favorite` принимает JSON `{st, favorite}` (boolean), требует
+авторизацию и заголовок `x-csrf-token` с токеном текущей сессии.
+
+Перед запуском новой версии применить к БД приложения миграцию
+`sql/2026-10-30-meteo-favorites.sql`.
+Проверка на локальной тестовой PostgreSQL (создаёт и удаляет собственную схему):
+
+```sh
+METEO_TEST_JDBC_URL=jdbc:postgresql://127.0.0.1:PORT/postgres?user=USER \
+  clojure -Sdeps '{:paths ["src" "resources" "test"]}' -M -m meteo-favorites-test
+```
+
 
 На Angara.Net запускается в тестовом режиме Календарь событий.
 В него можно добавлять свои мероприятия:

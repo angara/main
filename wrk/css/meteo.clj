@@ -209,7 +209,13 @@
 
       [:.title  {:font-size "22px" :color "#48e" :margin "0 1em 2px 1em"}
         [:i {:font-size "76%" :margin "0 4px" :color "#383"}]
-        [:.hhmm {:font-size "14px" :float "right" :color "#aaa" :margin "4px 0 4px 8px"}]]
+        [:.station-actions {:float "right" :display "inline-flex" :align-items "center"
+                            :gap "4px" :margin-left "8px" :white-space "nowrap"}]
+        [:.hhmm {:font-size "14px" :color "#aaa" :margin "4px 0"}]
+        [:.meteo-favorite {:font-size "22px" :line-height "1" :padding "2px 4px"
+                          :border "0" :background "transparent" :color "#28d"
+                          :cursor "pointer"}
+          [:&:disabled {:opacity "0.5" :cursor "wait"}]]]
       [:.value  {:margin-left "1em" :white-space "nowrap"}]
       [:.val {:text-align "right"}]
       (at-media {:min-width "768px"}

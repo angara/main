@@ -4,7 +4,7 @@
     [java-time.api :as jt]
     [tick.core :as t]
     [ring.util.response :refer [redirect]]
-    [compojure.core :refer [GET ANY context routes wrap-routes]]
+    [compojure.core :refer [GET POST ANY context routes wrap-routes]]
     [compojure.route :as route]
     ;
     [app.config :refer [conf]]
@@ -22,6 +22,7 @@
     [auth.core :refer [auth-routes]]
     [me.core :refer [me-routes]]
     [meteo.core :as meteo]
+    [meteo.favorites :as meteo-favorites]
     [tourserv.core :as tourserv]
   ,))
 
@@ -60,6 +61,7 @@
     (GET "/"                    _ main-page) ;; draft!
     ;
     (GET "/meteo/"              [] meteo/index-page)
+    (POST "/meteo/favorite"     [] meteo-favorites/update-favorite)
     (GET "/meteo/st/:st"        [] meteo/st-page)
     (GET "/meteo/st-hourly/:st" [] meteo/st-hourly)
     ;

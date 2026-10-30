@@ -11,6 +11,8 @@
     ;
    [meteo.fmt  :refer [format-t format-h format-p format-w]]
    [meteo.data :as mdata]
+   [meteo.favorites :as favorites]
+   [sql.meteo :as sql-meteo]
     ;
    [lib.rus-date :refer [RUS_MONTHS_FC]]
    [lib.time :refer [iso->local iso->inst local-now tf-hhmm tf-ddmmyyyy]]
@@ -168,7 +170,8 @@
 
 (defn format-station [{st :st title :title descr :descr
                        last :last last_ts :last_ts
-                       lat :lat lon :lon elev :elev }]
+                       lat :lat lon :lon elev :elev }
+                      user? favorite?]
   (let [g (when (not-dead-local-ts? (iso->local (:g_ts last)))
             (:g last))
         t-val (format-t nil (:t last) (:t_delta last))
@@ -181,8 +184,16 @@
     (when (or t-val w-val p-val h-val)
       [:div.station
        [:div.title 
+        [:span.station-actions
+         [:span.hhmm (when ts (tf-hhmm ts))]
+         (when user?
+           (let [label (if favorite? "Убрать из избранного" "В избранное")]
+             [:button.meteo-favorite
+              {:type "button" :data-st st :aria-pressed (str (boolean favorite?))
+               :aria-label label :title label}
+              (if favorite? "★" "☆")]))]
         [:a {:href (str ST_BASE_URL st) :title a-title} 
-         (hesc title) " " [:i.fa.fa-bar-chart] [:div.hhmm (when ts (tf-hhmm ts))]]]
+         (hesc title) " " [:i.fa.fa-bar-chart]]]
        (labeled-value "температура" t-val)
        (labeled-value "ветер"       w-val)
        (labeled-value "давление"    p-val)
@@ -193,18 +204,20 @@
 
 
 (defn index-page [req]
-  (let [st-list (mdata/active-stations)]
+  (let [uid (get-in req [:user :id])
+        favorite-stations (if uid (sql-meteo/favorites uid) #{})
+        st-list (favorites/favorites-first (mdata/active-stations) favorite-stations)]
     (render-layout req
       { :title "Погода в Иркутске и Прибайкалье в реальном времени"
         :topmenu :meteo
         ;; :css ["/incs/highcharts/5.0.14/highcharts.css"]
-        ;; :js ["/incs/meteo/core.js"]
+        :js (when uid ["/incs/meteo/favorites.js"])
        }
       [:div.b-meteo
-       [:div.b-meteo-brief
+       [:div.b-meteo-brief (when uid {:data-csrf (get-in req [:sess :_csrf])})
         [:div.col-md-7.col-md-offset-1
          (for [st st-list]
-           (format-station st))]
+           (format-station st (some? uid) (contains? favorite-stations (:st st))))]
         [:div.col-md-4 {:style "text-align: center"}
          [:div {:style "width: 300px; height: 300px; margin: 12px 8px; display: inline-block; overflow: hidden;"}
           (ya-rtb "R-A-1908-16" true)]]
